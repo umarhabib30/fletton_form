@@ -1,133 +1,18 @@
-// =============================
+
 // Global Variables
-// =============================
 let currentStep = 1;
 const totalSteps = 6;
 let isDrawing = false;
 let signatureData = '';
 
-// =============================
 // Initialize Form
-// =============================
 document.addEventListener('DOMContentLoaded', function () {
     initializeSignature();
     setupEventListeners();
-    setupFormValidation();
     updateProgressBar();
-
-    // Toastr config (if available)
-    if (window.toastr) {
-        toastr.options = {
-            closeButton: true,
-            newestOnTop: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 4000
-        };
-    }
 });
 
-// =============================
-// Utilities: Styles & Notifications
-// =============================
-function applyInvalidStyle(el) {
-    el.style.borderColor = '#ff6b6b';
-    el.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
-}
-function applyValidStyle(el) {
-    el.style.borderColor = '#93c120';
-    el.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
-}
-function clearStyle(el) {
-    el.style.borderColor = '';
-    el.style.boxShadow = '';
-}
-
-function notifyError(message) {
-    if (window.toastr) {
-        toastr.error(message);
-    } else {
-        showError(message);
-    }
-}
-
-// Prefer group label/legend/aria/data-label/placeholder/name/id
-function getFieldLabel(field) {
-    // Radios/checkbox groups
-    if (field.type === 'radio' || field.type === 'checkbox') {
-        const fs = field.closest('fieldset');
-        if (fs && fs.querySelector('legend')) {
-            return fs.querySelector('legend').textContent.trim();
-        }
-        const group = field.closest('.form-group, .form-row, .form-section');
-        if (group) {
-            const groupLegend = group.querySelector('legend');
-            if (groupLegend) return groupLegend.textContent.trim();
-            const groupLabel = group.querySelector('label:not([for])');
-            if (groupLabel) return groupLabel.textContent.trim();
-        }
-    }
-
-    // Direct label[for=id]
-    if (field.id) {
-        const label = document.querySelector(`label[for="${field.id}"]`);
-        if (label) return label.textContent.trim();
-    }
-
-    // ARIA / data attributes
-    const aria = field.getAttribute('aria-label');
-    if (aria) return aria.trim();
-
-    const dataLabel = field.getAttribute('data-label') || field.getAttribute('data-field-label');
-    if (dataLabel) return dataLabel.trim();
-
-    // Placeholder
-    if (field.placeholder) return field.placeholder.trim();
-
-    // Fallback: name or id, humanized
-    const src = field.name || field.id || 'This field';
-    return humanizeAttr(src);
-}
-
-function humanizeAttr(str) {
-    return String(str)
-        .replace(/[_-]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/\b\w/g, c => c.toUpperCase());
-}
-
-function getFieldIssue(field) {
-    // Custom invalid class has priority
-    if (field.classList && field.classList.contains('is-invalid')) {
-        // Your custom message for phone, etc.
-        return 'is invalid number.';
-    }
-
-    // Special case: radios -> evaluate as a group
-    if (field.type === 'radio') {
-        const group = document.querySelectorAll(`input[type="radio"][name="${field.name}"]`);
-        const anyChecked = Array.from(group).some(r => r.checked);
-        if (!anyChecked) return 'is required.';
-    }
-
-    const v = field.validity;
-    if (v.valueMissing) return 'is required.';
-    if (v.typeMismatch) return 'has an invalid format.';
-    if (v.patternMismatch) return 'does not match the expected format.';
-    if (v.tooShort) return `is too short (min ${field.minLength}).`;
-    if (v.tooLong) return `is too long (max ${field.maxLength}).`;
-    if (v.rangeUnderflow) return `is too low (min ${field.min}).`;
-    if (v.rangeOverflow) return `is too high (max ${field.max}).`;
-    if (v.stepMismatch) return 'is not on an allowed step.';
-    if (v.badInput) return 'has an invalid value.';
-    if (v.customError) return (field.validationMessage || 'is invalid.');
-    return 'is invalid.';
-}
-
-// =============================
-// Event Listeners (General)
-// =============================
+// Event Listeners
 function setupEventListeners() {
     // Navigation buttons
     document.getElementById('nextBtn').addEventListener('click', nextStep);
@@ -147,13 +32,14 @@ function setupEventListeners() {
     // Conditional field displays
     setupConditionalFields();
 
-    // Smooth animations
+    // Form validation
+    setupFormValidation();
+
+    // Add smooth animations
     addAnimations();
 }
 
-// =============================
-// Conditional Field Displays
-// =============================
+// Setup conditional field displays
 function setupConditionalFields() {
     // Garage location field
     document.querySelectorAll('input[name="inf_custom_Garage"]').forEach(radio => {
@@ -220,75 +106,35 @@ function setupConditionalFields() {
     });
 }
 
-// =============================
-// Form Validation Wiring
-// =============================
+// Form validation
 function setupFormValidation() {
+    // Real-time validation
     document.querySelectorAll('input, select, textarea').forEach(field => {
         field.addEventListener('blur', validateField);
         field.addEventListener('input', clearFieldError);
-        if (field.type === 'radio') {
-            // Radios validate on change
-            field.addEventListener('change', validateField);
-        }
     });
 }
 
-// Handle radio groups: one selected -> that one green, others neutral.
-// None selected for required group -> first radio red, others neutral.
-function validateRadioGroup(anyRadioInGroup) {
-    const name = anyRadioInGroup.name;
-    const group = Array.from(document.querySelectorAll(`input[type="radio"][name="${name}"]`));
-    const anyChecked = group.some(r => r.checked);
-
-    if (!anyChecked) {
-        if (group[0]) applyInvalidStyle(group[0]);
-        group.slice(1).forEach(clearStyle);
-        return false;
-    }
-
-    group.forEach(r => {
-        if (r.checked) applyValidStyle(r);
-        else clearStyle(r);
-    });
-    return true;
-}
-
-// Field-level validation (blur/change)
 function validateField(event) {
     const field = event.target;
-
-    // Radios are handled as a group
-    if (field.type === 'radio') {
-        validateRadioGroup(field);
-        return;
-    }
-
-    // If field has 'is-invalid', force red
-    if (field.classList.contains('is-invalid')) {
-        applyInvalidStyle(field);
-        return;
-    }
-
-    // HTML5 validity
     const isValid = field.checkValidity();
-    if (!isValid) applyInvalidStyle(field);
-    else applyValidStyle(field);
+
+    if (!isValid) {
+        field.style.borderColor = '#ff6b6b';
+        field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
+    } else {
+        field.style.borderColor = '#93c120';
+        field.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
+    }
 }
 
 function clearFieldError(event) {
     const field = event.target;
-    if (field.type === 'radio') {
-        const group = document.querySelectorAll(`input[type="radio"][name="${field.name}"]`);
-        group.forEach(clearStyle);
-        return;
-    }
-    clearStyle(field);
+    field.style.borderColor = '';
+    field.style.boxShadow = '';
 }
 
-// =============================
-// Navigation
-// =============================
+// Navigation functions
 function nextStep() {
     if (validateCurrentStep()) {
         if (currentStep < totalSteps) {
@@ -357,8 +203,10 @@ function updateNavigationButtons() {
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
 
+    // Previous button
     prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
 
+    // Next/Submit button
     if (currentStep === totalSteps) {
         nextBtn.style.display = 'none';
         submitBtn.style.display = 'block';
@@ -368,41 +216,31 @@ function updateNavigationButtons() {
     }
 }
 
-// Validate current step (group-aware for radios) + named toasts
 function validateCurrentStep() {
     const currentStepElement = document.getElementById(`step${currentStep}`);
     const requiredFields = currentStepElement.querySelectorAll('[required]');
     let isValid = true;
-    const invalidFields = [];
-    const seenRadioNames = new Set();
+
+    // Prevent duplicate toasts for the same radio group
+    const processedRadioNames = new Set();
 
     requiredFields.forEach(field => {
+        // Skip duplicate radios by name
         if (field.type === 'radio') {
-            if (seenRadioNames.has(field.name)) return; // validate once per group
-            seenRadioNames.add(field.name);
-
-            const group = Array.from(currentStepElement.querySelectorAll(`input[type="radio"][name="${field.name}"]`));
-            const anyChecked = group.some(r => r.checked);
-            const groupHasCustomInvalid = group.some(r => r.classList.contains('is-invalid'));
-
-            if (!anyChecked || groupHasCustomInvalid) {
-                isValid = false;
-                invalidFields.push(group[0] || field);
-                validateRadioGroup(field); // styles: first red, rest neutral OR selected green
-            } else {
-                validateRadioGroup(group.find(r => r.checked) || field);
-            }
-            return;
+            if (processedRadioNames.has(field.name)) return;
+            processedRadioNames.add(field.name);
         }
 
-        // Non-radio fields
-        const failsHtml5 = !field.checkValidity();
-        const hasCustomInvalid = field.classList && field.classList.contains('is-invalid');
-
-        if (failsHtml5 || hasCustomInvalid) {
+        // Native validity UI styling you already have
+        if (!field.checkValidity()) {
             isValid = false;
-            invalidFields.push(field);
             validateField({ target: field });
+        }
+
+        // Toastr for empty required fields (label text without *)
+        if (isEmptyRequiredField(field)) {
+            isValid = false;
+            toastRequired(field);
         }
     });
 
@@ -410,24 +248,16 @@ function validateCurrentStep() {
     if (currentStep === 6) {
         const hasSignature = signatureData !== '';
         const hasTypedName = document.getElementById('typedName').value.trim() !== '';
+
         if (!hasSignature && !hasTypedName) {
             isValid = false;
-            notifyError('Signature / Typed Name is required.');
+            showError('Please provide either a signature or type your name.');
+            if (window.toastr) toastr.error('Signature or typed name is required.');
         }
     }
 
     if (!isValid) {
-        if (invalidFields.length > 0) {
-            const firstInvalid = invalidFields[0];
-            const label = getFieldLabel(firstInvalid);
-            const issue = getFieldIssue(firstInvalid);
-
-            if (typeof firstInvalid.focus === 'function') firstInvalid.focus();
-            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Example: "Email Address is required." or "Phone Number has an invalid format."
-            notifyError(`${label} ${issue}`);
-        }
+        showError('Please fill in all required fields before continuing.');
     }
 
     return isValid;
@@ -438,9 +268,7 @@ function canNavigateToStep(stepNumber) {
     return stepNumber <= currentStep + 1 && (stepNumber <= currentStep || validateCurrentStep());
 }
 
-// =============================
 // Signature functionality
-// =============================
 function initializeSignature() {
     const canvas = document.getElementById('signatureCanvas');
     const ctx = canvas.getContext('2d');
@@ -506,11 +334,11 @@ function initializeSignature() {
         e.preventDefault();
         const touch = e.touches[0];
         const rect = canvas.getBoundingClientRect();
-        const mouseEvent = new MouseEvent(
-            e.type === 'touchstart' ? 'mousedown' :
-            e.type === 'touchmove'  ? 'mousemove' : 'mouseup',
-            { clientX: touch.clientX, clientY: touch.clientY }
-        );
+        const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' :
+            e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
         canvas.dispatchEvent(mouseEvent);
     }
 
@@ -532,9 +360,7 @@ function initializeSignature() {
     }
 }
 
-// =============================
 // Form submission
-// =============================
 function handleSubmit(e) {
     e.preventDefault();
 
@@ -547,9 +373,7 @@ function handleSubmit(e) {
     $('#surveyForm').submit();
 }
 
-// =============================
 // Utility functions
-// =============================
 function showError(message) {
     // Create or update error message
     let errorDiv = document.querySelector('.error-message');
@@ -589,16 +413,16 @@ function hideLoadingOverlay() {
 }
 
 function addAnimations() {
-    // Staggered animations to summary items
+    // Add staggered animations to summary items
     const summaryItems = document.querySelectorAll('.summary-item');
     summaryItems.forEach((item, index) => {
         item.style.animationDelay = `${index * 0.1}s`;
     });
 
-    // Hover effects to form groups
+    // Add hover effects to form groups
     document.querySelectorAll('.form-group').forEach(group => {
         group.addEventListener('mouseenter', function () {
-            // Intentionally left blank for future effects
+
         });
 
         group.addEventListener('mouseleave', function () {
@@ -607,9 +431,7 @@ function addAnimations() {
     });
 }
 
-// =============================
 // Keyboard navigation
-// =============================
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && e.ctrlKey) {
         if (currentStep < totalSteps) {
@@ -624,9 +446,9 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-// =============================
-// Google address autocomplete
-// =============================
+
+
+// google address autocomplete
 function initAddressAutocomplete() {
     if (!(window.google && google.maps && google.maps.places)) return;
 
@@ -658,11 +480,86 @@ function initAddressAutocomplete() {
     });
 }
 
-// =============================
-// jQuery DOM Ready (intl-tel & address)
-// =============================
 $(document).ready(function () {
     initIntlTel('telephone_number');
     initIntlTel('agentPhone');
     initAddressAutocomplete();
 });
+
+
+// === Toastr + validation helpers ===
+(function initToastr() {
+    if (!window.toastr) return;
+    toastr.options = Object.assign(
+        {
+            closeButton: true,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: 4000,
+            preventDuplicates: true
+        },
+        toastr.options || {}
+    );
+})();
+
+function escSel(s) {
+    return (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/([^\w-])/g, "\\$1");
+}
+
+function prettifyLabelText(text) {
+    return (text || "")
+        .replace(/\*/g, "")        // remove any asterisks
+        .replace(/[:：]\s*$/, "")  // remove trailing colon
+        .trim();
+}
+
+function getFieldLabel(field) {
+    if (!field) return "";
+
+    // <label for="id">
+    if (field.id) {
+        const lbl = document.querySelector(`label[for="${escSel(field.id)}"]`);
+        if (lbl) return prettifyLabelText(lbl.textContent);
+    }
+
+    // Wrapped by a <label>
+    const wrapping = field.closest("label");
+    if (wrapping) return prettifyLabelText(wrapping.textContent);
+
+    // Sibling/ancestor label in group
+    const group = field.closest(".form-group") || field.parentElement;
+    if (group) {
+        const lbl = group.querySelector("label");
+        if (lbl) return prettifyLabelText(lbl.textContent);
+    }
+
+    // Fallbacks
+    return prettifyLabelText(
+        field.getAttribute("aria-label") || field.placeholder || field.name || "This field"
+    );
+}
+
+function isEmptyRequiredField(field) {
+    if (!field || !field.required) return false;
+    const tag = field.tagName.toUpperCase();
+    const type = (field.type || "").toLowerCase();
+
+    if (type === "radio") {
+        const group = document.querySelectorAll(`input[type="radio"][name="${escSel(field.name)}"]`);
+        return !Array.from(group).some(r => r.checked);
+    }
+    if (type === "checkbox") {
+        return !field.checked;
+    }
+    if (tag === "SELECT") {
+        return (field.value || "") === "";
+    }
+    return (field.value || "").trim() === "";
+}
+
+function toastRequired(field) {
+    if (!window.toastr) return;
+    const label = getFieldLabel(field);
+    toastr.error(`${label} is required.`);
+}
