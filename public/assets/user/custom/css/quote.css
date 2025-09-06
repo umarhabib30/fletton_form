@@ -1,0 +1,499 @@
+/* ================= RICS Quote — Step 1 (quit.css · equalized, mobile=16px | desktop/tablet=18px) ================= */
+:root {
+    --primary: #93c120;
+    --primary-dark: #7da817;
+    --ink: #1c1b37;
+    --radius: 10px;
+    --shadow: 0 0 10px 0 #757575de;
+    --ctl-h: 52px;
+    /* base (mobile) control height */
+    --gap: 20px;
+}
+
+* {
+    box-sizing: border-box
+}
+
+/* === Center without scroll === */
+html,
+body {
+    margin: 0;
+}
+
+/* kill default margins */
+
+.screen-center {
+    min-height: 100dvh;
+    /* full viewport height (dynamic vh) */
+    display: grid;
+    place-items: center;
+    /* center both axes */
+    padding-block: 0;
+    /* no vertical padding => no scroll */
+    padding-inline: 12px;
+    /* little side breathing room */
+}
+
+/* Card */
+.form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0;
+    /* wrapper handles centering */
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    padding: 32px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-container h2 {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap)
+}
+
+.form-row {
+    display: flex;
+    gap: var(--gap)
+}
+
+.form-row>div {
+    flex: 1;
+    min-width: 0
+}
+
+/* ========= EQUALIZED FIELDS ========= */
+:where(.form-container) input,
+:where(.form-container) select,
+:where(.form-container) textarea {
+    display: block;
+    width: 100%;
+    height: var(--ctl-h);
+    /* SAME HEIGHT */
+    padding: 0 14px;
+    border: 1px solid transparent;
+    /* avoid jump on focus */
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 16px;
+    /* mobile default = 16px */
+    line-height: normal;
+    /* no line-height conflicts */
+    outline: none;
+    box-shadow: none;
+    /* no animation/glow */
+    margin: 0;
+    /* spacing handled by grid gaps */
+}
+
+.form-container textarea {
+    height: 120px;
+    padding: 12px 14px;
+    resize: vertical;
+}
+
+:where(.form-container) input::placeholder,
+:where(.form-container) select::placeholder,
+:where(.form-container) textarea::placeholder {
+    color: #999
+}
+
+/* Focus (flat) */
+:where(.form-container) input:focus,
+:where(.form-container) select:focus,
+:where(.form-container) textarea:focus {
+    border-color: rgba(147, 193, 32, .55);
+    box-shadow: 0 0 0 1px rgba(147, 193, 32, .35);
+}
+
+/* ========= intl-tel-input (force same height) ========= */
+.telephone-field {
+    position: relative
+}
+
+.telephone-field .iti {
+    width: 100%
+}
+
+.telephone-field input {
+    height: var(--ctl-h) !important;
+    padding-left: 58px !important;
+    /* room for flag */
+}
+
+.iti__selected-flag {
+    height: var(--ctl-h) !important;
+    padding: 0 8px !important
+}
+
+.iti__flag-container {
+    height: var(--ctl-h) !important
+}
+
+.iti__country-name {
+    display: none !important
+}
+
+/* ========= Select arrow + consistent height ========= */
+.form-container select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 38px;
+    /* space for arrow */
+    background-image:
+        linear-gradient(45deg, transparent 50%, #666 50%),
+        linear-gradient(135deg, #666 50%, transparent 50%),
+        linear-gradient(#ddd, #ddd);
+    background-position:
+        calc(100% - 20px) 52%,
+        /* arrow tip 1 */
+        calc(100% - 14px) 52%,
+        /* arrow tip 2 */
+        calc(100% - 32px) 50%;
+    /* divider */
+    background-size: 6px 6px, 6px 6px, 1px 60%;
+    background-repeat: no-repeat;
+}
+
+/* Switches */
+.switch-group {
+    margin-top: 6px
+}
+
+.switch-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 6px 0;
+}
+
+.switch-label {
+    font-size: 14px;
+    white-space: nowrap
+}
+
+.switch {
+    position: relative;
+    width: 78px;
+    height: 30px;
+    flex: 0 0 auto
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #ccc;
+    border-radius: 30px;
+    transition: background 0.3s ease;
+    /* smooth background change */
+}
+
+.slider:before {
+    content: "No";
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 2px;
+    bottom: 2px;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    line-height: 26px;
+    font-size: 12px;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+    /* smooth sliding + color change */
+}
+
+.switch input:checked+.slider {
+    background: var(--primary);
+}
+
+.switch input:checked+.slider:before {
+    transform: translateX(48px);
+    content: "Yes";
+    color: #fff;
+    background: var(--primary-dark);
+}
+
+/* Sqft box */
+#sqftPriceBox {
+    margin-top: 8px
+}
+
+/* Button */
+.buttons {
+    text-align: center;
+    margin-top: 18px
+}
+
+.form-container button {
+    height: var(--ctl-h);
+    padding: 0 44px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background: var(--primary-dark)
+}
+
+/* Footer (left aligned as requested) */
+.footer {
+    margin-top: 15px;
+    text-align: left
+}
+
+.footer-text {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+    font-size: 16px;
+}
+
+#agree_terms {
+    width: 25px;
+    height: 25px
+}
+
+/* Spinner */
+.loading-spinner {
+    display: none;
+    margin: 18px auto
+}
+
+.loading-spinner svg {
+    width: 48px;
+    height: 48px
+}
+
+.loading-spinner svg circle {
+    stroke: var(--primary);
+    stroke-width: 2;
+    fill: none
+}
+
+/* ===== Brand Header (logo above title) ===== */
+.brand-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -4px 0 14px;
+    /* top tight, title spacing */
+}
+
+.brand-logo {
+    max-width: 220px;
+    max-height: 50px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+    /* no halo on dark bg */
+}
+
+.brand-header a {
+    display: inline-flex;
+    align-items: center
+}
+
+/* ================= Desktop & Tablet (>=769px) ================= */
+@media (min-width:769px) {
+    :root {
+        --ctl-h: 58px;
+    }
+
+    /* taller controls on larger screens */
+
+    .form-container input,
+    .form-container select,
+    .form-container textarea {
+        font-size: 18px;
+        /* field text 18px */
+        height: var(--ctl-h);
+    }
+
+    .form-container button {
+        font-size: 18px;
+        /* button text 18px */
+        height: var(--ctl-h);
+    }
+
+    /* Bigger Yes/No switch */
+    .switch {
+        width: 92px;
+        height: 34px;
+    }
+
+    .slider:before {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 13px;
+        left: 2px;
+        bottom: 2px;
+    }
+
+    .switch input:checked+.slider:before {
+        transform: translateX(58px);
+    }
+
+    /* 92 - 30 - 4 */
+    .switch-label {
+        font-size: 16px;
+    }
+}
+
+/* ================= Mobile (<=768px) tweaks ================= */
+@media (max-width:768px) {
+    .form-container {
+        max-width: 100%;
+        width: 100%;
+        padding: 22px 16px;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    .form-container h2 {
+        font-size: 22px
+    }
+
+    .brand-logo {
+        max-width: 170px;
+        max-height: 40px;
+    }
+
+    .brand-header {
+        margin: 0 0 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: var(--gap)
+    }
+
+    .form-container button {
+        height: 50px;
+        font-size: 16px
+    }
+}
+
+
+
+
+/* loading css */
+/* Overlay Background */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    /* black with transparency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* keep it above everything */
+}
+
+/* Loader */
+.loader {
+    position: relative;
+    width: 2.5em;
+    height: 2.5em;
+    transform: rotate(165deg);
+}
+
+.loader:before,
+.loader:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 0.25em;
+    transform: translate(-50%, -50%);
+}
+
+.loader:before {
+    animation: before8 2s infinite;
+}
+
+.loader:after {
+    animation: after6 2s infinite;
+}
+
+@keyframes before8 {
+    0% {
+        width: 0.5em;
+        box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    35% {
+        width: 2.5em;
+        box-shadow: 0 -0.5em rgba(225, 20, 98, 0.75), 0 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    70% {
+        width: 0.5em;
+        box-shadow: -1em -0.5em rgba(225, 20, 98, 0.75), 1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    100% {
+        box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+}
+
+@keyframes after6 {
+    0% {
+        height: 0.5em;
+        box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+    }
+
+    35% {
+        height: 2.5em;
+        box-shadow: 0.5em 0 rgba(61, 184, 143, 0.75), -0.5em 0 rgba(233, 169, 32, 0.75);
+    }
+
+    70% {
+        height: 0.5em;
+        box-shadow: 0.5em -1em rgba(61, 184, 143, 0.75), -0.5em 1em rgba(233, 169, 32, 0.75);
+    }
+
+    100% {
+        box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+    }
+}

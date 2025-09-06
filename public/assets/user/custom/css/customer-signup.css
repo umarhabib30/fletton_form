@@ -1,0 +1,929 @@
+:root {
+    --primary: #93c120;
+    /* brand green */
+    --ink: #1c1b37;
+    /* brand ink / navy */
+    --bg: #ffffff;
+    /* page bg */
+    --card: #ffffff;
+    /* card bg */
+    --border: #e5e7eb;
+    /* light gray */
+    --muted: #6b7280;
+    /* gray text */
+    --shadow: 0 10px 30px rgba(28, 27, 55, .08);
+    --shadow-hover: 0 16px 36px rgba(28, 27, 55, .18);
+    --radius: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+/* PAGE */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+    align-content: center;
+
+}
+
+
+.telephone-field {
+    position: relative
+}
+
+.telephone-field .iti {
+    width: 100%
+}
+
+.telephone-field input {
+    height: var(--ctl-h) !important;
+    padding-left: 58px !important;
+    /* room for flag */
+}
+
+.invalid {
+    border-color: #ff6b6b !important;
+    /* red border for invalid */
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, .12) !important;
+}
+
+/* WRAPPER CARD */
+.form-container {
+    max-width: 900px;
+    margin: 24px auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+/* HEADER (keep green gradient) */
+.form-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #7da817 100%);
+    padding: 30px 40px;
+    text-align: center;
+    position: relative;
+    color: #fff;
+}
+
+.form-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, .2)
+}
+
+.form-subtitle {
+    font-size: 15px;
+    opacity: .95
+}
+
+.form-header::before {
+    content: '';
+    position: absolute;
+    inset: -50% auto auto -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .14) 0%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        transform: rotate(0) scale(1)
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.1)
+    }
+}
+
+/* PROGRESS */
+.progress-container {
+    padding: 22px 18px;
+    background: #fafafa;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border)
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin: 0 10px
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #e9eef5;
+    border-radius: 3px;
+    z-index: 1
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), #7da817);
+    border-radius: 3px;
+    z-index: 2;
+    transition: width .6s ease;
+    width: 0%
+}
+
+.progress-bar[data-progress="1"]::after {
+    width: 0%
+}
+
+.progress-bar[data-progress="2"]::after {
+    width: 20%
+}
+
+.progress-bar[data-progress="3"]::after {
+    width: 40%
+}
+
+.progress-bar[data-progress="4"]::after {
+    width: 60%
+}
+
+.progress-bar[data-progress="5"]::after {
+    width: 80%
+}
+
+.progress-bar[data-progress="6"]::after {
+    width: 100%
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 3;
+    cursor: pointer
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--border);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    transition: .2s
+}
+
+.step-label {
+    font-size: 12px;
+    color: var(--muted);
+    transition: .2s;
+    font-weight: 600
+}
+
+.progress-step.active .step-circle {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(147, 193, 32, .15)
+}
+
+.progress-step.active .step-label {
+    color: var(--primary)
+}
+
+.progress-step.completed .step-circle {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff
+}
+
+.progress-step.completed .step-circle::before {
+    content: '✓';
+    font-size: 16px
+}
+
+/* CONTENT AREA */
+.form-content {
+    padding: 36px
+}
+
+.step {
+    display: none;
+    animation: fadeInSlide .4s ease forwards
+}
+
+.step.active {
+    display: block
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateX(16px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0)
+    }
+}
+
+.step-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--ink);
+    position: relative
+}
+
+.step-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), #7da817);
+    border-radius: 2px
+}
+
+/* SUMMARY CARDS */
+.summary-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: .2s;
+    box-shadow: var(--shadow)
+}
+
+.summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover)
+}
+
+.summary-item h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 6px
+}
+
+.summary-item p,
+.add-ons-list li {
+    color: var(--ink)
+}
+
+.add-ons-list {
+    list-style: none;
+    padding-left: 0
+}
+
+.add-ons-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 8px;
+    font-size: 14px
+}
+
+.add-ons-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 900
+}
+
+/* FORM FIELDS */
+.form-group {
+    margin-bottom: 20px;
+    position: relative
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 14px
+}
+
+.required {
+    color: #ff6b6b;
+    font-weight: 800
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 16px;
+    transition: border-color .2s, box-shadow .2s
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(147, 193, 32, .12)
+}
+
+.form-control::placeholder {
+    color: #a0a6ad
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px
+}
+
+/* RADIO GROUPS */
+.radio-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: .2s;
+    min-width: 120px;
+    justify-content: center
+}
+
+.radio-option:hover {
+    border-color: rgba(28, 27, 55, .25);
+    box-shadow: var(--shadow)
+}
+
+.radio-option input[type="radio"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: .2s
+}
+
+.radio-option input[type="radio"]:checked {
+    border-color: var(--primary);
+    background: var(--primary)
+}
+
+.radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%
+}
+
+.radio-option input[type="radio"]:checked+label {
+    color: var(--primary);
+    font-weight: 800
+}
+
+/* CHECKBOX GROUP */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: .2s
+}
+
+.checkbox-group:hover {
+    border-color: rgba(28, 27, 55, .25);
+    box-shadow: var(--shadow)
+}
+
+.checkbox-group input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: .2s;
+    position: relative;
+    margin-top: 2px
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary)
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900
+}
+
+.checkbox-group label {
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink)
+}
+
+.checkbox-group label a {
+    color: var(--primary);
+    text-decoration: underline;
+    font-weight: 700
+}
+
+.checkbox-group label a:hover {
+    opacity: .9
+}
+
+/* IMPORTANT NOTICE */
+.important-notice {
+    background: #fff;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #ff6b6b;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow)
+}
+
+.important-notice h3 {
+    color: #ff6b6b;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.important-notice h3::before {
+    content: '⚠️';
+    font-size: 18px
+}
+
+.important-notice p {
+    color: var(--ink);
+    font-size: 14px
+}
+
+/* SIGNATURE */
+#signatureCanvas {
+    width: 100%;
+    max-width: 420px;
+    height: 120px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    cursor: crosshair;
+    touch-action: none
+}
+
+#typedName {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    margin-top: 10px
+}
+
+#clearSignatureBtn {
+    background: #ff6b6b;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .2s;
+    margin-top: 12px
+}
+
+#clearSignatureBtn:hover {
+    background: #ef4444;
+    transform: translateY(-2px)
+}
+
+/* NAV BUTTONS (match previous “btn-style”) */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: #fafafa;
+    border-top: 1px solid var(--border)
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: .25s;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid transparent
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
+    transition: left .45s
+}
+
+.btn:hover::before {
+    left: 100%
+}
+
+/* Primary = brand green; hover = ink + white border */
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(147, 193, 32, .22)
+}
+
+.btn-primary:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(28, 27, 55, .22)
+}
+
+/* Secondary = white outline */
+.btn-secondary {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--border);
+    box-shadow: none
+}
+
+.btn-secondary:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: #fff;
+    transform: translateY(-2px)
+}
+
+/* Submit: keep red but refined */
+.btn-submit {
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(255, 107, 107, .35);
+    font-size: 16px;
+    padding: 14px 24px
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #ff5252, #f44336);
+    transform: translateY(-2px)
+}
+
+/* LOADING OVERLAY */
+.ewm-splash {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 10, 28, .75);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999
+}
+
+.ewm-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid var(--border);
+    max-width: 420px;
+    margin: 20px;
+    box-shadow: var(--shadow-hover)
+}
+
+.ewm-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px
+}
+
+.ewm-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 6px
+}
+
+.ewm-red {
+    color: #ef4444;
+    font-weight: 800
+}
+
+.ewm-ring {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(147, 193, 32, .3);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 22px auto
+}
+
+
+/* ========== OVERRIDES (paste at very end of your <style>) ========== */
+
+/* 1) Inputs: remove hover/focus animations */
+.form-control {
+    transition: none !important;
+}
+
+.form-control:hover {
+    box-shadow: none !important;
+    border-color: var(--border) !important;
+}
+
+.form-control:focus {
+    /* keep simple focus without glow */
+    box-shadow: none !important;
+    border-color: var(--primary) !important;
+    /* thin brand border ok */
+}
+
+/* Remove hover bounce/elevation on radio/checkbox containers */
+.radio-option:hover,
+.checkbox-group:hover {
+    box-shadow: none !important;
+    border-color: var(--border) !important;
+    transform: none !important;
+}
+
+/* 2) Header: brand dark blue */
+.form-header {
+    background: var(--ink) !important;
+    /* #1c1b37 */
+    color: #fff;
+}
+
+.form-header::before {
+    /* remove shimmer flare */
+    display: none !important;
+}
+
+/* 3) Progress steps: use brand dark blue for active/completed */
+.progress-bar::after {
+    background: var(--ink) !important;
+    /* progress line fill */
+}
+
+.progress-step.active .step-circle {
+    border-color: var(--ink) !important;
+    box-shadow: 0 0 0 4px rgba(28, 27, 55, .15) !important;
+    /* subtle ink ring */
+}
+
+.progress-step.active .step-label {
+    color: var(--ink) !important;
+}
+
+.progress-step.completed .step-circle {
+    background: var(--ink) !important;
+    border-color: var(--ink) !important;
+    color: #fff !important;
+}
+
+/* 4) Buttons: Next + Submit = brand green; same sizing; hover = ink + white border */
+.btn {
+    padding: 12px 20px !important;
+    /* uniform comfortable size */
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+}
+
+/* Next */
+#nextBtn.btn-primary {
+    background: var(--primary) !important;
+    /* #93c120 */
+    color: #fff !important;
+    border: 2px solid transparent !important;
+    box-shadow: 0 6px 14px rgba(147, 193, 32, .22) !important;
+}
+
+#nextBtn.btn-primary:hover {
+    background: var(--ink) !important;
+    /* hover ink */
+    color: #fff !important;
+    border-color: #fff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important;
+}
+
+/* Submit (last button) */
+#submitBtn.btn-submit {
+    background: var(--primary) !important;
+    /* make it brand green */
+    color: #fff !important;
+    border: 2px solid transparent !important;
+    box-shadow: 0 6px 14px rgba(147, 193, 32, .22) !important;
+    font-size: 15px !important;
+    /* same as Next */
+    padding: 12px 20px !important;
+}
+
+#submitBtn.btn-submit:hover {
+    background: var(--ink) !important;
+    /* hover ink */
+    color: #fff !important;
+    border-color: #fff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important;
+}
+
+/* Optional: Secondary stays as is, but ensure hover matches scheme */
+.btn-secondary:hover {
+    background: var(--ink) !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width:768px) {
+    .form-container {
+        margin: 12px;
+        border-radius: 16px
+    }
+
+    .form-header {
+        padding: 24px 18px
+    }
+
+    .form-title {
+        font-size: 24px
+    }
+
+    .form-subtitle {
+        font-size: 14px
+    }
+
+    .progress-container {
+        padding: 18px
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 12px
+    }
+
+    .step-label {
+        font-size: 11px
+    }
+
+    .form-content {
+        padding: 24px
+    }
+
+    .step-title {
+        font-size: 20px
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px
+    }
+
+    .radio-option {
+        min-width: auto;
+        justify-content: flex-start
+    }
+
+    .form-navigation {
+        flex-wrap: wrap;
+        justify-content: center
+    }
+
+    .btn {
+        flex: 1;
+        min-width: 180px
+    }
+}
+
+@media (max-width:480px) {
+    .progress-step {
+        flex: 1
+    }
+
+    .step-label {
+        font-size: 10px;
+        max-width: 60px;
+        line-height: 1.2
+    }
+
+    .step-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px
+    }
+}
+
+/* LITTLE EXTRAS */
+.fade-in {
+    animation: fadeIn .4s ease forwards
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+.slide-up {
+    animation: slideUp .4s ease forwards
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+
