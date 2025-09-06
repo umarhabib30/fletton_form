@@ -663,5 +663,6 @@ function initAddressAutocomplete() {
 // =============================
 $(document).ready(function () {
     initIntlTel('telephone_number');
+    initIntlTel('agentPhone');
     initAddressAutocomplete();
 });

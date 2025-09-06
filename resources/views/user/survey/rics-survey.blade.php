@@ -383,8 +383,13 @@
 
                     <div class="form-group">
                         <label for="agentPhone">Agent Phone Number <span class="required">*</span></label>
-                        <input type="tel" id="agentPhone" name="inf_custom_AgentPhoneNumber"
-                            class="form-control" placeholder="Enter agent phone number" required />
+                          <div class="telephone-field">
+                            <input class="tel-input form-control" type="tel" id="agentPhone" name="inf_custom_AgentPhoneNumber"
+                               required />
+                        </div>
+
+                        {{-- <input type="tel" id="agentPhone" name="inf_custom_AgentPhoneNumber"
+                            class="form-control" placeholder="Enter agent phone number" required /> --}}
                     </div>
 
                     <div class="form-group">
