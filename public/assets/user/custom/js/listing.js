@@ -16,6 +16,7 @@ function updateLevel3Price() {
     let total = base;
     document.querySelectorAll('.addon').forEach(a => { if (a.value === '1') { total += parseInt(a.dataset.cost) } });
     document.querySelector('.step-2 .level-price.addons').textContent = '£' + total;
+   
 
     const selected = [...document.querySelectorAll('.addon')].filter(a => a.value === '1').length;
     const totalAdd = document.querySelectorAll('.addon').length;

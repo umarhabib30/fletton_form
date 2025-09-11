@@ -98,6 +98,17 @@ class Survey extends Model
     'inf_field_Address3Street1',
     'inf_field_PostalCode3',
 
+
+    'level1_price',
+    'level2_price',
+    'level3_price',
+    'level4_price',
+
+    'level1_payment_url',
+    'level2_payment_url',
+    'level3_payment_url',
+    'level4_payment_url',
+
     // =========================
     // STEP 3I: Acceptance & signature
     // =========================

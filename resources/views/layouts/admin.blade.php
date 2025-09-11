@@ -137,6 +137,9 @@
                                 <a class="nav-link @if ($active == 'survey') active @endif"
                                     href="{{ url('admin/surveys') }}"><i class="fab fa-fw fa-wpforms"></i>Surveys</a>
                             </li>
+                             <li class="nav-item">
+                                <a class="nav-link  @if ($active == 'price') active @endif" href="{{ url('admin/prices') }}"  ><i class="fas fa-fw fa-chart-pie"></i>Prices</a>
+                            </li>
                             {{-- <li class="nav-item">
                                 <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"
                                     data-target="#submenu-2" aria-controls="submenu-2"><i

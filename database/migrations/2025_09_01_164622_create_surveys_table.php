@@ -105,6 +105,19 @@ return new class extends Migration
             $table->string('inf_option_IconfirmthatIhavereadandunderstandtheterms')->nullable(); // checkbox
             $table->text('inf_custom_infcustomSignature')->nullable();                             // blob/JSON/plain
 
+
+
+            $table->decimal('level1_price', 10, 2)->nullable();
+            $table->decimal('level2_price', 10, 2)->nullable();
+            $table->decimal('level3_price', 10, 2)->nullable();
+            $table->decimal('level4_price', 10, 2)->nullable();
+
+            $table->string('level1_payment_url')->nullable();
+            $table->string('level2_payment_url')->nullable();
+            $table->string('level3_payment_url')->nullable();
+            $table->string('level4_payment_url')->nullable();
+
+
             // =========================
             // Tracking fields (requested)
             // =========================

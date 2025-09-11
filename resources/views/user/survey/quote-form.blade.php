@@ -18,7 +18,7 @@
 
 </head>
 
-<body style="overflow: hidden">
+<body style="overflow-x: hidden">
     <div class="screen-center">
         <div class="form-container">
             <!-- Brand Header -->
@@ -88,14 +88,14 @@
                     <div class="switch-option">
                         <label class="switch-label" for="listed">Listed Building?</label>
                         <label class="switch">
-                            <input type="checkbox" id="listed" name="listed_building" value="Yes" />
+                            <input type="checkbox" id="listed" name="listed_building" value="yes" />
                             <span class="slider"></span>
                         </label>
                     </div>
                     <div class="switch-option">
                         <label class="switch-label" for="over1650">Over 1650 sqft?</label>
                         <label class="switch">
-                            <input type="checkbox" id="over1650" name="over1650" onchange="toggleSqftAreaBox()" />
+                            <input type="checkbox" id="over1650" name="over1650" value="yes" onchange="toggleSqftAreaBox()" />
                             <span class="slider"></span>
                         </label>
                     </div>

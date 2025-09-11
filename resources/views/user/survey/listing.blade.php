@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
-<body style="overflow: hidden">
+<body style="overflow-x: hidden">
     <div class="container" id="quote-container">
         {{-- <input type="hidden" id="email_address" value="john@example.com">
         <input type="hidden" id="contact_id" value="12345"> --}}
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="price-custom">
                                     <label>Total Price</label>
-                                    <div class="level1-price level-price">£450</div>
+                                    <div class="level1-price level-price">£{{ $survey->level1_price }}</div>
                                 </div>
                                 <div class="btn-style buy-now-btn" data-level="1">
                                     <span class="btn-loader"></span><span class="btn-text">Instruct & Pay</span>
@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="price-custom">
                                     <label>Total Price</label>
-                                    <div class="level2-price level-price">£750</div>
+                                    <div class="level2-price level-price">£{{ $survey->level2_price }}</div>
                                 </div>
                                 <div class="btn-style buy-now-btn" data-level="2">
                                     <span class="btn-loader"></span><span class="btn-text">Instruct & Pay</span>
@@ -78,9 +78,9 @@
                                 </div>
                                 <div class="price-custom">
                                     <label>Total Price</label>
-                                    <div class="level3-price level-price">£950</div>
+                                    <div class="level3-price level-price">£{{ $survey->level3_price }}</div>
                                 </div>
-                                <input type="hidden" id="level3-base-price" value="950">
+                                <input type="hidden" id="level3-base-price" value="{{ $survey->level3_price }}">
                                 <div class="btn-style" onclick="showAddons()">
                                     <i class="fa-solid fa-sliders"></i><span>Choose Add-ons</span>
                                 </div>
@@ -96,7 +96,7 @@
                                 <div class="price-custom">
                                     <label>Total Price</label>
                                     <input type="hidden" id="level4-base-price" value="1200">
-                                    <div class="level4-price level-price">£1200</div>
+                                    <div class="level4-price level-price">£{{ $survey->level4_price }}</div>
                                 </div>
                                 <div class="btn-style buy-now-btn" data-level="4">
                                     <span class="btn-loader"></span><span class="btn-text">Instruct & Pay</span>
@@ -120,11 +120,11 @@
                                             <span class="addon-badge">Add-on</span>
                                             <span class="addon-title">Breakdown of estimated repair costs, improvement
                                                 costs &amp; provisional costs</span>
-                                            <span class="addon-price-pill">£150</span>
+                                            <span class="addon-price-pill">£{{ $price->repair_cost }}</span>
                                         </div>
                                         <div class="addon-ctrl">
                                             <label class="addon-ctrl-label">Include this add-on?</label>
-                                            <select name="breakdown_of_estimated_repair_costs" data-cost="150"
+                                            <select name="breakdown_of_estimated_repair_costs" data-cost="{{ $price->repair_cost }}"
                                                 class="addon">
                                                 <option value="0">No</option>
                                                 <option value="1">Yes</option>
@@ -137,11 +137,11 @@
                                         <div class="addon-head">
                                             <span class="addon-badge">Add-on</span>
                                             <span class="addon-title">Aerial roof and chimney images</span>
-                                            <span class="addon-price-pill">£100</span>
+                                            <span class="addon-price-pill">£{{ $price->aerial_chimney_cost }}</span>
                                         </div>
                                         <div class="addon-ctrl">
                                             <label class="addon-ctrl-label">Include this add-on?</label>
-                                            <select name="aerial_roof_and_chimney" data-cost="100" class="addon">
+                                            <select name="aerial_roof_and_chimney" data-cost="{{ $price->aerial_chimney_cost }}" class="addon">
                                                 <option value="0">No</option>
                                                 <option value="1">Yes</option>
                                             </select>
@@ -154,11 +154,11 @@
                                             <span class="addon-badge">Add-on</span>
                                             <span class="addon-title">Insurance reinstatement valuation (Rebuild
                                                 Cost)</span>
-                                            <span class="addon-price-pill">£200</span>
+                                            <span class="addon-price-pill">£{{ $price->insurance_cost }}</span>
                                         </div>
                                         <div class="addon-ctrl">
                                             <label class="addon-ctrl-label">Include this add-on?</label>
-                                            <select name="insurance_reinstatement_valuation" data-cost="200"
+                                            <select name="insurance_reinstatement_valuation" data-cost="{{ $price->insurance_cost }}"
                                                 class="addon">
                                                 <option value="0">No</option>
                                                 <option value="1">Yes</option>
@@ -172,7 +172,7 @@
                                 <div class="addons-footer">
                                     <div class="price-stack">
                                         <span class="label">Total</span>
-                                        <div class="level3-price level-price addons">£950</div>
+                                        <div class="level3-price level-price addons" id="total_with_addon">£{{ $survey->level3_price }}</div>
                                     </div>
 
                                     <div class="btns">
@@ -245,7 +245,10 @@
             </div>
         </div>
     </div>
-
+    <input type="hidden" name="" id="level1_price" value="{{ $survey->level1_price }}">
+    <input type="hidden" name="" id="level2_price" value="{{ $survey->level2_price }}">
+    <input type="hidden" name="" id="level3_price" value="{{ $survey->level3_price }}">
+    <input type="hidden" name="" id="level4_price" value="{{ $survey->level4_price }}">
       <!-- App JS -->
   <script src="{{ asset('assets/user/custom/js/listing.js') }}"></script>
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -258,19 +261,14 @@
 
             var levelTotal = 0;
             if(selectedLevel == 1){
-                levelTotal = 450;
+                levelTotal = $('#level1_price').val();
             } else if(selectedLevel == 2){
-                levelTotal = 750;
+                levelTotal = $('#level2_price').val();
             } else if(selectedLevel == 3){
                 // Calculate total for level 3 with addons
-                levelTotal = 950; // base price
-                $('.addon').each(function(){
-                    if($(this).val() == '1'){
-                        levelTotal += parseInt($(this).data('cost'));
-                    }
-                });
+                levelTotal = parseFloat($('#total_with_addon').text().replace('£', '').trim());
             } else if(selectedLevel == 4){
-                levelTotal = 1200;
+                levelTotal = $('#level4_price').val();
             }
             $('#level_total').val(levelTotal);
 

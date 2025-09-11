@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            SurveySeeder::class,
-            AdminSeeder::class
+            AdminSeeder::class,
+            PriceSeeder::class,
         ]);
     }
 }

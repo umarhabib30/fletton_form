@@ -563,3 +563,29 @@ function toastRequired(field) {
     const label = getFieldLabel(field);
     toastr.error(`${label} is required.`);
 }
+
+
+// Solicitor fields
+document.querySelectorAll('input[name="inf_custom_SolicitorFirm"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const solicitorFields = document.getElementById('solicitorFields');
+
+        // Select the fields that should become required when "Yes"
+        const mustRequire = [
+            document.getElementById('solicitorFirmName'),
+            document.getElementById('conveyancerName'),
+            document.getElementById('solicitorPhone'),
+            document.getElementById('solicitorEmail')
+        ];
+
+        if (this.value === 'yes') {
+            solicitorFields.style.display = 'block';
+            solicitorFields.classList.add('fade-in');
+            mustRequire.forEach(field => field.setAttribute('required', 'required'));
+        } else {
+            solicitorFields.style.display = 'none';
+            solicitorFields.classList.remove('fade-in');
+            mustRequire.forEach(field => field.removeAttribute('required'));
+        }
+    });
+});

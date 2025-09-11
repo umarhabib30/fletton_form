@@ -270,7 +270,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" id="gardenLocationField" style="display: none">
+                    <div class="form-group" id="gardenLocationField" style="display: block">
                         <label for="gardenLocation">Garden Location</label>
                         <input type="text" id="gardenLocation" name="inf_custom_GardenLocation"
                             class="form-control" placeholder="Describe the garden location" />
