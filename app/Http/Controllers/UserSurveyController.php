@@ -91,14 +91,15 @@ class UserSurveyController extends Controller
 
     public function submitListingPage(Request $request)
     {
+        // dd($request);
 
         $survey = Survey::find($request->id);
         $survey->update([
             'level' => $request->level,
             'level_total' => $request->level_total,
-            'breakdown' => $request->breakdown_of_estimated_repair_costs,
-            'aerial' => $request->aerial_roof_and_chimney,
-            'insurance' => $request->insurance_reinstatement_valuation,
+            'breakdown' => $request->breakdown_of_estimated_repair_costs ?? 0,
+            'aerial' => $request->aerial_roof_and_chimney ?? 0,
+            'insurance' => $request->insurance_reinstatement_valuation ?? 0,
             'addons' => $request->breakdown_of_estimated_repair_costs || $request->aerial_roof_and_chimney || $request->insurance_reinstatement_valuation,
             'level3_price' => ($request->level == 3) ? $request->level_total : $survey->level3_price,
             'current_step' => 1,
