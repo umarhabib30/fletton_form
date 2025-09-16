@@ -1,7 +1,7 @@
 :root {
-    --primary: #93c120;
+    --primary: #C1EC4A;
     /* brand green */
-    --ink: #1c1b37;
+    --ink: #1A202C;
     /* brand ink / navy */
     --bg: #ffffff;
     /* page bg */
@@ -118,12 +118,12 @@ body {
 
 .progress-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly; /* Ensures equal spacing between steps */
     align-items: center;
     position: relative;
-    margin: 0 10px
+    margin: 0 10px;
+    width: 100%; /* Make sure the progress bar takes full width */
 }
-
 .progress-bar::before {
     content: '';
     position: absolute;
@@ -131,7 +131,7 @@ body {
     left: 0;
     right: 0;
     height: 3px;
-    background: #e9eef5;
+    /* background: #003d92; */
     border-radius: 3px;
     z-index: 1
 }
@@ -142,7 +142,7 @@ body {
     top: 20px;
     left: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), #7da817);
+    /* background: linear-gradient(90deg, var(--primary), #7da817); */
     border-radius: 3px;
     z-index: 2;
     transition: width .6s ease;
@@ -179,16 +179,18 @@ body {
     align-items: center;
     gap: 6px;
     z-index: 3;
-    cursor: pointer
+    cursor: pointer;
+    flex: 1; /* Ensures each progress step takes equal width */
+    text-align: center;
 }
 
 .step-circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #fff;
-    border: 2px solid var(--border);
-    color: var(--ink);
+    background: var(--ink);
+    border: 2px solid var(--ink);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -199,7 +201,7 @@ body {
 
 .step-label {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--ink);
     transition: .2s;
     font-weight: 600
 }
@@ -216,13 +218,13 @@ body {
 .progress-step.completed .step-circle {
     background: var(--primary);
     border-color: var(--primary);
-    color: #fff
+    color: #1A202C
 }
 
-.progress-step.completed .step-circle::before {
+/* .progress-step.completed .step-circle::before {
     content: '✓';
     font-size: 16px
-}
+} */
 
 /* CONTENT AREA */
 .form-content {
@@ -259,7 +261,7 @@ body {
     position: relative
 }
 
-.step-title::after {
+/* .step-title::after {
     content: '';
     position: absolute;
     bottom: -10px;
@@ -269,13 +271,13 @@ body {
     height: 3px;
     background: linear-gradient(90deg, var(--primary), #7da817);
     border-radius: 2px
-}
+} */
 
 /* SUMMARY CARDS */
  .summary-item {
     background: #fff;
     border: 1px solid var(--primary);
-    border-left: 4px solid var(--primary);
+    /* border-left: 4px solid var(--primary); */
     padding: 18px;
     border-radius: 12px;
     margin-bottom: 16px;
@@ -318,7 +320,7 @@ body {
     left: 0;
     color: var(--primary);
     font-weight: 900
-} 
+}
 
 
 /* FORM FIELDS */
@@ -448,13 +450,13 @@ textarea.form-control {
   display: block;
   padding: 12px 24px;
   width: 120px;
-  background: #f0f4ff;
-  border: 2px solid #1c1b37;
+  background: #1A202C;
+  border: 2px solid #1A202C;
   border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
-  color: #1c1b37;
+  color: #fff;
   text-align: center;
   transition: all 0.3s ease;
   min-width: 100px;
@@ -462,12 +464,12 @@ textarea.form-control {
 
 .radio-option label:hover {
   background: #e6f0ff;
-  border-color: #93c120;
+  border-color: #C1EC4A;
 }
 
 .radio-option input[type="radio"]:checked + label {
-  background: #93c120;
-  border-color: #93c120;
+  background: #C1EC4A;
+  border-color: #C1EC4A;
   color: white;
   font-weight: 600;
 }
@@ -775,7 +777,7 @@ textarea.form-control {
 /* 2) Header: brand dark blue */
 .form-header {
     background: var(--ink) !important;
-    /* #1c1b37 */
+    /* #1A202C */
     color: #fff;
 }
 
@@ -786,7 +788,7 @@ textarea.form-control {
 
 /* 3) Progress steps: use brand dark blue for active/completed */
 .progress-bar::after {
-    background: var(--ink) !important;
+    /* background: var(--ink) !important; */
     /* progress line fill */
 }
 
@@ -802,8 +804,8 @@ textarea.form-control {
 
 .progress-step.completed .step-circle {
     background: var(--primary) !important;
-    border-color: var(--ink) !important;
-    color: #fff !important;
+    /* border-color: var(--ink) !important; */
+    color: #1A202C !important;
 }
 
 /* 4) Buttons: Next + Submit = brand green; same sizing; hover = ink + white border */
@@ -818,7 +820,7 @@ textarea.form-control {
 /* Next */
 #nextBtn.btn-primary {
     background: var(--primary) !important;
-    /* #93c120 */
+    /* #C1EC4A */
     color: #fff !important;
     border: 2px solid transparent !important;
     box-shadow: 0 6px 14px rgba(147, 193, 32, .22) !important;
@@ -947,20 +949,19 @@ textarea.form-control {
         font-size: 8px
     }
     .progress-bar::before {
-    
-    top: 12px;
-   
 
-.progress-bar::after {
-    
     top: 12px;
-   
+}
+.progress-bar::after {
+
+    top: 12px;
+
 }
 .progress-bar{
     align-items: flex-start;
 }
 
-    
+
 }
 
 /* LITTLE EXTRAS */
@@ -993,5 +994,3 @@ textarea.form-control {
         transform: translateY(0)
     }
 }
-
-

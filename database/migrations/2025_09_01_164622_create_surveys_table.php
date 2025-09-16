@@ -78,6 +78,7 @@ return new class extends Migration
             // =========================
             $table->string('inf_custom_SolicitorFirm')->nullable();        // 'yes'/'no' if radio
             $table->string('inf_custom_SolicitorFirmName')->nullable();
+            $table->string('inf_custom_ConveyancerName')->nullable();
             $table->string('inf_custom_SolicitorPhoneNumber1')->nullable();
             $table->string('inf_custom_SolicitorsEmail')->nullable();
             $table->string('inf_custom_SolicitorAddress')->nullable();
@@ -124,6 +125,9 @@ return new class extends Migration
             $table->unsignedTinyInteger('current_step')->default(0)->comment('0=signup,1=listings,2=Rics survey');
             $table->string('is_submitted')->default(false)->comment('true when the whole form is completed');
 
+            $table->string('contact_id')->nullable();
+
+            $table->string('quote_summary_page')->nullable();
             $table->timestamps();
         });
     }

@@ -123,7 +123,7 @@ function validateField(event) {
         field.style.borderColor = '#ff6b6b';
         field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
     } else {
-        field.style.borderColor = '#93c120';
+        field.style.borderColor = '#C1EC4A';
         field.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
     }
 }
@@ -276,7 +276,7 @@ function initializeSignature() {
     const clearBtn = document.getElementById('clearSignatureBtn');
 
     // Set canvas properties
-    ctx.strokeStyle = '#93c120';
+    ctx.strokeStyle = '#C1EC4A';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -348,7 +348,7 @@ function initializeSignature() {
 
     function drawTypedName(name) {
         ctx.font = '24px "Poppins", sans-serif';
-        ctx.fillStyle = '#93c120';
+        ctx.fillStyle = '#C1EC4A';
         ctx.textAlign = 'center';
         ctx.fillText(name, canvas.width / 2, canvas.height / 2 + 8);
         updateSignatureData();

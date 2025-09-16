@@ -69,6 +69,9 @@ class UserSurveyController extends Controller
             ]
         );
 
+        $survey->update([
+            'quote_summary_page' => url('flettons-listing-page', $survey->id)
+        ]);
         return redirect()->route('user.flettons.listing.page', $survey->id);
     }
 
@@ -145,7 +148,6 @@ class UserSurveyController extends Controller
             "addresses" => [
                 [
                     "line1" => $survey->full_address,
-                    "line2" => "",
                     "locality" => "",
                     "postal_code" => $survey->postcode ?? "",
                     "country_code" => "",
@@ -156,7 +158,7 @@ class UserSurveyController extends Controller
             // Phone numbers
             "phone_numbers" => [
                 [
-                    "number" => $survey->telephone_number,
+                    "number" => str_replace(' ', '', $survey->telephone_number),
                     "field" => "PHONE1"
                 ]
             ],
@@ -191,7 +193,8 @@ class UserSurveyController extends Controller
 
                 // Solicitor details
                 ["id" => "579", "content" => $survey->inf_custom_SolicitorFirmName],
-                ["id" => "585", "content" => $survey->inf_custom_SolicitorPhoneNumber1],
+                ["id" => "581", "content" => $survey->inf_custom_ConveyancerName],
+                ["id" => "585", "content" => str_replace(' ', '', $survey->inf_custom_SolicitorPhoneNumber1)],
                 ["id" => "605", "content" => $survey->inf_custom_SolicitorsEmail],
                 ["id" => "589", "content" => $survey->inf_custom_SolicitorAddress],
 
@@ -201,7 +204,7 @@ class UserSurveyController extends Controller
                 // Agent details
                 ["id" => "24", "content" => $survey->inf_custom_AgentCompanyName],
                 ["id" => "26", "content" => $survey->inf_custom_AgentName],
-                ["id" => "28", "content" => $survey->inf_custom_AgentPhoneNumber],
+                ["id" => "28", "content" => str_replace(' ', '', $survey->inf_custom_AgentPhoneNumber)],
                 ["id" => "165", "content" => $survey->inf_custom_AgentsEmail],
 
                 // Signature & acceptance
@@ -218,6 +221,18 @@ class UserSurveyController extends Controller
                 ["id" => "224", "content" => number_format($survey->level2_price, 2)],
                 ["id" => "228", "content" => number_format($survey->level3_price, 2)],
                 ["id" => "238", "content" => number_format($survey->level4_price, 2)],
+
+                // missing fields
+                ["id" => "629", "content" => $survey->level],
+                ["id" => "20", "content" => $survey->inf_custom_PropertyLink],
+                ["id" => "601", "content" => $survey->quote_summary_page],
+
+                // addons
+                ["id" => "208", "content" => $survey->breakdown],
+                ["id" => "210", "content" => $survey->aerial],
+                ["id" => "212", "content" => $survey->insurance],
+
+
             ]
         ];
 
@@ -227,9 +242,16 @@ class UserSurveyController extends Controller
             'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
             'Content-Type' => 'application/json',
         ])->put('https://api.infusionsoft.com/crm/rest/v1/contacts', $payload);
+        // dd(json_decode($response) );
 
-        
+        $contactData = $response->json();
 
+        if (isset($contactData['id'])) {
+            $contact_id = $contactData['id'];
+
+            $tag_ids = [643];
+            $this->apply_tags($contact_id, $tag_ids);
+        }
         switch ($survey->level) {
             case 1:
                 return redirect()->away($survey->level1_payment_url);
@@ -241,6 +263,36 @@ class UserSurveyController extends Controller
                 return redirect()->away($survey->level4_payment_url);
             default:
                 return redirect('/')->with('error', 'Invalid level selected.');
+        }
+    }
+
+
+
+    public function apply_tags($contact_id, array $tag_ids = []): bool
+    {
+        // Keap API URL to apply tags to the contact
+        $url = "https://api.infusionsoft.com/crm/rest/v1/contacts/{$contact_id}/tags";
+
+        // Create the payload to apply tags
+        $tag_data = [
+            'tagIds' => $tag_ids
+        ];
+
+        // Send the POST request using Laravel's HTTP client
+        $response = Http::withHeaders([
+            'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Content-Type' => 'application/json',
+        ])
+            ->post($url, $tag_data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // Successfully applied the tags
+            return true;
+        } else {
+            // Log the error response for debugging
+            return false;
         }
     }
 }

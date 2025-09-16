@@ -1,8 +1,8 @@
 /* ================= RICS Quote — Step 1 (quit.css · equalized, mobile=16px | desktop/tablet=18px) ================= */
 :root {
-    --primary: #93c120;
+    --primary: #C1EC4A;
     --primary-dark: #7da817;
-    --ink: #1c1b37;
+    --ink: #1A202C;
     --radius: 10px;
     --shadow: 0 0 10px 0 #757575de;
     --ctl-h: 52px;
@@ -254,7 +254,7 @@ body {
     border: none;
     border-radius: 8px;
     background: var(--primary);
-    color: #fff;
+    color: #1A202C;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;

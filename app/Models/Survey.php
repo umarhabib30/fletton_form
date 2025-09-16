@@ -77,6 +77,7 @@ class Survey extends Model
     // =========================
     'inf_custom_SolicitorFirm',
     'inf_custom_SolicitorFirmName',
+    'inf_custom_ConveyancerName',
     'inf_custom_SolicitorPhoneNumber1',
     'inf_custom_SolicitorsEmail',
     'inf_custom_SolicitorAddress',
@@ -114,7 +115,9 @@ class Survey extends Model
     // =========================
     'inf_option_IconfirmthatIhavereadandunderstandtheterms',
     'inf_custom_infcustomSignature',
+    'contact_id',
 
+    'quote_summary_page',
     'current_step',
     'is_submitted',
 ];
