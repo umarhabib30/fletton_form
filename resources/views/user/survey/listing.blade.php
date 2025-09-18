@@ -28,10 +28,10 @@
                     <!-- Step 1 -->
                     <div class="step-1">
                         <div class="header-section">
-                            <h3 class="username">Hi {{ $survey->first_name }} {{ $survey->last_name }}</h3>
+                            <h3 class="username">{{ $survey->first_name }}’s RICS Surveyor Quotes</h3>
                             <p class="custom-m1">
-                                Here are your Survey Options, prepared in coordination with
-                                <b>Flettons Surveyors Ltd</b> (Regulated by RICS)
+                               Your survey options, prepared in coordination with
+                                <b>Flettons Surveyors Ltd</b> (Regulated by RICS).
                             </p>
                         </div>
 
@@ -276,7 +276,7 @@
     <script src="{{ asset('assets/user/custom/js/listing.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
 </body>
 
 </html>

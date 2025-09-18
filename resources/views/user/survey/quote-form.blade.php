@@ -18,7 +18,7 @@
 
 </head>
 
-<body style="overflow-x: hidden">
+<body style="overflow-x: hidden; font-family: lato !important">
     <div class="screen-center">
         <div class="form-container">
             <!-- Brand Header -->
@@ -120,7 +120,7 @@
                 <div class="footer-text">
                     <input type="checkbox" id="agree_terms" name="agree_terms" required />
                     <label for="agree_terms">Your details are never shared with third parties. Powered by
-                        <b>Flettons Group LLC</b></label>
+                        <b>Flettons Group</b></label>
                 </div>
             </div>
         </div>

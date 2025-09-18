@@ -52,7 +52,7 @@ body {
     margin: 0 0 20px;
     text-align: center;
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 400;
     text-transform: uppercase;
 }
 
@@ -252,16 +252,17 @@ body {
     height: var(--ctl-h);
     padding: 0 44px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--primary);
     color: #1A202C;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 26.4px;
+    font-weight: 400;
     cursor: pointer;
 }
 
 .form-container button:hover {
-    background: var(--primary-dark)
+    background: var(--primary-dark);
+    color: #fff;
 }
 
 /* Footer (left aligned as requested) */
