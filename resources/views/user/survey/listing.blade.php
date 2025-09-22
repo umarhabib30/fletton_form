@@ -30,7 +30,7 @@
                         <div class="header-section">
                             <h3 class="username">{{ $survey->first_name }}’s RICS Surveyor Quotes</h3>
                             <p class="custom-m1">
-                               Your survey options, prepared in coordination with
+                                Your survey options, prepared in coordination with
                                 <b>Flettons Surveyors Ltd</b> (Regulated by RICS).
                             </p>
                         </div>
@@ -104,129 +104,116 @@
                         </div>
                     </div>
 
-                   <!-- Step 2 (Add-ons) -->
+                    <!-- ==================== STEP 2 (Add-ons) — FINAL ==================== -->
                     <div class="step-2">
-                    <div class="level3">
-                        <h3>Level 3 Add-ons</h3>
-                        <p>Choose additional services individually to add to your level 3 RICS Building Survey.</p>
+                        <div class="level3">
+                            <h3>Level 3 Add-ons</h3>
+                            <p>Choose additional services individually to add to your level 3 RICS Building Survey.</p>
 
-                        <div class="addons-card">
-                        <!-- Add-ons list -->
-                        <div class="addons-grid">
+                            <div class="addons-card">
+                                <!-- 3-card grid -->
+                                <div class="addons-grid cards-3">
 
-                            <!-- Breakdown -->
-                            <div class="addon-item">
-                            <div class="addon-head">
-                                <span class="addon-badge">Add-on</span>
-                                <span class="addon-title">Breakdown of estimated repair costs, improvement
-                                costs &amp; provisional costs</span>
-                                <span class="level-price">£{{ $price->repair_cost }}</span>
-                            </div>
-                            <div class="addon-ctrl">
-                                <label class="addon-ctrl-label">(include little description about this addon here)</label>
+                                    <!-- Estimated Costs Package -->
+                                    <div class="addon-card">
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/img/estimated-costs.png') }}" alt="Estimated Costs">
+                                        </div>
 
-                                <!-- RADIO: no default selected -->
-                                <div class="radio-group addon" data-cost="{{ $price->repair_cost }}">
-                                <div class="radio-option">
-                                    <input type="radio" id="breakdown_no" name="breakdown_of_estimated_repair_costs" value="0">
-                                    <label for="breakdown_no">No</label>
+                                        <h4 class="addon-title-strong">Estimated Costs Package</h4>
+                                        <div class="addon-price-line">£{{ $price->repair_cost }}</div>
+                                        <div class="addon-sub">(Repair & improvement costs)</div>
+                                        <p class="addon-desc">Breakdown of repairs and upgrades to help you budget and negotiate.</p>
+
+                                        <!-- Toggle Button -->
+                                        <button type="button" class="addon-btn" data-group="grp-repair">Add to Survey</button>
+
+                                        <!-- Hidden radios for existing JS/backend (DON'T TOUCH) -->
+                                        <div id="grp-repair" class="radio-group addon" data-cost="{{ $price->repair_cost }}" style="display:none">
+                                            <input type="radio" name="breakdown_of_estimated_repair_costs" value="0" checked>
+                                            <input type="radio" name="breakdown_of_estimated_repair_costs" value="1">
+                                        </div>
+                                    </div>
+
+                                    <!-- Drone Package -->
+                                    <div class="addon-card">
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/img/drone.png') }}" alt="Drone Package">
+                                        </div>
+
+                                        <h4 class="addon-title-strong">Drone Package</h4>
+                                        <div class="addon-price-line">£{{ $price->aerial_chimney_cost }}</div>
+                                        <div class="addon-sub">(Aerial roof & chimney images)</div>
+                                        <p class="addon-desc">Drone images of roofs and chimneys for a clear view of condition.</p>
+
+                                        <button type="button" class="addon-btn" data-group="grp-drone">Add to Survey</button>
+
+                                        <div id="grp-drone" class="radio-group addon" data-cost="{{ $price->aerial_chimney_cost }}" style="display:none">
+                                            <input type="radio" name="aerial_roof_and_chimney" value="0" checked>
+                                            <input type="radio" name="aerial_roof_and_chimney" value="1">
+                                        </div>
+                                    </div>
+
+                                    <!-- Reinstatement Package -->
+                                    <div class="addon-card">
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/img/reinstatement.png') }}" alt="Reinstatement Package">
+                                        </div>
+
+                                        <h4 class="addon-title-strong">Reinstatement Package</h4>
+                                        <div class="addon-price-line">£{{ $price->insurance_cost }}</div>
+                                        <div class="addon-sub">(Rebuild valuation)</div>
+                                        <p class="addon-desc">Accurate rebuild cost for insurance, ensuring full protection without overpaying.</p>
+
+                                        <button type="button" class="addon-btn" data-group="grp-ins">Add to Survey</button>
+
+                                        <div id="grp-ins" class="radio-group addon" data-cost="{{ $price->insurance_cost }}" style="display:none">
+                                            <input type="radio" name="insurance_reinstatement_valuation" value="0" checked>
+                                            <input type="radio" name="insurance_reinstatement_valuation" value="1">
+                                        </div>
+                                    </div>
+
+                                </div><!-- /.addons-grid -->
+
+                                <!-- Auto-upgrade note -->
+                                <div id="upgrade-note" class="upgrade-note" style="display:none"></div>
+
+                                <!-- Totals + buttons (unchanged IDs/classes) -->
+                                <div class="addons-footer">
+                                    <div class="price-stack">
+                                        <div class="level3-price level-price addons" id="total_with_addon" data-total="">
+                                            <span class="label">Total</span>
+                                            £{{ $survey->level3_price }}
+                                        </div>
+                                    </div>
+                                    <div class="btns-container">
+                                        <div class="btn-style alt-btn" onclick="showStep1()" style="margin-right:10px;">
+                                            <i class="fa-solid fa-arrow-left"></i><span>Back</span>
+                                        </div>
+                                        <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
+                                            <span class="btn-loader"></span><span class="btn-text">Instruct &amp; Pay</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="breakdown_yes" name="breakdown_of_estimated_repair_costs" value="1">
-                                    <label for="breakdown_yes">Yes</label>
-                                </div>
-                                </div>
-                            </div>
-                            <span class="addon-tick" aria-hidden="true">✓</span>
                             </div>
 
-                            <!-- Aerial -->
-                            <div class="addon-item">
-                            <div class="addon-head">
-                                <span class="addon-badge">Add-on</span>
-                                <span class="addon-title">Aerial roof and chimney images</span>
-                                <span class="level-price">£{{ $price->aerial_chimney_cost }}</span>
-                            </div>
-                            <div class="addon-ctrl">
-                                <label class="addon-ctrl-label">(include little description about this addon here)</label>
-
-                                <!-- RADIO: no default selected -->
-                                <div class="radio-group addon" data-cost="{{ $price->aerial_chimney_cost }}">
-                                <div class="radio-option">
-                                    <input type="radio" id="aerial_no" name="aerial_roof_and_chimney" value="0">
-                                    <label for="aerial_no">No</label>
+                            <!-- Keep client’s upsell block -->
+                            <div class="level4-all-inlcude-addons" style="display:none;text-align:center;margin-top:10px">
+                                <div class="btn-style-group">
+                                    <div class="btn-style buy-now-btn" data-level="4">
+                                        <span class="btn-loader"></span><span class="btn-text">Select level 3+</span>
+                                    </div>
                                 </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="aerial_yes" name="aerial_roof_and_chimney" value="1">
-                                    <label for="aerial_yes">Yes</label>
-                                </div>
-                                </div>
-                            </div>
-                            <span class="addon-tick" aria-hidden="true">✓</span>
-                            </div>
-
-                            <!-- Insurance -->
-                            <div class="addon-item">
-                            <div class="addon-head">
-                                <span class="addon-badge">Add-on</span>
-                                <span class="addon-title">Insurance reinstatement valuation (Rebuild Cost)</span>
-                                <span class="level-price">£{{ $price->insurance_cost }}</span>
-                            </div>
-                            <div class="addon-ctrl">
-                                <label class="addon-ctrl-label">(include little description about this addon here)</label>
-
-                                <!-- RADIO: no default selected -->
-                                <div class="radio-group addon" data-cost="{{ $price->insurance_cost }}">
-                                <div class="radio-option">
-                                    <input type="radio" id="insurance_no" name="insurance_reinstatement_valuation" value="0">
-                                    <label for="insurance_no">No</label>
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="insurance_yes" name="insurance_reinstatement_valuation" value="1">
-                                    <label for="insurance_yes">Yes</label>
-                                </div>
-                                </div>
-                            </div>
-                            <span class="addon-tick" aria-hidden="true">✓</span>
+                                <p class="muted addons-select-message" style="margin-bottom: 0;">
+                                    Select Level 3+ to include all addons and you will save
+                                    <span class="level-price" style="font-size:18px">£250</span>
+                                </p>
+                                <span class="save-price hidden">£250</span>
                             </div>
 
                         </div>
-
-                        <!-- Total + buttons -->
-                        <div class="addons-footer">
-                            <div class="price-stack">
-                            <div class="level3-price level-price addons" id="total_with_addon" data-total="">
-                                <span class="label">Total</span>
-                                £{{ $survey->level3_price }}
-                            </div>
-                            </div>
-                            <div class="btns-container">
-                            <div class="btn-style alt-btn" onclick="showStep1()" style="margin-right: 10px;">
-                                <i class="fa-solid fa-arrow-left"></i><span>Back</span>
-                            </div>
-                            <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
-                                <span class="btn-loader"></span><span class="btn-text">Instruct &amp; Pay</span>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-
-                        <!-- Level 3+ upsell -->
-                        <div class="level4-all-inlcude-addons" style="display:none;text-align:center;margin-top:10px">
-                        <div class="btn-style-group">
-                            <div class="btn-style buy-now-btn" data-level="4">
-                            <span class="btn-loader"></span><span class="btn-text">Select level 3+</span>
-                            </div>
-                        </div>
-                        <p class="muted addons-select-message">
-                            Select Level 3+ to include all addons and you will save
-                            <span class="level-price" style="font-size:18px">£250</span>
-                        </p>
-                        <span class="save-price hidden">£250</span>
-                        </div>
-
                     </div>
-                    </div>
+
 
 
                 </div>

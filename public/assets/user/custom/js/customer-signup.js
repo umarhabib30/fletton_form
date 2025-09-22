@@ -276,7 +276,7 @@ function initializeSignature() {
     const clearBtn = document.getElementById('clearSignatureBtn');
 
     // Set canvas properties
-    ctx.strokeStyle = '#C1EC4A';
+    ctx.strokeStyle = '#1A202C';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -348,7 +348,7 @@ function initializeSignature() {
 
     function drawTypedName(name) {
         ctx.font = '24px "Poppins", sans-serif';
-        ctx.fillStyle = '#C1EC4A';
+        ctx.fillStyle = '#1A202C';
         ctx.textAlign = 'center';
         ctx.fillText(name, canvas.width / 2, canvas.height / 2 + 8);
         updateSignatureData();

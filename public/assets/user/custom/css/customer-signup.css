@@ -73,10 +73,14 @@ body {
     position: relative;
     color: #fff;
 }
+.important-notice p a {
+    color: var(--ink);
+    font-size: 14px;
+}
 
 .form-title {
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 500;
     margin-bottom: 6px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, .2)
 }
@@ -194,7 +198,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 14px;
     transition: .2s
 }
@@ -203,7 +207,7 @@ body {
     font-size: 12px;
     color: var(--ink);
     transition: .2s;
-    font-weight: 600
+    font-weight: 400
 }
 
 .progress-step.active .step-circle {
@@ -254,7 +258,7 @@ body {
 
 .step-title {
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 500;
     margin-bottom: 24px;
     text-align: center;
     color: var(--ink);
@@ -266,7 +270,7 @@ body {
     position: absolute;
     bottom: -10px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%);ss
     width: 60px;
     height: 3px;
     background: linear-gradient(90deg, var(--primary), #7da817);
@@ -291,8 +295,8 @@ body {
 }
 
 .summary-item h4 {
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 400;
     color: var(--ink);
     margin-bottom: 6px
 }
@@ -319,7 +323,7 @@ body {
     position: absolute;
     left: 0;
     color: var(--primary);
-    font-weight: 900
+    font-weight: 500
 }
 
 
@@ -332,14 +336,14 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 700;
+    font-weight: 500;
     color: var(--ink);
     font-size: 14px
 }
 
 .required {
     color: #ff6b6b;
-    font-weight: 800
+    font-weight: 500
 }
 
 .form-control {
@@ -454,8 +458,8 @@ textarea.form-control {
   border: 2px solid #1A202C;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 400;
   color: #fff;
   text-align: center;
   transition: all 0.3s ease;
@@ -471,8 +475,8 @@ textarea.form-control {
 .radio-option input[type="radio"]:checked + label {
   background: #C1EC4A;
   border-color: #C1EC4A;
-  color: white;
-  font-weight: 600;
+  color: var(--ink);
+  font-weight: 400;
 }
 
 .radio-option input[type="radio"]:checked + label:hover {
@@ -493,7 +497,7 @@ textarea.form-control {
 
 .checkbox-group:hover {
     border-color: rgba(28, 27, 55, .25);
-    box-shadow: var(--shadow)
+    /* box-shadow: var(--shadow) */
 }
 
 .checkbox-group input[type="checkbox"] {
@@ -521,7 +525,7 @@ textarea.form-control {
     transform: translate(-50%, -50%);
     color: #fff;
     font-size: 12px;
-    font-weight: 900
+    font-weight: 500
 }
 
 .checkbox-group label {
@@ -531,9 +535,9 @@ textarea.form-control {
 }
 
 .checkbox-group label a {
-    color: var(--primary);
+    color: var(--ink);
     text-decoration: underline;
-    font-weight: 700
+    font-weight: 500
 }
 
 .checkbox-group label a:hover {
@@ -543,8 +547,8 @@ textarea.form-control {
 /* IMPORTANT NOTICE */
 .important-notice {
     background: #fff;
-    border: 1px solid #fecaca;
-    border-left: 4px solid #ff6b6b;
+    border: 1px solid var(--border);
+    /* border-left: 4px solid var(--ink); */
     border-radius: 12px;
     padding: 18px;
     margin-bottom: 24px;
@@ -552,9 +556,9 @@ textarea.form-control {
 }
 
 .important-notice h3 {
-    color: #ff6b6b;
+    color: var(--ink);
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 500;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -595,20 +599,21 @@ textarea.form-control {
 }
 
 #clearSignatureBtn {
-    background: #ff6b6b;
-    color: #fff;
+    background: var(--primary);
+    color: var(--ink);
     border: none;
-    padding: 10px 16px;
+    padding:  12px 16px;
     border-radius: 10px;
     cursor: pointer;
-    font-weight: 700;
+    font-weight: 400;
     transition: .2s;
     margin-top: 12px
 }
 
 #clearSignatureBtn:hover {
-    background: #ef4444;
-    transform: translateY(-2px)
+    background: var(--ink);
+     color:#fff;
+   
 }
 
 /* NAV BUTTONS (match previous “btn-style”) */
@@ -623,21 +628,20 @@ textarea.form-control {
 }
 
 .btn {
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 800;
+    padding:  12px 16px;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 400;
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: .25s;
     position: relative;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    border: 2px solid transparent
+    /* border: 2px solid transparent */
 }
 
-.btn::before {
+/* .btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -646,54 +650,57 @@ textarea.form-control {
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
     transition: left .45s
-}
+} */
 
-.btn:hover::before {
+/* .btn:hover::before {
     left: 100%
-}
+} */
 
 /* Primary = brand green; hover = ink + white border */
 .btn-primary {
     background: var(--primary);
-    color: #fff;
-    box-shadow: 0 6px 14px rgba(147, 193, 32, .22)
+    color: var(--ink);
+    border: none;
+    /* box-shadow: 0 6px 14px rgba(147, 193, 32, .22) */
 }
 
 .btn-primary:hover {
     background: var(--ink);
     color: #fff;
-    border-color: #fff;
+    /* border-color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(28, 27, 55, .22)
+    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) */
 }
 
 /* Secondary = white outline */
 .btn-secondary {
-    background: #fff;
-    color: var(--ink);
-    border: 2px solid var(--border);
-    box-shadow: none
+    background: var(--ink);
+    color: #fff;
+    /* border: 2px solid var(--border); */
+    box-shadow: none;
+    border: none;
 }
 
 .btn-secondary:hover {
-    background: var(--ink);
-    color: #fff;
-    border-color: #fff;
-    transform: translateY(-2px)
+   background: var(--primary);
+    color: var(--ink);
+    /* border-color: #fff; */
+   
 }
 
 /* Submit: keep red but refined */
 .btn-submit {
-    background: linear-gradient(135deg, #ff6b6b, #ff5252);
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(255, 107, 107, .35);
-    font-size: 16px;
-    padding: 14px 24px
+    background: var(--primary);;
+    color:var(--ink);
+    border: none;
+    /* box-shadow: 0 6px 18px rgba(255, 107, 107, .35); */
+    font-size: 17px;
+    padding:  12px 16px;
 }
 
 .btn-submit:hover {
-    background: linear-gradient(135deg, #ff5252, #f44336);
-    transform: translateY(-2px)
+    background: var(--ink);
+    color: #fff;
 }
 
 /* LOADING OVERLAY */
@@ -721,7 +728,7 @@ textarea.form-control {
 
 .ewm-title {
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 500;
     color: var(--ink);
     margin-bottom: 10px
 }
@@ -734,7 +741,7 @@ textarea.form-control {
 
 .ewm-red {
     color: #ef4444;
-    font-weight: 800
+    font-weight: 500
 }
 
 .ewm-ring {
@@ -810,59 +817,7 @@ textarea.form-control {
 }
 
 /* 4) Buttons: Next + Submit = brand green; same sizing; hover = ink + white border */
-.btn {
-    padding: 12px 20px !important;
-    /* uniform comfortable size */
-    border-radius: 12px !important;
-    font-size: 15px !important;
-    font-weight: 800 !important;
-}
 
-/* Next */
-#nextBtn.btn-primary {
-    background: var(--primary) !important;
-    /* #C1EC4A */
-    color: #fff !important;
-    border: 2px solid transparent !important;
-    box-shadow: 0 6px 14px rgba(147, 193, 32, .22) !important;
-}
-
-#nextBtn.btn-primary:hover {
-    background: var(--ink) !important;
-    /* hover ink */
-    color: #fff !important;
-    border-color: #fff !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important;
-}
-
-/* Submit (last button) */
-#submitBtn.btn-submit {
-    background: var(--primary) !important;
-    /* make it brand green */
-    color: #fff !important;
-    border: 2px solid transparent !important;
-    box-shadow: 0 6px 14px rgba(147, 193, 32, .22) !important;
-    font-size: 15px !important;
-    /* same as Next */
-    padding: 12px 20px !important;
-}
-
-#submitBtn.btn-submit:hover {
-    background: var(--ink) !important;
-    /* hover ink */
-    color: #fff !important;
-    border-color: #fff !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important;
-}
-
-/* Optional: Secondary stays as is, but ensure hover matches scheme */
-.btn-secondary:hover {
-    background: var(--ink) !important;
-    color: #fff !important;
-    border-color: #fff !important;
-}
 
 @keyframes spin {
     to {

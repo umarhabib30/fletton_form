@@ -1,5 +1,5 @@
 /* ============================================================================
- * listing.js  (Fully Commented)
+ * listing.js  (Final, with Add-to-Survey toggle built-in)
  * ----------------------------------------------------------------------------
  * Supports BOTH: <select class="addon"> and <div class="radio-group addon">
  * Radio markup example:
@@ -24,7 +24,7 @@
 
 /* ----------------------------- State & Helpers ----------------------------- */
 let selectedLevel = null; // which level user selected in confirm popup
-let currentStep   = 1;    // 1 = level cards, 2 = add-ons step
+let currentStep = 1;    // 1 = level cards, 2 = add-ons step
 
 /** Convert any currency/text like "£1,234.50" to number 1234.5 */
 function num(val) {
@@ -61,6 +61,7 @@ function showAddons() {
   // Ensure totals reflect current choices after panel opens
   setTimeout(() => {
     updateLevel3Totals();
+    updateUpgradeNote(); // keep the note in sync as soon as panel opens
     sendHeightToParent();
   }, 100);
 }
@@ -112,7 +113,7 @@ function readAddonsState() {
  * Updates:
  *   #total_with_addon text  => "Total £X"
  *   #total_with_addon[data-total] => numeric total
- * Controls "Select Level 3+" upsell visibility when ALL add-ons are selected
+ * Controls "Select Level 3+" upsell visibility when ALL add-ons selected
  */
 function updateLevel3Totals() {
   // Base Level 3 price (prefer hidden input; fallback to inline hidden)
@@ -139,8 +140,8 @@ function updateLevel3Totals() {
     num(document.getElementById('level4-base-price')?.value);
 
   const upsellWrap = document.querySelector('.level4-all-inlcude-addons');
-  const saveNumEl  = upsellWrap?.querySelector('.save-price');
-  const saveTxtEl  = upsellWrap?.querySelector('.level-price');
+  const saveNumEl = upsellWrap?.querySelector('.save-price');
+  const saveTxtEl = upsellWrap?.querySelector('.level-price');
 
   const savings = total - baseL4;
 
@@ -156,6 +157,78 @@ function updateLevel3Totals() {
   }
 }
 
+/* ---------------------- Add-to-Survey toggle (radio-style) ----------------- */
+/** Returns true if group's "Yes" is currently checked */
+function isGroupOn(groupEl) {
+  const yes = groupEl?.querySelector('input[type="radio"][value="1"]');
+  return !!(yes && yes.checked);
+}
+
+/** Toggle a single add-on button + its hidden radios */
+function toggleAddon(btn) {
+  const groupId = btn.getAttribute('data-group');
+  const group = document.getElementById(groupId);
+  if (!group) return;
+
+  const yes = group.querySelector('input[type="radio"][value="1"]');
+  const no = group.querySelector('input[type="radio"][value="0"]');
+
+  const willActivate = !btn.classList.contains('active');
+
+  if (willActivate && yes) {
+    yes.checked = true;
+    yes.dispatchEvent(new Event('change', { bubbles: true })); // let existing listeners fire
+  } else if (!willActivate && no) {
+    no.checked = true;
+    no.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  btn.classList.toggle('active', willActivate);
+
+  // Recompute using existing logic and refresh note
+  updateLevel3Totals();
+  updateUpgradeNote();
+}
+
+/** Show/hide auto-upgrade note and flip Level 3 Pay button to Level 3+ when needed */
+function updateUpgradeNote() {
+  const note = document.getElementById('upgrade-note');
+  const payBtn = document.querySelector('.level-3-confirm'); // Level 3 pay button
+  if (!note || !payBtn) return;
+
+  const { selectedCount, totalAddons, addonsSum } = readAddonsState();
+  const allSelected = totalAddons > 0 && selectedCount === totalAddons;
+
+  const baseL3 =
+    num(document.getElementById('level3_price')?.value) ||
+    num(document.getElementById('level3-base-price')?.value);
+  const baseL4 =
+    num(document.getElementById('level4_price')?.value) ||
+    num(document.getElementById('level4-base-price')?.value);
+
+  const totalWithAddons = baseL3 + addonsSum;
+  const savings = Math.max(0, totalWithAddons - baseL4);
+
+  if (allSelected && savings > 0) {
+    note.style.display = 'block';
+    note.textContent =
+      'You have selected all 3 add-ons so you will be automatically upgraded to Level 3+ and save ' +
+      gbp(savings) + '.';
+    payBtn.setAttribute('data-level', '4');
+  } else {
+    note.style.display = 'none';
+    payBtn.setAttribute('data-level', '3');
+  }
+}
+
+/** Sync initial button .active state from radios (in case of server defaults) */
+function initAddonButtons() {
+  document.querySelectorAll('.addon-btn').forEach(btn => {
+    const group = document.getElementById(btn.getAttribute('data-group'));
+    if (group && isGroupOn(group)) btn.classList.add('active');
+  });
+}
+
 /* ----------------------------- Confirm Popup UX ---------------------------- */
 function showConfirmPopup(level) {
   selectedLevel = level;
@@ -165,15 +238,15 @@ function showConfirmPopup(level) {
 
 function closePopup() {
   const popup = document.getElementById('confirm-popup-conteiner');
-  const wait  = document.getElementById('wait-notice');
+  const wait = document.getElementById('wait-notice');
   if (popup) popup.style.display = 'none';
-  if (wait)  wait.style.display  = 'none';
+  if (wait) wait.style.display = 'none';
 
   // Reset any button loaders in the popup & elsewhere
   document.querySelectorAll('.btn-style').forEach(btn => {
     btn.classList.remove('disabled');
     const loader = btn.querySelector('.btn-loader');
-    const text   = btn.querySelector('.btn-text');
+    const text = btn.querySelector('.btn-text');
     if (loader) loader.style.display = 'none';
     if (text) {
       // Restore default text if we stored it earlier
@@ -212,10 +285,10 @@ function proceedWithBooking() {
   }
 
   // Lock the confirm button with loader
-  const btn    = document.querySelector('.confirm-yes');
+  const btn = document.querySelector('.confirm-yes');
   const loader = btn?.querySelector('.btn-loader');
-  const text   = btn?.querySelector('.btn-text');
-  const wait   = document.getElementById('wait-notice');
+  const text = btn?.querySelector('.btn-text');
+  const wait = document.getElementById('wait-notice');
 
   if (btn) btn.classList.add('disabled');
   if (loader) loader.style.display = 'inline-block';
@@ -234,7 +307,7 @@ function proceedWithBooking() {
 function handleBuyNow(button, level) {
   // Button loader while opening confirm popup
   const loader = button.querySelector('.btn-loader');
-  const text   = button.querySelector('.btn-text');
+  const text = button.querySelector('.btn-text');
 
   button.classList.add('disabled');
   if (loader) loader.style.display = 'inline-block';
@@ -247,7 +320,7 @@ function handleBuyNow(button, level) {
   setTimeout(() => {
     // Stash selected level + total BEFORE showing confirm
     const selectedLevelInput = document.getElementById('selected_level');
-    const levelTotalInput    = document.getElementById('level_total');
+    const levelTotalInput = document.getElementById('level_total');
     if (selectedLevelInput) selectedLevelInput.value = level || '';
 
     let levelTotal = 0;
@@ -294,26 +367,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* 2) “Choose Add-ons” button (in Level 3 card) should call showAddons()
-   *    (Your HTML already calls onclick="showAddons()", so nothing to do here)
-   */
-
-  /* 3) Add-ons changes → recalc totals
-   *    We listen to BOTH legacy selects and radios inside .radio-group.addon
-   */
+  /* 2) Add-ons changes → recalc totals (legacy select + radios) */
   const recalcSelector =
     '.addons-grid select.addon, .addons-grid .radio-group.addon input[type="radio"]';
 
   document.addEventListener('change', function (e) {
     if (e.target.matches(recalcSelector)) {
       updateLevel3Totals();
+      updateUpgradeNote();
     }
   });
 
-  // Initial compute on load (ensures totals are consistent with defaults)
-  updateLevel3Totals();
+  // 2b) Add-to-Survey button clicks (radio-style)
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.addon-btn');
+    if (btn) toggleAddon(btn);
+  });
 
-  /* 4) “Instruct & Pay” buttons */
+  // Initial compute & sync on load
+  updateLevel3Totals();
+  initAddonButtons();
+  updateUpgradeNote();
+
+  /* 3) “Instruct & Pay” buttons */
   document.querySelectorAll('.buy-now-btn').forEach(btn => {
     btn.addEventListener('click', function () {
       const level = this.getAttribute('data-level'); // "1" | "2" | "3" | "4"
@@ -321,30 +397,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* 5) Back button from Step 2 → Step 1
-   *    Your HTML uses onclick="showStep1()", so no extra binding required.
-   */
-
-  /* 6) Confirm popup buttons are inline onclick; we keep them. */
-
-  /* 7) iFrame height sync */
+  /* 4) Height sync */
   sendHeightToParent();
-
-  /* 8) Optional live resize observer for dynamic height */
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver(() => sendHeightToParent());
     ro.observe(document.body);
   }
-
   window.addEventListener('load', sendHeightToParent);
   window.addEventListener('resize', sendHeightToParent);
 });
 
 /* ------------------------------ Global Exports ----------------------------- */
 /* If these are called inline from HTML, ensure they exist on window */
-window.showStep1            = showStep1;
-window.showAddons           = showAddons;
-window.showConfirmPopup     = showConfirmPopup;
-window.closePopup           = closePopup;
-window.proceedWithBooking   = proceedWithBooking;
-window.sendHeightToParent   = sendHeightToParent;
+window.showStep1 = showStep1;
+window.showAddons = showAddons;
+window.showConfirmPopup = showConfirmPopup;
+window.closePopup = closePopup;
+window.proceedWithBooking = proceedWithBooking;
+window.sendHeightToParent = sendHeightToParent;
+window.updateUpgradeNote = updateUpgradeNote;   // in case HTML needs it
