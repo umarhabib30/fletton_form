@@ -662,9 +662,9 @@ textarea.form-control {
 .btn-primary:hover {
     background: var(--ink);
     color: #fff;
-    border-color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(28, 27, 55, .22)
+    /* border-color: #fff; */
+    /* transform: translateY(-2px); */
+    /* box-shadow: 0 10px 22px rgba(28, 27, 55, .22) */
 }
 
 /* Secondary = white outline */
@@ -831,9 +831,9 @@ textarea.form-control {
     background: var(--ink) !important;
     /* hover ink */
     color: #fff !important;
-    border-color: #fff !important;
+    /* border-color: #fff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important;
+    box-shadow: 0 10px 22px rgba(28, 27, 55, .22) !important; */
 }
 
 /* Submit (last button) */
@@ -995,3 +995,95 @@ textarea.form-control {
         transform: translateY(0)
     }
 }
+
+
+
+/* summary css */
+:root {
+  --accent: #C1EC4A;
+  --text: #111827;   /* slate-900 */
+  --muted: #4B5563;  /* gray-600 */
+  --bg: #ffffff;
+}
+
+.step {
+  width: 100%;
+}
+
+.step-title {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.instruction-summary {
+  display: grid;
+  gap: 16px;
+}
+
+/* Card */
+.info-card {
+  display: flex;
+  gap: 12px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--bg);
+  padding: 12px 14px;
+  align-items: flex-start;
+}
+
+.info-card__icon {
+  flex: 0 0 56px;
+}
+
+.info-card__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.info-card__body {
+  flex: 1 1 auto;
+  padding-top: 6px;
+}
+
+.info-card__title {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.info-card__text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* Add-ons list */
+.add-ons-list {
+  margin: 6px 0 0 18px;
+  padding: 0;
+  color: var(--muted);
+  list-style: disc;
+}
+
+.add-ons-list li {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+/* Responsive tweaks */
+@media (min-width: 480px) {
+  .info-card__icon { flex-basis: 64px; }
+}
+
+@media (min-width: 768px) {
+  .instruction-summary { gap: 20px; }
+  .info-card { gap: 16px; padding: 14px 16px; }
+  .info-card__icon { flex-basis: 72px; }
+  .step-title { font-size: 1.75rem; }
+}
+

@@ -14,7 +14,7 @@
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7xLp13hLBGIDOt4BIJZrJF99ItTsya0g&libraries=places&callback=initAddressAutocomplete"
         defer></script>
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 </head>
 
 <body>
@@ -61,58 +61,113 @@
                 <div class="step active" id="step1">
                     <h2 class="step-title">Instruction Summary</h2>
 
-                    <div class="summary-item slide-up">
-                        <h4>Survey Type</h4>
-                        <p><strong>Level @if ($survey->level == 4)
-                                    3+
-                                @else
-                                    {{ $survey->level }}
-                                @endif
-                            </strong> RICS Building Survey</p>
-                    </div>
-
-                    <div class="summary-item slide-up">
-                        <h4>Property Address</h4>
-                        <p>{{ $survey->full_address }}</p>
-                    </div>
-
-                    <div class="summary-item slide-up">
-                        <h4>Property Size</h4>
-                        <p>
-                            The floor area of the main dwellinghouse including outbuildings @if ($survey->over1650)
-                                <strong>is over 1650sqft</strong>
-                            @else
-                                <strong>does not exceed {{ $survey->sqft_area }}sqft</strong>
-                            @endif
-                        </p>
-                    </div>
-
-                    <div class="summary-item slide-up">
-                        <h4>Property Type</h4>
-                        <p>{{ $survey->house_or_flat }}</p>
-                    </div>
-
-                    <div class="summary-item slide-up">
-                        <h4>Number of Bedrooms</h4>
-                        <p>{{ $survey->number_of_bedrooms }}</p>
-                    </div>
-                    @if ($survey->addons)
-                        <div class="summary-item slide-up">
-                            <h4>Add-ons Chosen</h4>
-                            <ul class="add-ons-list">
-                                @if ($survey->breakdown)
-                                    <li>Breakdown of estimated repair costs</li>
-                                @endif
-                                @if ($survey->aerial)
-                                    <li>Aerial roof and chimney inspection</li>
-                                @endif
-                                @if ($survey->insurance)
-                                    <li>Insurance reinstatement valuation</li>
-                                @endif
-                            </ul>
+                    <div class="instruction-summary">
+                        <!-- Survey Type -->
+                        <div class="info-card info-card--survey-type">
+                            <div class="info-card__icon">
+                                <img class="info-card__img"
+                                    src="{{ asset('assets/user/custom/icons/survey_level.jpeg') }}" alt="Survey Type">
+                            </div>
+                            <div class="info-card__body">
+                                <h4 class="info-card__title">Survey Type</h4>
+                                <p class="info-card__text">
+                                    Level
+                                    @if ($survey->level == 4)
+                                        3+
+                                    @else
+                                        {{ $survey->level }}
+                                    @endif
+                                    RICS Building Survey
+                                </p>
+                            </div>
                         </div>
-                    @endif
+
+                        <!-- Property Address -->
+                        <div class="info-card info-card--address">
+                            <div class="info-card__icon">
+                                <img class="info-card__img"
+                                    src="{{ asset('assets/user/custom/icons/property_type.jpeg') }}"
+                                    alt="Property Address">
+                            </div>
+                            <div class="info-card__body">
+                                <h4 class="info-card__title">Property Address</h4>
+                                <p class="info-card__text">{{ $survey->full_address }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Property Size -->
+                        <div class="info-card info-card--size">
+                            <div class="info-card__icon">
+                                <img class="info-card__img"
+                                    src="{{ asset('assets/user/custom/icons/property_type.jpeg') }}"
+                                    alt="Property Size">
+                            </div>
+                            <div class="info-card__body">
+                                <h4 class="info-card__title">Property Size</h4>
+                                <p class="info-card__text">
+                                    The floor area of the main dwellinghouse including outbuildings
+                                    @if ($survey->over1650 == 'yes')
+                                        <span style="color: #C1EC4A ">is over 1650sqft</span>
+                                    @else
+                                        <span style="color: #C1EC4A ">does not exceed 1650sqft</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Property Type -->
+                        <div class="info-card info-card--type">
+                            <div class="info-card__icon">
+                                <img class="info-card__img"
+                                    src="{{ asset('assets/user/custom/icons/property_type.jpeg') }}"
+                                    alt="Property Type">
+                            </div>
+                            <div class="info-card__body">
+                                <h4 class="info-card__title">Property Type</h4>
+                                <p class="info-card__text">{{ $survey->house_or_flat }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Bedrooms -->
+                        <div class="info-card info-card--bedrooms">
+                            <div class="info-card__icon">
+                                <img class="info-card__img"
+                                    src="{{ asset('assets/user/custom/icons/property_type.jpeg') }}"
+                                    alt="Number of Bedrooms">
+                            </div>
+                            <div class="info-card__body">
+                                <h4 class="info-card__title">Number of Bedrooms</h4>
+                                <p class="info-card__text">{{ $survey->number_of_bedrooms }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Add-ons -->
+                        @if ($survey->addons)
+                            <div class="info-card info-card--addons">
+                                <div class="info-card__icon">
+                                    <img class="info-card__img"
+                                        src="{{ asset('assets/user/custom/icons/property_type.jpeg') }}"
+                                        alt="Add-ons">
+                                </div>
+                                <div class="info-card__body">
+                                    <h4 class="info-card__title">Add-ons Chosen</h4>
+                                    <ul class="add-ons-list" style="list-style-type: none; margin-left: -4px;">
+                                        @if ($survey->breakdown)
+                                            <li>Breakdown of estimated repair costs</li>
+                                        @endif
+                                        @if ($survey->aerial)
+                                            <li>Aerial roof and chimney inspection</li>
+                                        @endif
+                                        @if ($survey->insurance)
+                                            <li>Insurance reinstatement valuation</li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+
 
                 <!-- Step 2: Client Details -->
                 <div class="step" id="step2">
@@ -156,8 +211,8 @@
                     <div class="form-group">
                         <label for="phone">Phone</label>
                         <div class="telephone-field">
-                            <input class="tel-input form-control" type="tel" id="telephone_number" name="inf_field_Phone1"
-                                value="{{ $survey->telephone_number }}" required />
+                            <input class="tel-input form-control" type="tel" id="telephone_number"
+                                name="inf_field_Phone1" value="{{ $survey->telephone_number }}" required />
                         </div>
 
                     </div>
@@ -383,9 +438,9 @@
 
                     <div class="form-group">
                         <label for="agentPhone">Agent Phone Number <span class="required">*</span></label>
-                          <div class="telephone-field">
-                            <input class="tel-input form-control" type="tel" id="agentPhone" name="inf_custom_AgentPhoneNumber"
-                               required />
+                        <div class="telephone-field">
+                            <input class="tel-input form-control" type="tel" id="agentPhone"
+                                name="inf_custom_AgentPhoneNumber" required />
                         </div>
 
                         {{-- <input type="tel" id="agentPhone" name="inf_custom_AgentPhoneNumber"
@@ -453,7 +508,7 @@
                         <canvas id="signatureCanvas" width="400" height="120"></canvas>
                         <input type="hidden" id="signatureInput" name="inf_custom_infcustomSignature" required />
 
-                        <div  style=" text-align: center;  margin: 15px 0; font-weight: bold; color: #ccc; ">
+                        <div style=" text-align: center;  margin: 15px 0; font-weight: bold; color: #ccc; ">
                             — OR —
                         </div>
 
