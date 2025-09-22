@@ -107,9 +107,9 @@
                                 <p class="info-card__text">
                                     The floor area of the main dwellinghouse including outbuildings
                                     @if ($survey->over1650 == 'yes')
-                                        <span style="color: #C1EC4A ">is over 1650sqft</span>
+                                        <span style="color: #1a202c ">is over 1650sqft</span>
                                     @else
-                                        <span style="color: #C1EC4A ">does not exceed 1650sqft</span>
+                                        <span style="color: #1a202c ">does not exceed 1650sqft</span>
                                     @endif
                                 </p>
                             </div>

@@ -38,6 +38,13 @@ Route::group(['prefix'=> 'admin', 'middleware'=>['admin_auth']], function(){
 });
 
 
+
+use App\Http\Controllers\GoogleReviewsController;
+
+Route::get('/widget/google-reviews', [GoogleReviewsController::class, 'show'])
+     ->name('widget.google-reviews');
+
+
 // user routes
 Route::get('/', [UserSurveyController::class, 'signup'])->name('user.survey.signup');
 Route::post('signup/submit', [UserSurveyController::class, 'submitSurvey'])->name('user.survey.submit');
