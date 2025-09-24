@@ -322,7 +322,7 @@ body {
     content: '✓';
     position: absolute;
     left: 0;
-    color: var(--primary);
+    color: var(--ink);
     font-weight: 500
 }
 
@@ -613,7 +613,7 @@ textarea.form-control {
 #clearSignatureBtn:hover {
     background: var(--ink);
      color:#fff;
-   
+
 }
 
 /* NAV BUTTONS (match previous “btn-style”) */
@@ -669,7 +669,7 @@ textarea.form-control {
     color: #fff;
     /* /* border-color: #fff; */
     /* transform: translateY(-2px); */
-    /* box-shadow: 0 10px 22px rgba(28, 27, 55, .22) */ */
+    /* box-shadow: 0 10px 22px rgba(28, 27, 55, .22) */
 }
 
 /* Secondary = white outline */
@@ -685,7 +685,7 @@ textarea.form-control {
    background: var(--primary);
     color: var(--ink);
     /* border-color: #fff; */
-   
+
 }
 
 /* Submit: keep red but refined */
@@ -1041,3 +1041,82 @@ textarea.form-control {
   .step-title { font-size: 1.75rem; }
 }
 
+
+
+
+/* new design for the summary page */
+
+.summary-tab{
+    display: flex; border: 3px solid #d5d7d9; padding: 10px 30px; border-radius: 10px; margin-bottom: 10px
+}
+
+.summary-icon{
+    width: 5%; justify-content: center; display: flex; flex-direction: column;
+}
+
+.summary-title{
+    width: 55%; justify-content: center; display: flex; flex-direction: column;
+}
+
+.summary-title h4{
+    font-size: 20px; font-weight: 500;
+}
+
+.summary-value{
+    justify-content: center; display: flex; flex-direction: column; font-size: 20px; font-weight: 400;
+}
+
+
+.custom-list {
+    list-style: none; /* remove default bullets */
+    margin: 0;
+    padding: 0;
+}
+
+.custom-list li {
+    position: relative;
+    padding-left: 35px; /* space for circle */
+    margin-bottom: 10px;
+
+}
+
+.custom-list li:before {
+    content: "✔"; /* tick mark */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #C1EC4A ; /* light green background */
+    color: #1A202C; /* blue tick */
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.proceed-btn{
+       font-size: 25px;
+        font-weight: 500;
+        padding: 14px 18px;
+        background: var(--primary);
+    color: var(--ink);
+    padding: 12px 16px;
+    /* border: 2px solid transparent; */
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .25 sease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+
+}

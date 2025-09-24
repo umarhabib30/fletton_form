@@ -61,6 +61,118 @@
                 <div class="step active" id="step1">
                     <h2 class="step-title">Instruction Summary</h2>
 
+                    <div style="background-color: #1A202C; padding: 10px 10px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+                        <h4 style="color: white; font-size: 60px;  font-weight: 400">Booking Summary</h4>
+                        <p style="color: #fff; font-size: 14px; font-weight: 100">Press proceed to confirm all the details about your property are correct</p>
+                    </div>
+
+                    <!-- survey level -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Survey type.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Survey Level Selected: </h4>
+                        </div>
+                        <div class="summary-value">
+                            Level 3 +
+                        </div>
+                    </div>
+
+                    <!-- Property address -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Property address.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Property Address: </h4>
+                        </div>
+                        <div class="summary-value">
+                           35 Hevlock Drive Da9 9XT
+                        </div>
+                    </div>
+
+                    <!-- Property type -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Property type.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Property Type: </h4>
+                        </div>
+                        <div class="summary-value">
+                          House
+                        </div>
+                    </div>
+
+                    <!-- Property size -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Propert size.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Property Size(if over 1650 sqft): </h4>
+                        </div>
+                        <div class="summary-value">
+                         2000
+                        </div>
+                    </div>
+
+                    <!-- Bedrooms -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Number of bedrooms.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Number of Bedrooms: </h4>
+                        </div>
+                        <div class="summary-value">
+                        3
+                        </div>
+                    </div>
+
+                    <!-- Add-on -->
+                    <div class="summary-tab">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Adda-on chosen.png') }}" style="width: 80%" alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Add-on Packages Selected: </h4>
+                        </div>
+                        <div class="summary-value">
+                           <ul class="custom-list">
+                            @if ($survey->aerial)
+                                <li>Aerial Images</li>
+                            @endif
+                            @if ($survey->insurance)
+                                <li>Reinstatement</li>
+                            @endif
+                            @if ($survey->breakdown)
+                                <li>Estimated Costings</li>
+                            @endif
+                        </ul>
+
+                        </div>
+                    </div>
+
+                    <div style="background-color: #1A202C; padding: 10px 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; display: flex; justify-content: space-between; padding: 20px 60px">
+                            <div style="display: flex; flex-direction: column; justify-content: center">
+
+                                <h3 style="font-size: 34px; font-weight: 400; color: #fff; ">Total to be paid:<span style="color: #C1EC4A; font-size: 45px;">£{{ $survey->level_total }}</span></h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; justify-content: center;">
+                                <button style="    padding: 15px 40px;
+    font-size: 24px;
+    font-weight: 400;
+    background: #C1EC4A;
+    border-radius: 10px;
+    border: none;">Proceed</button>
+                            </div>
+                    </div>
+
+
+
+
                     <div class="instruction-summary">
                         <!-- Survey Type -->
                         <div class="info-card info-card--survey-type">

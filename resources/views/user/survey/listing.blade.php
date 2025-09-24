@@ -30,7 +30,7 @@
                         <div class="header-section">
                             <h3 class="username">Your RICS Regulated Surveyor Quotes</h3>
                             <p class="custom-m1">
-                                Your RICS-Regulated surveyor quotes. Surveying undertaken by Fletton Surveyors Ltd -
+                                Surveying undertaken by Fletton Surveyors Ltd -
                                 Regulated by RICS. All price quote are final.
                             </p>
                         </div>
@@ -49,7 +49,7 @@
                                     </div>
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/img/level1.png') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/Level 1 survey.png') }}" alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Roof Survey</h3>
                                 <div class="price-custom">
@@ -77,7 +77,7 @@
 
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/img/level2.png') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/Level 2 survey.png') }}" alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Level 2 Survey</h3>
                                 <div class="price-custom">
@@ -105,7 +105,7 @@
 
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/img/3.png') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/Level 3 survey.png') }}" alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Level 3 Survey</h3>
                                 <div class="price-custom">
@@ -134,7 +134,8 @@
 
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/img/4.png') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/Level 3 plus survey.png') }}"
+                                        alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Level 3+ Survey</h3>
                                 <div class="price-custom">
@@ -150,11 +151,11 @@
                         <div class="grw-card">
                             <div class="grw-left">
                                 <div class="grw-badge">
-                                    <img src="/assets/img/trustindex.png" alt="Trustindex" class="grw-logo">
+                                    <img src="/assets/img/trust.png" alt="Trustindex" class="grw-logo">
 
                                 </div>
                                 <div class="grw-badge">
-                                    <img src="/assets/img/google.png" alt="Google Reviews" class="grw-logo">
+                                    <img src="/assets/img/review.png" alt="Google Reviews" class="grw-logo">
 
                                 </div>
                             </div>
@@ -201,10 +202,21 @@
                     <div class="step-2">
                         <div class="level3">
                             <div class="ddons-header">
-                                <h3>Choose Your Add-Ons</h3>
-                                <p>Tailor your survey to your needs with exclusive add-ons options.
+                                <div style="position: relative; text-align: center; margin-top: 40px;">
+                                    <!-- Back Icon (always on left) -->
+                                    <div style="position: absolute; left: 20px; font-size: 60px; top: 60%; transform: translateY(-50%); color: #C1EC4A; cursor: pointer;"
+                                        onclick="showStep1()">
+                                        <
+                                    </div>
+
+                                    <!-- Centered Title -->
+                                    <h3 style="margin: 0;">Choose Your Add-Ons</h3>
+                                </div>
+                                <p style="text-align: center; margin-top: 10px;">
+                                    Tailor your survey to your needs with exclusive add-on options.
                                 </p>
                             </div>
+
 
                             <div class="addons-card">
                                 <!-- 3-card grid -->
@@ -223,7 +235,7 @@
                                         </div>
 
                                         <div class="addon-icon">
-                                            <img src="{{ asset('assets/img/5.png') }}"
+                                            <img src="{{ asset('assets/user/icons/Estimated cost package.png') }}"
                                                 alt="Estimated Costs">
                                         </div>
 
@@ -256,7 +268,8 @@
                                         </div>
 
                                         <div class="addon-icon">
-                                            <img src="{{ asset('assets/img/level1.png') }}" alt="Drone Package">
+                                            <img src="{{ asset('assets/user/icons/Aerial drone package.png') }}"
+                                                alt="Drone Package">
                                         </div>
 
                                         <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
@@ -286,7 +299,7 @@
                                         </div>
 
                                         <div class="addon-icon">
-                                            <img src="{{ asset('assets/img/6.png') }}"
+                                            <img src="{{ asset('assets/user/icons/Reinstatement cost package.png') }}"
                                                 alt="Reinstatement Package">
                                         </div>
 
@@ -333,9 +346,9 @@
                                     <!-- right: actions -->
                                     <div class="abb-right">
                                         <div class="btns">
-                                            <div class="btn-style alt-btn" onclick="showStep1()">
+                                            {{-- <div class="btn-style alt-btn" onclick="showStep1()">
                                                 <i class="fa-solid fa-arrow-left"></i><span>Back</span>
-                                            </div>
+                                            </div> --}}
                                             <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
                                                 <span class="btn-loader"></span><span class="btn-text">Proceed</span>
                                             </div>
@@ -375,10 +388,11 @@
                     </label>
                 </div>
                 <div class="btn-style-group">
+                    <div class="btn-style" onclick="closePopup()">Go Back</div>
                     <div class="btn-style confirm-yes" onclick="proceedWithBooking()">
                         <span class="btn-loader"></span><span class="btn-text">Proceed</span>
                     </div>
-                    <div class="btn-style" onclick="closePopup()">Go Back</div>
+
                 </div>
                 <div class="wait-notice" id="wait-notice">
                     <div class="wait-title">Please Wait</div>

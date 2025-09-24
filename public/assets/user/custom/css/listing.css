@@ -42,21 +42,21 @@ body {
     text-align: center;
     margin-bottom: 28px;
     padding: 10px 0px;
-    border: 3px solid var(--border);
+    /* border: 3px solid var(--border); */
     border-radius: 10px;
-    background: #fff;
+    background: var(--ink);
 }
 
 .username {
     font-size: 55px;
     font-weight: 400;
-    color: var(--ink);
+    color: #ffffff;
     margin-bottom: 6px;
 }
 
 .custom-m1 {
-    font-size: 18px;
-    color: var(--muted);
+    font-size: 14px;
+    color: #ffffffb2;
     line-height: 1.65;
 }
 
@@ -226,11 +226,11 @@ body {
     display: flex;
     align-items: center;
     gap: 24px;
-    padding: 30px 20px;
+    padding: 10px 20px;
     margin-top: 20px;
-    border: 3px solid var(--border);
+    /* border: 3px solid var(--border); */
     border-radius: 10px;
-    background: #fff;
+    background: var(--ink);
     /* box-shadow: 0 2px 8px rgba(28, 27, 55, .06); */
     justify-content: space-between;
 
@@ -239,10 +239,10 @@ body {
 .grw-left {
     display: flex;
     gap: 50px;
-    width: 40%;
+    width: 50%;
     align-items: center;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 
@@ -253,7 +253,7 @@ body {
 }
 
 .grw-logo {
-    height: 70px;
+    height: 100px;
     width: auto;
     display: block;
 }
@@ -272,7 +272,7 @@ body {
 }
 
 .grw-title {
-    color: var(--ink);
+    color: #ffffff;
     font-size: 20px;
     margin-bottom: 4px;
 }
@@ -378,6 +378,11 @@ body {
     .username{
         font-size: 30px;
     }
+
+    .grw-left {
+        width: 100%;
+    }
+
     .grw-right {
         justify-content: center;
     }
@@ -392,8 +397,8 @@ body {
 
 /* Header (title + subtitle) */
 .ddons-header {
-    background: #fff;
-    border: 3px solid var(--border);
+    background: var(--ink);
+    /* border: 3px solid var(--border); */
     border-radius: 10px;
     box-shadow: none;
     margin-bottom: 10px;
@@ -403,12 +408,12 @@ body {
     font-size: 60px;
     text-align: center;
     margin-bottom: -10px;
-    color: var(--ink);
+    color: #ffffff;
 }
 
 .step-2 .level3 p {
     text-align: center;
-    color: var(--muted);
+    color: #fff;
     margin-bottom: 10px;
     font-size: 18px;
 }
@@ -607,8 +612,8 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    background: #fff;
-    border: 3px solid var(--border);
+    background: var(--ink);
+    /* border: 3px solid var(--border); */
     border-radius: 10px;
     padding: 14px 16px;
     margin-top: 8px;
@@ -620,26 +625,26 @@ body {
 }
 
 .addons-bottom-bar .save-copy {
-    color: var(--muted);
+    color: #fff;
     font-size: 30px;
 }
 
 .addons-bottom-bar .save-copy .level-price {
-    color: var(--muted);
+    color: #fff;
     /* font-weight: 700; */
 }
 
 /* Total (center) */
 .addons-bottom-bar .abb-center .label {
     font-size: 28px;
-    color: var(--ink);
+    color: #fff;
     font-weight: 600;
     margin-right: 6px;
 }
 
 .addons-bottom-bar .abb-center .level-price {
     font-size: 45px;
-    color: var(--ink);
+    color: #fff;
 }
 
 /* Buttons (right) */
@@ -828,7 +833,7 @@ input#termsCheckbox {
     }
 
     .custom-m1 {
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .level-choice h3 {
@@ -910,6 +915,10 @@ input#termsCheckbox {
     display: flex;
     justify-content: center;
     margin-top: 40px;
+}
+
+.level-img img{
+    width: 150px;
 }
 
 .level-head-section {
