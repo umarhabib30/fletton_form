@@ -103,8 +103,21 @@ function updateLevel3Totals() {
     // Current selection summary
     const { selectedCount, totalAddons, addonsSum } = readAddonsState();
 
+    // Determine if all add-ons are selected (3 in total)
+    const allAddonsSelected = selectedCount === 3;
+
     // Current selection total (this powers the visible "Total Cost" on L3 step)
-    const total = baseL3 + addonsSum;
+    let total;
+    if (allAddonsSelected) {
+        // If all add-ons are selected, use Level 4 price
+        const baseL4 =
+            num(document.getElementById('level4_price')?.value) ||
+            num(document.getElementById('level4-base-price')?.value);
+        total = baseL4;
+    } else {
+        // Otherwise, use Level 3 + selected add-ons
+        total = baseL3 + addonsSum;
+    }
 
     // Update Total UI (current selection)
     const totalEl = document.getElementById('total_with_addon');
@@ -113,14 +126,12 @@ function updateLevel3Totals() {
         totalEl.innerHTML = '<span class="label">Total Cost :</span> ' + gbp(total);
     }
 
-    // Level 4 base
-    const baseL4 =
-        num(document.getElementById('level4_price')?.value) ||
-        num(document.getElementById('level4-base-price')?.value);
-
     // --- NEW: compute "all add-ons selected" comparison for the banner ---
     const addonsSumAll = readAllAddonsSum();               // sum of all three (or all available)
     const totalAllAddons = baseL3 + addonsSumAll;          // L3 if user took every add-on
+    const baseL4 =
+        num(document.getElementById('level4_price')?.value) ||
+        num(document.getElementById('level4-base-price')?.value);
     const savingsAll = totalAllAddons - baseL4;            // benefit if they went to Level 4 instead
 
     // Show the Level 4 banner ALWAYS, with savings based on the "all add-ons" scenario
@@ -135,7 +146,6 @@ function updateLevel3Totals() {
         const displaySavings = savingsAll > 0 ? savingsAll : 0;
         if (saveNumEl) saveNumEl.textContent = gbp(displaySavings);
         if (saveTxtEl) saveTxtEl.textContent = gbp(displaySavings);
-
     }
 }
 

@@ -199,7 +199,7 @@
                 <div class="summary-title">
                     <h4>Property Address:</h4>
                 </div>
-                <div class="summary-value">35 Hevlock Drive Da9 9XT</div>
+                <div class="summary-value">{{ $survey->full_address }}</div>
             </div>
 
             <!-- Property Type -->
@@ -210,7 +210,7 @@
                 <div class="summary-title">
                     <h4>Property Type:</h4>
                 </div>
-                <div class="summary-value">House</div>
+                <div class="summary-value">{{ $survey->house_or_flat }}</div>
             </div>
 
             <!-- Size -->
@@ -221,7 +221,12 @@
                 <div class="summary-title">
                     <h4>Property Size (if over 1650 sqft):</h4>
                 </div>
-                <div class="summary-value">2000</div>
+                @if ($survey->over1650 == 'yes')
+                <div class="summary-value">{{ $survey->sqft_area }}</div>
+                @else
+                <div class="summary-value" style="width: 40%">The dwelling including any outbuildings and/or garages is below 1650 SqFt.</div>
+
+                @endif
             </div>
 
             <!-- Bedrooms -->
@@ -232,7 +237,7 @@
                 <div class="summary-title">
                     <h4>Number of Bedrooms:</h4>
                 </div>
-                <div class="summary-value">3</div>
+                <div class="summary-value">{{ $survey->number_of_bedrooms }}</div>
             </div>
 
             <!-- Total + Proceed -->

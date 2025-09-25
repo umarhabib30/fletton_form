@@ -40,16 +40,17 @@
                             <div class="level-choice" data-level="1">
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
+                                        <span style="font-size: 14px; font-weight: bold;">A stand-alone roof survey </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                            Breakdown of repairs and upgrades to help you budget and negotiate.
+                                           A stand-alone external roof survey using a drone, providing you with a full independent report on the condition of the roof structure, roof coverings, flashings, gutters, chimneys, and related elements.
                                         </div>
                                     </div>
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/user/icons/Level 1 survey.png') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/drone.gif') }}" alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Roof Survey</h3>
                                 <div class="price-custom">
@@ -428,7 +429,7 @@
       closePopup();
     } else {
       // safety fallback
-      document.getElementById('confirm-popup-conteiner')?.style && 
+      document.getElementById('confirm-popup-conteiner')?.style &&
       (document.getElementById('confirm-popup-conteiner').style.display = 'none');
     }
   }
