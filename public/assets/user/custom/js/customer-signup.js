@@ -1,6 +1,6 @@
 
 // Global Variables
-let currentStep = 1;
+let currentStep = 2;
 const totalSteps = 6;
 let isDrawing = false;
 let signatureData = '';

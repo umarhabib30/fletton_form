@@ -254,30 +254,30 @@
 
         <!-- Progress -->
         <div class="progress-container" id="progressContainer">
-            <div class="progress-bar" data-progress="1">
-                <div class="progress-step active" data-step="1">
+            <div class="progress-bar" data-progress="2">
+                {{-- <div class="progress-step active" data-step="1">
                     <!-- make step 1 look completed-style -->
                     <div class="step-circle" style="background:var(--primary); border-color:var(--primary); color:#1A202C;">1</div>
                     <div class="step-label">Summary</div>
-                </div>
+                </div> --}}
                 <div class="progress-step" data-step="2">
-                    <div class="step-circle">2</div>
+                    <div class="step-circle">1</div>
                     <div class="step-label">Client Details</div>
                 </div>
                 <div class="progress-step" data-step="3">
-                    <div class="step-circle">3</div>
+                    <div class="step-circle">2</div>
                     <div class="step-label">Property Details</div>
                 </div>
                 <div class="progress-step" data-step="4">
-                    <div class="step-circle">4</div>
+                    <div class="step-circle">3</div>
                     <div class="step-label">Solicitors</div>
                 </div>
                 <div class="progress-step" data-step="5">
-                    <div class="step-circle">5</div>
+                    <div class="step-circle">4</div>
                     <div class="step-label">Agents</div>
                 </div>
                 <div class="progress-step" data-step="6">
-                    <div class="step-circle">6</div>
+                    <div class="step-circle"></div>
                     <div class="step-label">Terms & Payment</div>
                 </div>
             </div>
@@ -376,7 +376,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Vacant or Occupied <span class="required">*</span></label>
+                        <label for="vacant">Vacant or Occupied <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="vacant" name="inf_custom_VacantorOccupied" value="Vacant" required />
@@ -390,7 +390,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Any Extensions? <span class="required">*</span></label>
+                        <label for="extensionsYes">Any Extensions? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="extensionsYes" name="inf_custom_AnyExtensions" value="1" required />
@@ -404,7 +404,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Garage? <span class="required">*</span></label>
+                        <label for="garageYes">Garage? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="garageYes" name="inf_custom_Garage" value="1" required />
@@ -424,7 +424,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Garden? <span class="required">*</span></label>
+                        <label for="gardenYes">Garden? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="gardenYes" name="inf_custom_Garden" value="1" required checked />
@@ -455,14 +455,14 @@
                     <h2 class="step-title">Solicitors Details</h2>
 
                     <div class="form-group">
-                        <label>Do you have a solicitor?</label>
+                        <label for="solicitorYes">Do you have a solicitor? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="solicitorYes" name="inf_custom_SolicitorFirm" value="yes" />
+                                <input type="radio" id="solicitorYes" name="inf_custom_SolicitorFirm" value="yes" required />
                                 <label for="solicitorYes">Yes</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="solicitorNo" name="inf_custom_SolicitorFirm" value="no" />
+                                <input type="radio" id="solicitorNo" name="inf_custom_SolicitorFirm" value="no" required />
                                 <label for="solicitorNo">No</label>
                             </div>
                         </div>
@@ -648,94 +648,87 @@
 
     <!-- Unified wizard controller (no FOUC) -->
     <script>
-        (function() {
-            const $landing = document.getElementById('bookingSummarySticky');
-            const $progress = document.getElementById('progressContainer');
-            const $next = document.getElementById('nextBtn');
-            const $submit = document.getElementById('submitBtn');
-            const $backHead = document.getElementById('headerBackBtn');
-            const $proceed = document.getElementById('proceedFromSummaryBtn');
-            const $prev = document.getElementById('prevBtn'); // stay hidden by CSS
+      (function() {
+    const $landing = document.getElementById('bookingSummarySticky');
+    const $progress = document.getElementById('progressContainer');
+    const $next = document.getElementById('nextBtn');
+    const $submit = document.getElementById('submitBtn');
+    const $backHead = document.getElementById('headerBackBtn');
+    const $proceed = document.getElementById('proceedFromSummaryBtn');
+    const $prev = document.getElementById('prevBtn'); // stay hidden by CSS
 
-            const MIN_STEP = 2,
-                MAX_STEP = 6;
-            let currentStep = MIN_STEP;
+    const MIN_STEP = 2, MAX_STEP = 6;
+    let currentStep = MIN_STEP;
 
-            const qsAll = (s) => Array.from(document.querySelectorAll(s));
+    const qsAll = (s) => Array.from(document.querySelectorAll(s));
 
-            function setProgressActive(step) {
-                qsAll('.progress-step').forEach(p => p.classList.remove('active', 'completed'));
-                for (let i = 2; i <= MAX_STEP; i++) {
-                    const node = document.querySelector(`.progress-step[data-step="${i}"]`);
-                    if (!node) continue;
-                    if (i < step) node.classList.add('completed');
-                    if (i === step) node.classList.add('active');
-                }
-                document.querySelector('.progress-bar')?.setAttribute('data-progress', String(step));
-            }
+    function setProgressActive(step) {
+        qsAll('.progress-step').forEach(p => p.classList.remove('active', 'completed'));
+        for (let i = 2; i <= MAX_STEP; i++) {
+            const node = document.querySelector(`.progress-step[data-step="${i}"]`);
+            if (!node) continue;
+            if (i < step) node.classList.add('completed');
+            if (i === step) node.classList.add('active');
+        }
+        document.querySelector('.progress-bar')?.setAttribute('data-progress', String(step));
+    }
 
-            function setStep(step) {
-                currentStep = Math.min(Math.max(step, MIN_STEP), MAX_STEP);
-                qsAll('.step').forEach(s => s.classList.remove('active'));
-                const el = document.getElementById('step' + currentStep);
-                if (el) {
-                    el.style.display = '';
-                    el.classList.add('active');
-                }
-                setProgressActive(currentStep);
-                if ($next) $next.style.display = (currentStep >= MAX_STEP) ? 'none' : '';
-                if ($submit) $submit.style.display = (currentStep === MAX_STEP) ? '' : 'none';
-                if ($backHead) $backHead.style.display = 'block';
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
+    function setStep(step) {
+        currentStep = Math.min(Math.max(step, MIN_STEP), MAX_STEP);
+        qsAll('.step').forEach(s => s.classList.remove('active'));
+        const el = document.getElementById('step' + currentStep);
+        if (el) {
+            el.style.display = '';
+            el.classList.add('active');
+        }
+        setProgressActive(currentStep);
+        if ($next) $next.style.display = 'block';  // Hide Next button after first step
+        if ($submit) $submit.style.display = 'none';  // Hide Submit button
+        if ($backHead) $backHead.style.display = 'block';  // Show back button
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 
-            function showWizard(startStep = MIN_STEP) {
-                document.body.classList.remove('is-landing');
-                if ($landing) $landing.style.display = 'none';
-                if ($progress) $progress.style.display = '';
-                if ($next) {
-                    $next.innerHTML = `Next <i class="fas fa-arrow-right"></i>`;
-                    $next.onclick = () => {
-                        if (currentStep < MAX_STEP) setStep(currentStep + 1);
-                    };
-                    $next.style.display = '';
-                }
-                setStep(startStep);
-            }
+    function showWizard(startStep = MIN_STEP) {
+        document.body.classList.remove('is-landing');
+        if ($landing) $landing.style.display = 'none';
+        if ($progress) $progress.style.display = '';
+        if ($next) {
+            $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
+            $next.style.display = 'none';  // Hide Next button, as we don’t need to go to the next step
+        }
+        setStep(startStep);  // Ensure only the first step is shown
+    }
 
-            function showLanding() {
-                document.body.classList.add('is-landing');
-                if ($landing) $landing.style.display = '';
-                if ($progress) $progress.style.display = 'none';
-                if ($submit) $submit.style.display = 'none';
-                if ($next) {
-                    $next.style.display = '';
-                    $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-                    $next.onclick = () => showWizard(MIN_STEP);
-                }
-                if ($backHead) $backHead.style.display = 'none';
-                qsAll('.step').forEach(s => s.classList.remove('active'));
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
+    function showLanding() {
+        document.body.classList.add('is-landing');
+        if ($landing) $landing.style.display = '';
+        if ($progress) $progress.style.display = 'none';
+        if ($submit) $submit.style.display = 'none';
+        if ($next) {
+            $next.style.display = '';
+            $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
+            $next.onclick = () => showWizard(MIN_STEP);  // Proceed to the first step only
+        }
+        if ($backHead) $backHead.style.display = 'none';
+        qsAll('.step').forEach(s => s.classList.remove('active'));
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 
-            // Click handlers
-            $proceed?.addEventListener('click', () => showWizard(MIN_STEP));
-            $backHead?.addEventListener('click', () => {
-                if (currentStep <= MIN_STEP) {
-                    showLanding();
-                } else {
-                    setStep(currentStep - 1);
-                }
-            });
+    // Click handlers
+    $proceed?.addEventListener('click', () => showWizard(MIN_STEP));  // Ensure we start at step 2
+    $backHead?.addEventListener('click', () => {
+        showLanding();  // Only go back to the landing, no navigation to previous steps
+    });
 
-            // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
-        })();
+    // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
+})();
+
     </script>
 
     <noscript>

@@ -1,26 +1,4 @@
-/* ============================================================================
- * listing.js  (Final, with Add-to-Survey toggle built-in)
- * ----------------------------------------------------------------------------
- * Supports BOTH: <select class="addon"> and <div class="radio-group addon">
- * Radio markup example:
- *   <div class="radio-group addon" data-cost="123">
- *     <input type="radio" name="..." value="0" checked> No
- *     <input type="radio" name="..." value="1"> Yes
- *   </div>
- * Select markup example:
- *   <select class="addon" data-cost="123">
- *     <option value="0">No</option>
- *     <option value="1">Yes</option>
- *   </select>
- * ----------------------------------------------------------------------------
- * Pages expect hidden inputs:
- *   #level1_price, #level2_price, #level3_price, #level4_price
- *   #selected_level, #level_total
- * And totals UI:
- *   #total_with_addon (we set text + data-total)
- * ----------------------------------------------------------------------------
- * Toastr is optional; used only for terms checkbox error.
- * ========================================================================== */
+
 
 /* ----------------------------- State & Helpers ----------------------------- */
 let selectedLevel = null; // which level user selected in confirm popup
@@ -66,14 +44,7 @@ function showAddons() {
 }
 
 /* ---------------------- Add-ons Reading (Select + Radio) ------------------- */
-/**
- * Returns:
- *  {
- *    selectedCount: <number of add-ons that are 'Yes'>,
- *    totalAddons:   <total number of add-ons on page>,
- *    addonsSum:     <sum of costs for chosen add-ons>
- *  }
- */
+
 function readAddonsState() {
     let addonsSum = 0;
     let selectedCount = 0;
@@ -302,22 +273,35 @@ function handleBuyNow(button, level) {
         // Stash selected level + total BEFORE showing confirm
         const selectedLevelInput = document.getElementById('selected_level');
         const levelTotalInput = document.getElementById('level_total');
-        if (selectedLevelInput) selectedLevelInput.value = level || '';
+
+        // Check if all three add-ons are selected
+        const { selectedCount } = readAddonsState(); // Returns the number of selected add-ons
 
         let levelTotal = 0;
-        if (String(level) === '1') {
-            levelTotal = document.getElementById('level1_price')?.value || 0;
-        } else if (String(level) === '2') {
-            levelTotal = document.getElementById('level2_price')?.value || 0;
-        } else if (String(level) === '3') {
-            // Use numeric data from #total_with_addon
-            levelTotal = document.getElementById('total_with_addon')?.getAttribute('data-total') || 0;
-        } else if (String(level) === '4') {
+        let selectedLevel = level;
+
+        // If all three add-ons are selected, set level to 4 and use Level 4 price
+        if (selectedCount === 3) {
+            selectedLevel = 4; // Set to Level 4
             levelTotal = document.getElementById('level4_price')?.value || 0;
+        } else {
+            // Use the selected level price (fallback to Level 3 logic)
+            if (String(level) === '1') {
+                levelTotal = document.getElementById('level1_price')?.value || 0;
+            } else if (String(level) === '2') {
+                levelTotal = document.getElementById('level2_price')?.value || 0;
+            } else if (String(level) === '3') {
+                // Use numeric data from #total_with_addon
+                levelTotal = document.getElementById('total_with_addon')?.getAttribute('data-total') || 0;
+            }
         }
+
+        // Update the level and total in the hidden inputs
+        if (selectedLevelInput) selectedLevelInput.value = selectedLevel;
         if (levelTotalInput) levelTotalInput.value = levelTotal;
 
-        showConfirmPopup(level);
+        // Show the confirmation popup
+        showConfirmPopup(selectedLevel);
 
         // Restore button to normal (since popup took over)
         button.classList.remove('disabled');
