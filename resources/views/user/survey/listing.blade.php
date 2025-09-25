@@ -151,11 +151,11 @@
                         <div class="grw-card">
                             <div class="grw-left">
                                 <div class="grw-badge">
-                                    <img src="/assets/img/trust.png" alt="Trustindex" class="grw-logo">
+                                    <img src="/assets/img/trustindex.png" alt="Trustindex" class="grw-logo">
 
                                 </div>
                                 <div class="grw-badge">
-                                    <img src="/assets/img/review.png" alt="Google Reviews" class="grw-logo">
+                                    <img src="/assets/img/google.png" alt="Google Reviews" class="grw-logo">
 
                                 </div>
                             </div>
@@ -167,25 +167,25 @@
                                 </div>
 
                                 @if (!empty($reviews))
-                                    <div class="grw-list">
-                                        @foreach ($reviews as $rev)
-                                            <div class="grw-item">
-                                                <div class="grw-item-head">
-                                                    @if ($rev['profile_photo_url'])
-                                                        <img src="{{ $rev['profile_photo_url'] }}"
-                                                            alt="{{ $rev['author_name'] }}" class="grw-avatar">
-                                                    @endif
-                                                    <div>
-                                                        <div class="grw-name">{{ $rev['author_name'] }}</div>
-                                                        <div class="grw-inline-stars"
-                                                            style="--rating: {{ (float) $rev['rating'] }};"></div>
-                                                        <div class="grw-time">{{ $rev['time_desc'] }}</div>
-                                                    </div>
-                                                </div>
-                                                <p class="grw-text">{{ $rev['text'] }}</p>
+                                <div class="grw-list">
+                                    @foreach ($reviews as $rev)
+                                    <div class="grw-item">
+                                        <div class="grw-item-head">
+                                            @if ($rev['profile_photo_url'])
+                                            <img src="{{ $rev['profile_photo_url'] }}"
+                                                alt="{{ $rev['author_name'] }}" class="grw-avatar">
+                                            @endif
+                                            <div>
+                                                <div class="grw-name">{{ $rev['author_name'] }}</div>
+                                                <div class="grw-inline-stars"
+                                                    style="--rating: {{ (float) $rev['rating'] }};"></div>
+                                                <div class="grw-time">{{ $rev['time_desc'] }}</div>
                                             </div>
-                                        @endforeach
+                                        </div>
+                                        <p class="grw-text">{{ $rev['text'] }}</p>
                                     </div>
+                                    @endforeach
+                                </div>
                                 @endif
                             </div>
 
@@ -204,166 +204,166 @@
                             <div class="ddons-header">
                                 <div style="position: relative; text-align: center; margin-top: 40px;">
                                     <!-- Back Icon (always on left) -->
-                                    <div style="position: absolute; left: 20px; font-size: 60px; top: 60%; transform: translateY(-50%); color: #C1EC4A; cursor: pointer;"
+                                    <div style="position: absolute; left: 20px; font-size: 60px; top: 80%; transform: translateY(-50%); color: #C1EC4A; cursor: pointer;"
                                         onclick="showStep1()">
                                         <
+                                            </div>
+                                            a
+                                            <!-- Centered Title -->
+                                            <h3 style="margin: 0;">Choose Your Add-Ons</h3>
                                     </div>
-
-                                    <!-- Centered Title -->
-                                    <h3 style="margin: 0;">Choose Your Add-Ons</h3>
+                                    <p style="text-align: center; margin-top: 10px;">
+                                        Tailor your survey to your needs with exclusive add-on options.
+                                    </p>
                                 </div>
-                                <p style="text-align: center; margin-top: 10px;">
-                                    Tailor your survey to your needs with exclusive add-on options.
-                                </p>
-                            </div>
 
 
-                            <div class="addons-card">
-                                <!-- 3-card grid -->
-                                <div class="addons-grid cards-3">
+                                <div class="addons-card">
+                                    <!-- 3-card grid -->
+                                    <div class="addons-grid cards-3">
 
-                                    <!-- Estimated Costs Package -->
-                                    <div class="addon-card">
-                                        <!-- info icon + popover -->
-                                        <div class="addon-info">
-                                            <button type="button" class="info-btn" aria-label="More info">
-                                                <i class="fa-solid fa-info"></i>
-                                            </button>
-                                            <div class="addon-pop">
-                                                Breakdown of repairs and upgrades to help you budget and negotiate.
+                                        <!-- Estimated Costs Package -->
+                                        <div class="addon-card">
+                                            <!-- info icon + popover -->
+                                            <div class="addon-info">
+                                                <button type="button" class="info-btn" aria-label="More info">
+                                                    <i class="fa-solid fa-info"></i>
+                                                </button>
+                                                <div class="addon-pop">
+                                                    Breakdown of repairs and upgrades to help you budget and negotiate.
+                                                </div>
+                                            </div>
+
+                                            <div class="addon-icon">
+                                                <img src="{{ asset('assets/user/icons/Estimated cost package.png') }}"
+                                                    alt="Estimated Costs">
+                                            </div>
+
+                                            <h4 class="addon-title-strong">Estimated Costs Package</h4>
+                                            <div class="addon-price-line">£{{ $price->repair_cost }}</div>
+                                            {{-- <div class="addon-sub">(Repair & improvement costs)</div> --}}
+
+                                            <!-- Toggle Button -->
+                                            <button type="button" class="addon-btn" data-group="grp-repair">Add</button>
+
+                                            <!-- Hidden radios (DON'T TOUCH) -->
+                                            <div id="grp-repair" class="radio-group addon"
+                                                data-cost="{{ $price->repair_cost }}" style="display:none">
+                                                <input type="radio" name="breakdown_of_estimated_repair_costs"
+                                                    value="0" checked>
+                                                <input type="radio" name="breakdown_of_estimated_repair_costs"
+                                                    value="1">
                                             </div>
                                         </div>
 
-                                        <div class="addon-icon">
-                                            <img src="{{ asset('assets/user/icons/Estimated cost package.png') }}"
-                                                alt="Estimated Costs">
-                                        </div>
+                                        <!-- Drone Package -->
+                                        <div class="addon-card">
+                                            <div class="addon-info">
+                                                <button type="button" class="info-btn" aria-label="More info">
+                                                    <i class="fa-solid fa-info"></i>
+                                                </button>
+                                                <div class="addon-pop">
+                                                    Drone images of roofs and chimneys for a clear view of condition.
+                                                </div>
+                                            </div>
 
-                                        <h4 class="addon-title-strong">Estimated Costs Package</h4>
-                                        <div class="addon-price-line">£{{ $price->repair_cost }}</div>
-                                        {{-- <div class="addon-sub">(Repair & improvement costs)</div> --}}
+                                            <div class="addon-icon">
+                                                <img src="{{ asset('assets/user/icons/drone.gif') }}"
+                                                    alt="Drone Package">
+                                            </div>
 
-                                        <!-- Toggle Button -->
-                                        <button type="button" class="addon-btn" data-group="grp-repair">Add</button>
+                                            <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
+                                            <div class="addon-price-line">£{{ $price->aerial_chimney_cost }}</div>
+                                            {{-- <div class="addon-sub">(Aerial roof & chimney images)</div> --}}
 
-                                        <!-- Hidden radios (DON'T TOUCH) -->
-                                        <div id="grp-repair" class="radio-group addon"
-                                            data-cost="{{ $price->repair_cost }}" style="display:none">
-                                            <input type="radio" name="breakdown_of_estimated_repair_costs"
-                                                value="0" checked>
-                                            <input type="radio" name="breakdown_of_estimated_repair_costs"
-                                                value="1">
-                                        </div>
-                                    </div>
+                                            <button type="button" class="addon-btn" data-group="grp-drone">Add</button>
 
-                                    <!-- Drone Package -->
-                                    <div class="addon-card">
-                                        <div class="addon-info">
-                                            <button type="button" class="info-btn" aria-label="More info">
-                                                <i class="fa-solid fa-info"></i>
-                                            </button>
-                                            <div class="addon-pop">
-                                                Drone images of roofs and chimneys for a clear view of condition.
+                                            <div id="grp-drone" class="radio-group addon"
+                                                data-cost="{{ $price->aerial_chimney_cost }}" style="display:none">
+                                                <input type="radio" name="aerial_roof_and_chimney" value="0"
+                                                    checked>
+                                                <input type="radio" name="aerial_roof_and_chimney" value="1">
                                             </div>
                                         </div>
 
-                                        <div class="addon-icon">
-                                            <img src="{{ asset('assets/user/icons/Aerial drone package.png') }}"
-                                                alt="Drone Package">
-                                        </div>
+                                        <!-- Reinstatement Package -->
+                                        <div class="addon-card">
+                                            <div class="addon-info">
+                                                <button type="button" class="info-btn" aria-label="More info">
+                                                    <i class="fa-solid fa-info"></i>
+                                                </button>
+                                                <div class="addon-pop">
+                                                    Accurate rebuild cost for insurance, ensuring full protection without
+                                                    overpaying.
+                                                </div>
+                                            </div>
 
-                                        <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
-                                        <div class="addon-price-line">£{{ $price->aerial_chimney_cost }}</div>
-                                        {{-- <div class="addon-sub">(Aerial roof & chimney images)</div> --}}
+                                            <div class="addon-icon">
+                                                <img src="{{ asset('assets/user/icons/Reinstatement cost package.png') }}"
+                                                    alt="Reinstatement Package">
+                                            </div>
 
-                                        <button type="button" class="addon-btn" data-group="grp-drone">Add</button>
+                                            <h4 class="addon-title-strong">Reinstatement Cost Package</h4>
+                                            <div class="addon-price-line">£{{ $price->insurance_cost }}</div>
+                                            {{-- <div class="addon-sub">(Rebuild valuation)</div> --}}
 
-                                        <div id="grp-drone" class="radio-group addon"
-                                            data-cost="{{ $price->aerial_chimney_cost }}" style="display:none">
-                                            <input type="radio" name="aerial_roof_and_chimney" value="0"
-                                                checked>
-                                            <input type="radio" name="aerial_roof_and_chimney" value="1">
-                                        </div>
-                                    </div>
+                                            <button type="button" class="addon-btn" data-group="grp-ins">Add</button>
 
-                                    <!-- Reinstatement Package -->
-                                    <div class="addon-card">
-                                        <div class="addon-info">
-                                            <button type="button" class="info-btn" aria-label="More info">
-                                                <i class="fa-solid fa-info"></i>
-                                            </button>
-                                            <div class="addon-pop">
-                                                Accurate rebuild cost for insurance, ensuring full protection without
-                                                overpaying.
+                                            <div id="grp-ins" class="radio-group addon"
+                                                data-cost="{{ $price->insurance_cost }}" style="display:none">
+                                                <input type="radio" name="insurance_reinstatement_valuation"
+                                                    value="0" checked>
+                                                <input type="radio" name="insurance_reinstatement_valuation"
+                                                    value="1">
                                             </div>
                                         </div>
 
-                                        <div class="addon-icon">
-                                            <img src="{{ asset('assets/user/icons/Reinstatement cost package.png') }}"
-                                                alt="Reinstatement Package">
+                                    </div><!-- /.addons-grid -->
+
+                                    <!-- (optional legacy note kept hidden; JS still safe) -->
+                                    <div id="upgrade-note" style="display:none"></div>
+
+                                    <!-- ===== Single Bottom Box: savings + total + actions ===== -->
+                                    <div class="addons-bottom-bar">
+                                        <!-- left: savings when all selected (JS toggles .level4-all-inlcude-addons) -->
+                                        <div class="abb-left">
+                                            <div class="level4-all-inlcude-addons" style="display:none">
+                                                <span class="save-copy">Add all three and save
+                                                    <span class="level-price">£250</span>
+                                                </span>
+                                                <span class="save-price hidden">£250</span>
+                                            </div>
                                         </div>
 
-                                        <h4 class="addon-title-strong">Reinstatement Cost Package</h4>
-                                        <div class="addon-price-line">£{{ $price->insurance_cost }}</div>
-                                        {{-- <div class="addon-sub">(Rebuild valuation)</div> --}}
-
-                                        <button type="button" class="addon-btn" data-group="grp-ins">Add</button>
-
-                                        <div id="grp-ins" class="radio-group addon"
-                                            data-cost="{{ $price->insurance_cost }}" style="display:none">
-                                            <input type="radio" name="insurance_reinstatement_valuation"
-                                                value="0" checked>
-                                            <input type="radio" name="insurance_reinstatement_valuation"
-                                                value="1">
+                                        <!-- center: total -->
+                                        <div class="abb-center">
+                                            <div class="level3-price level-price addons" id="total_with_addon"
+                                                data-total="">
+                                                <span class="label">Total Cost:</span> £{{ $survey->level3_price }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                </div><!-- /.addons-grid -->
-
-                                <!-- (optional legacy note kept hidden; JS still safe) -->
-                                <div id="upgrade-note" style="display:none"></div>
-
-                                <!-- ===== Single Bottom Box: savings + total + actions ===== -->
-                                <div class="addons-bottom-bar">
-                                    <!-- left: savings when all selected (JS toggles .level4-all-inlcude-addons) -->
-                                    <div class="abb-left">
-                                        <div class="level4-all-inlcude-addons" style="display:none">
-                                            <span class="save-copy">Add all three and save
-                                                <span class="level-price">£250</span>
-                                            </span>
-                                            <span class="save-price hidden">£250</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- center: total -->
-                                    <div class="abb-center">
-                                        <div class="level3-price level-price addons" id="total_with_addon"
-                                            data-total="">
-                                            <span class="label">Total Cost:</span> £{{ $survey->level3_price }}
-                                        </div>
-                                    </div>
-
-                                    <!-- right: actions -->
-                                    <div class="abb-right">
-                                        <div class="btns">
-                                            {{-- <div class="btn-style alt-btn" onclick="showStep1()">
+                                        <!-- right: actions -->
+                                        <div class="abb-right">
+                                            <div class="btns">
+                                                {{-- <div class="btn-style alt-btn" onclick="showStep1()">
                                                 <i class="fa-solid fa-arrow-left"></i><span>Back</span>
                                             </div> --}}
-                                            <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
-                                                <span class="btn-loader"></span><span class="btn-text">Proceed</span>
+                                                <div class="btn-style level-3-confirm buy-now-btn " data-level="3">
+                                                    <span class="btn-loader "></span><span class="btn-text">Proceed</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- /bottom box -->
                                 </div>
-                                <!-- /bottom box -->
                             </div>
                         </div>
+
+
+
                     </div>
-
-
-
                 </div>
-            </div>
         </form>
     </div>
 
@@ -371,29 +371,35 @@
     <div class="confirm-popup-conteiner" id="confirm-popup-conteiner">
         <div class="confirm-popup">
             <div class="confirm-popup-inner">
-                <div class="confirm-popup-close" onclick="closePopup()"><span>×</span></div>
+                <!-- NEW: top-left back arrow -->
+                <div class="confirm-popup-back" onclick="goBackFromPopup()" aria-label="Back"><span><i class="fa-solid fa-angle-left"></i></span></div>
+
+                <!-- existing close (X) stays -->
+                <!-- <div class="confirm-popup-close" onclick="closePopup()" aria-label="Close"><span><i class="fa-solid fa-xmark"></i></span></div> -->
+
                 <h3 class="confirm-popup-title">Confirm and Proceed</h3>
                 <p>Flettons Group LLC will manage your payment and booking through the platform, and your data will be
                     shared with relevant parties involved in the property transaction to deliver the service.</p>
                 <p>Your survey will be carried out by <br><b>Flettons Surveyors Ltd – Regulated by RICS.</b></p>
                 <p>You will then be taken to an instruction form to complete, where you can review the terms of
                     engagement and finalise your instruction.</p>
+
                 <div class="terms-checkbox">
                     <label>
                         <input type="checkbox" id="termsCheckbox" name="terms_agreed" value="1" required>
-                        <div>
-                            By continuing, you agree to the process and to the <a href="#" target="_blank">Terms
-                                and
-                                Conditions</a>.</div>
+                        <div>By continuing, you agree to the process and to the
+                            <a href="#" target="_blank">Terms and Conditions</a>.
+                        </div>
                     </label>
                 </div>
+
                 <div class="btn-style-group">
-                    <div class="btn-style" onclick="closePopup()">Go Back</div>
-                    <div class="btn-style confirm-yes" onclick="proceedWithBooking()">
+                    <!-- REMOVED: <div class="btn-style" onclick="closePopup()">Go Back</div> -->
+                    <div class="btn-style confirm-yes proceed" onclick="proceedWithBooking()">
                         <span class="btn-loader"></span><span class="btn-text">Proceed</span>
                     </div>
-
                 </div>
+
                 <div class="wait-notice" id="wait-notice">
                     <div class="wait-title">Please Wait</div>
                     <div class="wait-sub">(Please do not click back or refresh the screen)</div>
@@ -402,6 +408,7 @@
             </div>
         </div>
     </div>
+
     <input type="hidden" name="" id="level1_price" value="{{ $survey->level1_price }}">
     <input type="hidden" name="" id="level2_price" value="{{ $survey->level2_price }}">
     <input type="hidden" name="" id="level3_price" value="{{ $survey->level3_price }}">
@@ -410,6 +417,22 @@
     <script src="{{ asset('assets/user/custom/js/listing.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+  function goBackFromPopup(){
+    // Optional: jey “back” da matlab step-1 dikhana hai
+    if (typeof showStep1 === 'function') {
+      showStep1();
+    }
+    // popup close
+    if (typeof closePopup === 'function') {
+      closePopup();
+    } else {
+      // safety fallback
+      document.getElementById('confirm-popup-conteiner')?.style && 
+      (document.getElementById('confirm-popup-conteiner').style.display = 'none');
+    }
+  }
+</script>
 
 </body>
 

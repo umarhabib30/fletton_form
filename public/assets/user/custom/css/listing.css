@@ -253,8 +253,9 @@ body {
 }
 
 .grw-logo {
-    height: 100px;
+    height: 90px;
     width: auto;
+    padding: 10px 0;
     display: block;
 }
 
@@ -402,6 +403,7 @@ body {
     border-radius: 10px;
     box-shadow: none;
     margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .step-2 .level3 h3 {
@@ -692,17 +694,39 @@ body {
 
 
 /* Popup */
-.confirm-popup-conteiner {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 10, 28, .65);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 16px;
-    backdrop-filter: blur(4px);
+
+/* Top-left back arrow in confirm popup */
+.confirm-popup-back{
+  position: absolute;
+  top: 17px !important;
+  left: 14px!important;
+  font-size: 24px;          /* chhota, clean */
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muted);
+  user-select: none;
 }
+.confirm-popup-back:hover{ color: var(--ink); }
+.confirm-popup-back span{ display:inline-block; transform: translateY(-1px); }
+
+
+/* Top-left back arrow in confirm popup */
+
+.confirm-popup-conteiner{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+
+  /* darker overlay + stronger blur */
+  background: rgba(0,10,28,0.55);          /* was 0.65 or whatever you like */
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%); /* Safari */
+}
+
 
 .confirm-popup {
     background: #fff;
@@ -723,7 +747,7 @@ body {
     position: absolute;
     top: 12px;
     right: 14px;
-    font-size: 28px;
+    font-size: 24px;
     cursor: pointer;
     color: var(--muted)
 }
@@ -731,6 +755,7 @@ body {
 .confirm-popup-title {
     font-size: 22px;
     color: var(--ink);
+    margin-top: 11px;
     margin-bottom: 10px;
     font-weight: 400
 }
@@ -848,6 +873,13 @@ input#termsCheckbox {
         font-size: 25px;
         font-weight: 500;
         padding: 14px 18px;
+    }
+        .btn-style.proceed {
+        font-size: 25px;
+        width: fit-content!important;
+        font-weight: 500;
+        padding: 14px 40px!important;
+        margin: auto!important;
     }
 
     .step-2 h3 {

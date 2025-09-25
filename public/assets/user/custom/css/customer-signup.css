@@ -665,8 +665,8 @@ textarea.form-control {
 }
 
 .btn-primary:hover {
-    background: var(--ink);
-    color: #fff;
+   background: #7da817;
+    color: var(--ink);
     /* /* border-color: #fff; */
     /* transform: translateY(-2px); */
     /* box-shadow: 0 10px 22px rgba(28, 27, 55, .22) */
