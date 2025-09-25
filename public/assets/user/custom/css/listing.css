@@ -372,11 +372,12 @@ body {
         text-align: center;
     }
 
-    .grw-logo{
-        height: 50px;;
+    .grw-logo {
+        height: 50px;
+        ;
     }
 
-    .username{
+    .username {
         font-size: 30px;
     }
 
@@ -388,7 +389,7 @@ body {
         justify-content: center;
     }
 
-    .step-2 .level3 h3{
+    .step-2 .level3 h3 {
         font-size: 30px !important;
     }
 }
@@ -696,35 +697,45 @@ body {
 /* Popup */
 
 /* Top-left back arrow in confirm popup */
-.confirm-popup-back{
-  position: absolute;
-  top: 17px !important;
-  left: 14px!important;
-  font-size: 24px;          /* chhota, clean */
-  line-height: 1;
-  cursor: pointer;
-  color: var(--muted);
-  user-select: none;
+.confirm-popup-back {
+    position: absolute;
+    top: 17px !important;
+    left: 14px !important;
+    font-size: 24px;
+    /* chhota, clean */
+    line-height: 1;
+    cursor: pointer;
+    color: var(--muted);
+    user-select: none;
 }
-.confirm-popup-back:hover{ color: var(--ink); }
-.confirm-popup-back span{ display:inline-block; transform: translateY(-1px); }
+
+.confirm-popup-back:hover {
+    color: var(--ink);
+}
+
+.confirm-popup-back span {
+    display: inline-block;
+    transform: translateY(-1px);
+}
 
 
 /* Top-left back arrow in confirm popup */
 
-.confirm-popup-conteiner{
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 16px;
+.confirm-popup-conteiner {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
 
-  /* darker overlay + stronger blur */
-  background: rgba(0,10,28,0.55);          /* was 0.65 or whatever you like */
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%); /* Safari */
+    /* darker overlay + stronger blur */
+    background: rgba(0, 10, 28, 0.55);
+    /* was 0.65 or whatever you like */
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    /* Safari */
 }
 
 
@@ -874,12 +885,13 @@ input#termsCheckbox {
         font-weight: 500;
         padding: 14px 18px;
     }
-        .btn-style.proceed {
+
+    .btn-style.proceed {
         font-size: 25px;
-        width: fit-content!important;
+        width: fit-content !important;
         font-weight: 500;
-        padding: 14px 40px!important;
-        margin: auto!important;
+        padding: 14px 40px !important;
+        margin: auto !important;
     }
 
     .step-2 h3 {
@@ -942,6 +954,23 @@ input#termsCheckbox {
     }
 }
 
+.header-section {
+    padding: 15px;
+}
+
+.username {
+    font-size: 28px;
+    line-height: 1.3em;
+}
+
+.grw-card {
+    gap: 10px;
+    padding: 20px;
+}
+
+.grw-logo {
+    height: 70px;
+}
 
 .level-img {
     display: flex;
@@ -949,7 +978,7 @@ input#termsCheckbox {
     margin-top: 40px;
 }
 
-.level-img img{
+.level-img img {
     width: 150px;
 }
 
@@ -963,4 +992,84 @@ input#termsCheckbox {
     text-align: center !important;
     font-weight: 500 !important;
     font-size: 30px !important;
+}
+
+
+/* ---------- Add-ons header (clean, responsive) ---------- */
+.addons-header{
+  position: relative;
+  background: var(--ink);
+  color:#fff;
+  border-radius: var(--radius);
+  padding: 18px 18px 14px 60px; /* left room for back btn */
+  margin: 40px 0 10px;
+}
+.addons-back{
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  border:none; border-radius:10px;
+  background: rgba(255,255,255,.08);
+  color: var(--primary);
+  cursor:pointer;
+}
+.addons-back i{ font-size:20px; line-height:1; }
+.addons-back:hover{ background: rgba(255,255,255,.16); }
+
+.addons-title{
+  margin:0;
+  font-weight:600;
+  font-size:32px;
+  letter-spacing:.2px;
+}
+.addons-subtitle{
+  margin:6px 0 0;
+  color:#e8e9ee;
+  font-size:15px;
+}
+
+/* ---------- Grid fallbacks (keep 3 → 2 → 1) ---------- */
+.addons-grid.cards-3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+@media (max-width:1024px){
+  .addons-title{ font-size:28px; }
+  .addons-grid.cards-3{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:640px){
+  .addons-header{
+    padding:14px 14px 12px 54px;
+    margin-top:16px;
+  }
+  .addons-title{ font-size:22px; }
+  .addons-subtitle{ font-size:14px; }
+  .addons-grid.cards-3{ grid-template-columns:1fr; }
+  .addon-card{ padding:32px 16px 22px; }
+  .addon-icon{ width:90px; height:90px; margin-bottom:20px; }
+  .addon-title-strong{ font-size:22px; }
+  .addon-price-line{ font-size:28px; }
+  .addon-btn{ width:100%; font-size:20px; padding:14px 16px; }
+  .addons-bottom-bar{ gap:12px; }
+  .addons-bottom-bar .abb-center .label{ font-size:20px; }
+  .addons-bottom-bar .abb-center .level-price{ font-size:32px; }
+}
+
+/* ---------- Info icon stays in card corner ---------- */
+.addon-card{ position:relative; }
+.addon-info{ position:absolute; top:10px; right:10px; z-index:2; }
+.addon-info .addon-pop{ right:0; }
+
+/* ---------- Bottom bar tweaks for tiny screens ---------- */
+@media (max-width:390px){
+  .addons-bottom-bar .abb-center .label{ display:block; margin-bottom:6px; }
+}
+
+/* (Optional) make proceed button full width on small screens */
+@media (max-width:480px){
+  .addons-bottom-bar .abb-right .btn-style{ width:100%; min-width:0; }
 }

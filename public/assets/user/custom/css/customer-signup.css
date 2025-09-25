@@ -1055,7 +1055,7 @@ textarea.form-control {
 }
 
 .summary-title{
-    width: 55%; justify-content: center; display: flex; flex-direction: column;
+    width: 55%; justify-content: left; display: flex; flex-direction: column;
 }
 
 .summary-title h4{
@@ -1063,7 +1063,7 @@ textarea.form-control {
 }
 
 .summary-value{
-    justify-content: center; display: flex; flex-direction: column; font-size: 20px; font-weight: 400;
+    justify-content: left; display: flex; flex-direction: column; font-size: 20px; font-weight: 400;
 }
 
 
@@ -1119,4 +1119,169 @@ textarea.form-control {
     width: 100%;
     gap: 8px;
 
+}
+
+
+
+
+
+
+/* ===== Step-0 / Booking Summary ===== */
+
+/* top banner */
+.summary-head {
+  background:#1A202C;
+  border-radius:10px;
+  text-align:center;
+  padding:14px 16px;
+  margin-bottom:20px;
+}
+.summary-head__title {
+  color:#fff;
+  font-weight:400;
+  line-height:1.15;
+  font-size:clamp(22px,6vw,52px);
+  margin:0 0 4px;
+}
+.summary-head__text {
+  color:#fff;
+  font-size:14px;
+  font-weight:300;
+  margin:0;
+}
+
+/* row card */
+.summary-tab {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  border:3px solid #d5d7d9;
+  border-radius:10px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  justify-content: center;
+}
+
+/* --- uniform columns --- */
+.summary-icon {
+  flex:0 0 72px;   /* fixed width for icons */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.summary-icon img {
+  width:56px;
+  height:auto;
+  display:block;
+}
+
+.summary-title {
+  flex:0 0 320px;   /* fixed width for titles */
+  display:flex;
+  align-items:left;
+  font-weight:600;
+  font-size:clamp(16px,2.1vw,20px);
+  color:#111827;
+}
+.summary-value {
+  flex:1 1 auto;   /* value fills remaining */
+  display:flex;
+  align-items:left;
+  font-size:clamp(16px,2.1vw,20px);
+  color:#111827;
+}
+
+/* green tick list (Add-ons) */
+.custom-list { list-style:none; margin:0; padding:0; }
+.custom-list li {
+  position:relative;
+  padding-left:32px;
+  margin:6px 0;
+}
+.custom-list li::before {
+  content:"✔";
+  position:absolute;
+  left:0; top:50%;
+  transform:translateY(-50%);
+  width:20px; height:20px;
+  border-radius:50%;
+  background:#C1EC4A;
+  color:#1A202C;
+  font-size:13px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* bottom total + proceed bar */
+.summary-totalbar {
+  background:#1A202C;
+  color:#fff;
+  border-radius:10px;
+  padding:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.summary-totalbar__label {
+  font-size:clamp(18px,3.4vw,28px);
+  font-weight:400;
+  margin:0;
+}
+.summary-totalbar__amount {
+  color:#C1EC4A;
+  font-size:clamp(22px,4.4vw,40px);
+  font-weight:600;
+}
+.summary-totalbar__btn {
+  border:0;
+  cursor:pointer;
+  background:#C1EC4A;
+  color:#1A202C;
+  border-radius:10px;
+  padding:12px 28px;
+  font-size:clamp(16px,2.8vw,22px);
+  font-weight:500;
+}
+.summary-totalbar__btn:hover {
+  background:#a8d528;
+}
+
+/* responsive behaviour */
+@media (max-width: 768px) {
+  .summary-tab {
+    flex-wrap:wrap;
+    align-items:flex-start;
+  }
+  .summary-icon {
+    flex:0 0 56px;
+  }
+  .summary-icon img {
+    width:44px;
+  }
+  .summary-title {
+    flex:0 0 100%;
+    margin-top:6px;
+  }
+  .summary-value {
+    flex:0 0 100%;
+    
+  }
+  .summary-totalbar {
+    flex-direction:column;
+    text-align:center;
+  }
+  .summary-tab {
+    gap: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    justify-content: left;
+}
+}
+
+@media (max-width: 420px) {
+  .summary-icon { flex-basis:52px; }
+  .summary-icon img { width:40px; }
 }

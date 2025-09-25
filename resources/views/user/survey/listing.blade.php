@@ -45,7 +45,7 @@
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                           A stand-alone external roof survey using a drone, providing you with a full independent report on the condition of the roof structure, roof coverings, flashings, gutters, chimneys, and related elements.
+                                            A stand-alone external roof survey using a drone, providing you with a full independent report on the condition of the roof structure, roof coverings, flashings, gutters, chimneys, and related elements.
                                         </div>
                                     </div>
                                 </div>
@@ -199,171 +199,131 @@
 
                     </div>
 
-                    <!-- ==================== STEP 2 (Add-ons) — UPDATED HTML ==================== -->
+                    <!-- ==================== STEP 2 (Add-ons) — CLEAN HTML ==================== -->
                     <div class="step-2">
                         <div class="level3">
-                            <div class="ddons-header">
-                                <div style="position: relative; text-align: center; margin-top: 40px;">
-                                    <!-- Back Icon (always on left) -->
-                                    <div style="position: absolute; left: 20px; font-size: 60px; top: 80%; transform: translateY(-50%); color: #C1EC4A; cursor: pointer;"
-                                        onclick="showStep1()">
-                                        <
+                            <header class="addons-header">
+                                <button type="button" class="addons-back" onclick="showStep1()" aria-label="Back">
+                                    <i class="fa-solid fa-angle-left"></i>
+                                </button>
+                                <h3 class="addons-title">Choose Your Add-Ons</h3>
+                                <p class="addons-subtitle">
+                                    Tailor your survey to your needs with exclusive add-on options.
+                                </p>
+                            </header>
+
+                            <section class="addons-card">
+                                <!-- 3-card grid -->
+                                <div class="addons-grid cards-3">
+
+                                    <!-- Estimated Costs Package -->
+                                    <article class="addon-card">
+                                        <div class="addon-info">
+                                            <button type="button" class="info-btn" aria-label="More info">
+                                                <i class="fa-solid fa-info"></i>
+                                            </button>
+                                            <div class="addon-pop">
+                                                Breakdown of repairs and upgrades to help you budget and negotiate.
                                             </div>
-                                            a
-                                            <!-- Centered Title -->
-                                            <h3 style="margin: 0;">Choose Your Add-Ons</h3>
+                                        </div>
+
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/user/icons/Estimated cost package.png') }}" alt="Estimated Costs">
+                                        </div>
+
+                                        <h4 class="addon-title-strong">Estimated Costs Package</h4>
+                                        <div class="addon-price-line">£{{ $price->repair_cost }}</div>
+
+                                        <button type="button" class="addon-btn" data-group="grp-repair">Add</button>
+
+                                        <!-- hidden radios (unchanged) -->
+                                        <div id="grp-repair" class="radio-group addon" data-cost="{{ $price->repair_cost }}" style="display:none">
+                                            <input type="radio" name="breakdown_of_estimated_repair_costs" value="0" checked>
+                                            <input type="radio" name="breakdown_of_estimated_repair_costs" value="1">
+                                        </div>
+                                    </article>
+
+                                    <!-- Drone Package -->
+                                    <article class="addon-card">
+                                        <div class="addon-info">
+                                            <button type="button" class="info-btn" aria-label="More info">
+                                                <i class="fa-solid fa-info"></i>
+                                            </button>
+                                            <div class="addon-pop">
+                                                Drone images of roofs and chimneys for a clear view of condition.
+                                            </div>
+                                        </div>
+
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/user/icons/drone.gif') }}" alt="Drone Package">
+                                        </div>
+
+                                        <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
+                                        <div class="addon-price-line">£{{ $price->aerial_chimney_cost }}</div>
+
+                                        <button type="button" class="addon-btn" data-group="grp-drone">Add</button>
+
+                                        <div id="grp-drone" class="radio-group addon" data-cost="{{ $price->aerial_chimney_cost }}" style="display:none">
+                                            <input type="radio" name="aerial_roof_and_chimney" value="0" checked>
+                                            <input type="radio" name="aerial_roof_and_chimney" value="1">
+                                        </div>
+                                    </article>
+
+                                    <!-- Reinstatement Package -->
+                                    <article class="addon-card">
+                                        <div class="addon-info">
+                                            <button type="button" class="info-btn" aria-label="More info">
+                                                <i class="fa-solid fa-info"></i>
+                                            </button>
+                                            <div class="addon-pop">
+                                                Accurate rebuild cost for insurance, ensuring full protection without overpaying.
+                                            </div>
+                                        </div>
+
+                                        <div class="addon-icon">
+                                            <img src="{{ asset('assets/user/icons/Reinstatement cost package.png') }}" alt="Reinstatement Package">
+                                        </div>
+
+                                        <h4 class="addon-title-strong">Reinstatement Cost Package</h4>
+                                        <div class="addon-price-line">£{{ $price->insurance_cost }}</div>
+
+                                        <button type="button" class="addon-btn" data-group="grp-ins">Add</button>
+
+                                        <div id="grp-ins" class="radio-group addon" data-cost="{{ $price->insurance_cost }}" style="display:none">
+                                            <input type="radio" name="insurance_reinstatement_valuation" value="0" checked>
+                                            <input type="radio" name="insurance_reinstatement_valuation" value="1">
+                                        </div>
+                                    </article>
+
+                                </div><!-- /.addons-grid -->
+
+                                <!-- Savings + total + proceed -->
+                                <div class="addons-bottom-bar">
+                                    <div class="abb-left">
+                                        <div class="level4-all-inlcude-addons" style="display:none">
+                                            <span class="save-copy">Add all three and save <span class="level-price">£250</span></span>
+                                            <span class="save-price hidden">£250</span>
+                                        </div>
                                     </div>
-                                    <p style="text-align: center; margin-top: 10px;">
-                                        Tailor your survey to your needs with exclusive add-on options.
-                                    </p>
-                                </div>
 
-
-                                <div class="addons-card">
-                                    <!-- 3-card grid -->
-                                    <div class="addons-grid cards-3">
-
-                                        <!-- Estimated Costs Package -->
-                                        <div class="addon-card">
-                                            <!-- info icon + popover -->
-                                            <div class="addon-info">
-                                                <button type="button" class="info-btn" aria-label="More info">
-                                                    <i class="fa-solid fa-info"></i>
-                                                </button>
-                                                <div class="addon-pop">
-                                                    Breakdown of repairs and upgrades to help you budget and negotiate.
-                                                </div>
-                                            </div>
-
-                                            <div class="addon-icon">
-                                                <img src="{{ asset('assets/user/icons/Estimated cost package.png') }}"
-                                                    alt="Estimated Costs">
-                                            </div>
-
-                                            <h4 class="addon-title-strong">Estimated Costs Package</h4>
-                                            <div class="addon-price-line">£{{ $price->repair_cost }}</div>
-                                            {{-- <div class="addon-sub">(Repair & improvement costs)</div> --}}
-
-                                            <!-- Toggle Button -->
-                                            <button type="button" class="addon-btn" data-group="grp-repair">Add</button>
-
-                                            <!-- Hidden radios (DON'T TOUCH) -->
-                                            <div id="grp-repair" class="radio-group addon"
-                                                data-cost="{{ $price->repair_cost }}" style="display:none">
-                                                <input type="radio" name="breakdown_of_estimated_repair_costs"
-                                                    value="0" checked>
-                                                <input type="radio" name="breakdown_of_estimated_repair_costs"
-                                                    value="1">
-                                            </div>
+                                    <div class="abb-center">
+                                        <div class="level3-price level-price addons" id="total_with_addon" data-total="">
+                                            <span class="label">Total Cost:</span> £{{ $survey->level3_price }}
                                         </div>
+                                    </div>
 
-                                        <!-- Drone Package -->
-                                        <div class="addon-card">
-                                            <div class="addon-info">
-                                                <button type="button" class="info-btn" aria-label="More info">
-                                                    <i class="fa-solid fa-info"></i>
-                                                </button>
-                                                <div class="addon-pop">
-                                                    Drone images of roofs and chimneys for a clear view of condition.
-                                                </div>
-                                            </div>
-
-                                            <div class="addon-icon">
-                                                <img src="{{ asset('assets/user/icons/drone.gif') }}"
-                                                    alt="Drone Package">
-                                            </div>
-
-                                            <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
-                                            <div class="addon-price-line">£{{ $price->aerial_chimney_cost }}</div>
-                                            {{-- <div class="addon-sub">(Aerial roof & chimney images)</div> --}}
-
-                                            <button type="button" class="addon-btn" data-group="grp-drone">Add</button>
-
-                                            <div id="grp-drone" class="radio-group addon"
-                                                data-cost="{{ $price->aerial_chimney_cost }}" style="display:none">
-                                                <input type="radio" name="aerial_roof_and_chimney" value="0"
-                                                    checked>
-                                                <input type="radio" name="aerial_roof_and_chimney" value="1">
-                                            </div>
-                                        </div>
-
-                                        <!-- Reinstatement Package -->
-                                        <div class="addon-card">
-                                            <div class="addon-info">
-                                                <button type="button" class="info-btn" aria-label="More info">
-                                                    <i class="fa-solid fa-info"></i>
-                                                </button>
-                                                <div class="addon-pop">
-                                                    Accurate rebuild cost for insurance, ensuring full protection without
-                                                    overpaying.
-                                                </div>
-                                            </div>
-
-                                            <div class="addon-icon">
-                                                <img src="{{ asset('assets/user/icons/Reinstatement cost package.png') }}"
-                                                    alt="Reinstatement Package">
-                                            </div>
-
-                                            <h4 class="addon-title-strong">Reinstatement Cost Package</h4>
-                                            <div class="addon-price-line">£{{ $price->insurance_cost }}</div>
-                                            {{-- <div class="addon-sub">(Rebuild valuation)</div> --}}
-
-                                            <button type="button" class="addon-btn" data-group="grp-ins">Add</button>
-
-                                            <div id="grp-ins" class="radio-group addon"
-                                                data-cost="{{ $price->insurance_cost }}" style="display:none">
-                                                <input type="radio" name="insurance_reinstatement_valuation"
-                                                    value="0" checked>
-                                                <input type="radio" name="insurance_reinstatement_valuation"
-                                                    value="1">
-                                            </div>
-                                        </div>
-
-                                    </div><!-- /.addons-grid -->
-
-                                    <!-- (optional legacy note kept hidden; JS still safe) -->
-                                    <div id="upgrade-note" style="display:none"></div>
-
-                                    <!-- ===== Single Bottom Box: savings + total + actions ===== -->
-                                    <div class="addons-bottom-bar">
-                                        <!-- left: savings when all selected (JS toggles .level4-all-inlcude-addons) -->
-                                        <div class="abb-left">
-                                            <div class="level4-all-inlcude-addons" style="display:none">
-                                                <span class="save-copy">Add all three and save
-                                                    <span class="level-price">£250</span>
-                                                </span>
-                                                <span class="save-price hidden">£250</span>
-                                            </div>
-                                        </div>
-
-                                        <!-- center: total -->
-                                        <div class="abb-center">
-                                            <div class="level3-price level-price addons" id="total_with_addon"
-                                                data-total="">
-                                                <span class="label">Total Cost:</span> £{{ $survey->level3_price }}
-                                            </div>
-                                        </div>
-
-                                        <!-- right: actions -->
-                                        <div class="abb-right">
-                                            <div class="btns">
-                                                {{-- <div class="btn-style alt-btn" onclick="showStep1()">
-                                                <i class="fa-solid fa-arrow-left"></i><span>Back</span>
-                                            </div> --}}
-                                                <div class="btn-style level-3-confirm buy-now-btn " data-level="3">
-                                                    <span class="btn-loader "></span><span class="btn-text">Proceed</span>
-                                                </div>
+                                    <div class="abb-right">
+                                        <div class="btns">
+                                            <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
+                                                <span class="btn-loader"></span><span class="btn-text">Proceed</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /bottom box -->
                                 </div>
-                            </div>
+                            </section>
                         </div>
-
-
-
                     </div>
+
                 </div>
         </form>
     </div>
@@ -418,22 +378,22 @@
     <script src="{{ asset('assets/user/custom/js/listing.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script>
-  function goBackFromPopup(){
-    // Optional: jey “back” da matlab step-1 dikhana hai
-    if (typeof showStep1 === 'function') {
-      showStep1();
-    }
-    // popup close
-    if (typeof closePopup === 'function') {
-      closePopup();
-    } else {
-      // safety fallback
-      document.getElementById('confirm-popup-conteiner')?.style &&
-      (document.getElementById('confirm-popup-conteiner').style.display = 'none');
-    }
-  }
-</script>
+    <script>
+        function goBackFromPopup() {
+            // Optional: jey “back” da matlab step-1 dikhana hai
+            if (typeof showStep1 === 'function') {
+                showStep1();
+            }
+            // popup close
+            if (typeof closePopup === 'function') {
+                closePopup();
+            } else {
+                // safety fallback
+                document.getElementById('confirm-popup-conteiner')?.style &&
+                    (document.getElementById('confirm-popup-conteiner').style.display = 'none');
+            }
+        }
+    </script>
 
 </body>
 

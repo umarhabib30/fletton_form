@@ -142,12 +142,13 @@
         @endphp
 
         <div id="bookingSummarySticky" class="booking-summary-sticky">
-            <div style="background-color:#1A202C; padding:10px; border-radius:10px; text-align:center; margin-bottom:20px;">
-                <h4 style="color:#fff; font-size:60px; font-weight:400;">Booking Summary</h4>
-                <p style="color:#fff; font-size:14px; font-weight:100;">
+            <div class="summary-head">
+                <h4 class="summary-head__title">Booking Summary</h4>
+                <p class="summary-head__text">
                     Press proceed to confirm your chosen survey level and property details&nbsp;are&nbsp;correct.
                 </p>
             </div>
+
 
             <!-- Survey Selected -->
             <div class="summary-tab">
@@ -241,21 +242,18 @@
             </div>
 
             <!-- Total + Proceed -->
-            <div style="background:#1A202C; border-radius:10px; display:flex; justify-content:space-between; padding:20px 60px;">
-                <div style="display:flex; flex-direction:column; justify-content:center;">
-                    <h3 style="font-size:34px; font-weight:400; color:#fff;">
-                        Total to be paid:
-                        <span style="color:#C1EC4A; font-size:45px;">£{{ $survey->level_total }}</span>
-                    </h3>
-                </div>
-                <div style="display:flex; flex-direction:column; justify-content:center;">
-                    <button type="button" id="proceedFromSummaryBtn"
-                        style="padding:15px 40px; font-size:24px; font-weight:400; background:#C1EC4A; border-radius:10px; border:none; cursor:pointer;">
-                        Proceed
-                    </button>
-                </div>
+            <div class="summary-totalbar">
+                <p class="summary-totalbar__label">
+                    Total to be paid:
+                    <span class="summary-totalbar__amount">£{{ $survey->level_total }}</span>
+                </p>
+                <button type="button" id="proceedFromSummaryBtn" class="summary-totalbar__btn">
+                    Proceed
+                </button>
             </div>
+
         </div>
+
 
         <!-- Progress -->
         <div class="progress-container" id="progressContainer">
@@ -266,7 +264,9 @@
                     <div class="step-label">Summary</div>
                 </div> --}}
                 <div class="progress-step" data-step="2">
-                    <div class="step-circle">1</div>
+                    <div class="step-circle" style="background: var(--primary);
+    border-color: var(--primary);
+    color: #1A202C;">1</div>
                     <div class="step-label">Client Details</div>
                 </div>
                 <div class="progress-step" data-step="3">
@@ -282,7 +282,7 @@
                     <div class="step-label">Agents</div>
                 </div>
                 <div class="progress-step" data-step="6">
-                    <div class="step-circle"></div>
+                    <div class="step-circle">6</div>
                     <div class="step-label">Terms & Payment</div>
                 </div>
             </div>
@@ -653,87 +653,87 @@
 
     <!-- Unified wizard controller (no FOUC) -->
     <script>
-      (function() {
-    const $landing = document.getElementById('bookingSummarySticky');
-    const $progress = document.getElementById('progressContainer');
-    const $next = document.getElementById('nextBtn');
-    const $submit = document.getElementById('submitBtn');
-    const $backHead = document.getElementById('headerBackBtn');
-    const $proceed = document.getElementById('proceedFromSummaryBtn');
-    const $prev = document.getElementById('prevBtn'); // stay hidden by CSS
+        (function() {
+            const $landing = document.getElementById('bookingSummarySticky');
+            const $progress = document.getElementById('progressContainer');
+            const $next = document.getElementById('nextBtn');
+            const $submit = document.getElementById('submitBtn');
+            const $backHead = document.getElementById('headerBackBtn');
+            const $proceed = document.getElementById('proceedFromSummaryBtn');
+            const $prev = document.getElementById('prevBtn'); // stay hidden by CSS
 
-    const MIN_STEP = 2, MAX_STEP = 6;
-    let currentStep = MIN_STEP;
+            const MIN_STEP = 2,
+                MAX_STEP = 6;
+            let currentStep = MIN_STEP;
 
-    const qsAll = (s) => Array.from(document.querySelectorAll(s));
+            const qsAll = (s) => Array.from(document.querySelectorAll(s));
 
-    function setProgressActive(step) {
-        qsAll('.progress-step').forEach(p => p.classList.remove('active', 'completed'));
-        for (let i = 2; i <= MAX_STEP; i++) {
-            const node = document.querySelector(`.progress-step[data-step="${i}"]`);
-            if (!node) continue;
-            if (i < step) node.classList.add('completed');
-            if (i === step) node.classList.add('active');
-        }
-        document.querySelector('.progress-bar')?.setAttribute('data-progress', String(step));
-    }
+            function setProgressActive(step) {
+                qsAll('.progress-step').forEach(p => p.classList.remove('active', 'completed'));
+                for (let i = 2; i <= MAX_STEP; i++) {
+                    const node = document.querySelector(`.progress-step[data-step="${i}"]`);
+                    if (!node) continue;
+                    if (i < step) node.classList.add('completed');
+                    if (i === step) node.classList.add('active');
+                }
+                document.querySelector('.progress-bar')?.setAttribute('data-progress', String(step));
+            }
 
-    function setStep(step) {
-        currentStep = Math.min(Math.max(step, MIN_STEP), MAX_STEP);
-        qsAll('.step').forEach(s => s.classList.remove('active'));
-        const el = document.getElementById('step' + currentStep);
-        if (el) {
-            el.style.display = '';
-            el.classList.add('active');
-        }
-        setProgressActive(currentStep);
-        if ($next) $next.style.display = 'block';  // Hide Next button after first step
-        if ($submit) $submit.style.display = 'none';  // Hide Submit button
-        if ($backHead) $backHead.style.display = 'block';  // Show back button
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
+            function setStep(step) {
+                currentStep = Math.min(Math.max(step, MIN_STEP), MAX_STEP);
+                qsAll('.step').forEach(s => s.classList.remove('active'));
+                const el = document.getElementById('step' + currentStep);
+                if (el) {
+                    el.style.display = '';
+                    el.classList.add('active');
+                }
+                setProgressActive(currentStep);
+                if ($next) $next.style.display = 'block'; // Hide Next button after first step
+                if ($submit) $submit.style.display = 'none'; // Hide Submit button
+                if ($backHead) $backHead.style.display = 'block'; // Show back button
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
 
-    function showWizard(startStep = MIN_STEP) {
-        document.body.classList.remove('is-landing');
-        if ($landing) $landing.style.display = 'none';
-        if ($progress) $progress.style.display = '';
-        if ($next) {
-            $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-            $next.style.display = 'none';  // Hide Next button, as we don’t need to go to the next step
-        }
-        setStep(startStep);  // Ensure only the first step is shown
-    }
+            function showWizard(startStep = MIN_STEP) {
+                document.body.classList.remove('is-landing');
+                if ($landing) $landing.style.display = 'none';
+                if ($progress) $progress.style.display = '';
+                if ($next) {
+                    $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
+                    $next.style.display = 'none'; // Hide Next button, as we don’t need to go to the next step
+                }
+                setStep(startStep); // Ensure only the first step is shown
+            }
 
-    function showLanding() {
-        document.body.classList.add('is-landing');
-        if ($landing) $landing.style.display = '';
-        if ($progress) $progress.style.display = 'none';
-        if ($submit) $submit.style.display = 'none';
-        if ($next) {
-            $next.style.display = '';
-            $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-            $next.onclick = () => showWizard(MIN_STEP);  // Proceed to the first step only
-        }
-        if ($backHead) $backHead.style.display = 'none';
-        qsAll('.step').forEach(s => s.classList.remove('active'));
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
+            function showLanding() {
+                document.body.classList.add('is-landing');
+                if ($landing) $landing.style.display = '';
+                if ($progress) $progress.style.display = 'none';
+                if ($submit) $submit.style.display = 'none';
+                if ($next) {
+                    $next.style.display = '';
+                    $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
+                    $next.onclick = () => showWizard(MIN_STEP); // Proceed to the first step only
+                }
+                if ($backHead) $backHead.style.display = 'none';
+                qsAll('.step').forEach(s => s.classList.remove('active'));
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
 
-    // Click handlers
-    $proceed?.addEventListener('click', () => showWizard(MIN_STEP));  // Ensure we start at step 2
-    $backHead?.addEventListener('click', () => {
-        showLanding();  // Only go back to the landing, no navigation to previous steps
-    });
+            // Click handlers
+            $proceed?.addEventListener('click', () => showWizard(MIN_STEP)); // Ensure we start at step 2
+            $backHead?.addEventListener('click', () => {
+                showLanding(); // Only go back to the landing, no navigation to previous steps
+            });
 
-    // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
-})();
-
+            // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
+        })();
     </script>
 
     <noscript>
