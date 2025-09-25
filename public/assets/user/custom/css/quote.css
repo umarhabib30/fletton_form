@@ -398,7 +398,7 @@ body {
     }
 
     .form-row {
-        flex-direction: column;
+        /* flex-direction: column; */
         gap: var(--gap)
     }
 
