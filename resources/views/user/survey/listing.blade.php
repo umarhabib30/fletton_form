@@ -40,6 +40,7 @@
                             <div class="level-choice" data-level="1">
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
+                                        <span></span>
                                         <span style="font-size: 14px; font-weight: bold;">A stand-alone roof survey </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
@@ -53,7 +54,7 @@
                                     </div>
                                 </div>
                                 <div class="level-img">
-                                    <img src="{{ asset('assets/user/icons/drone.gif') }}" alt="Level 1 Survey">
+                                    <img src="{{ asset('assets/user/icons/dron.gif') }}" alt="Level 1 Survey">
                                 </div>
                                 <h3 class="card-heading">Roof Survey</h3>
                                 <div class="price-custom">
@@ -69,6 +70,7 @@
                             <div class="level-choice" data-level="2">
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
+                                        <span></span>
                                         <span style="font-size: 14px; font-weight: bold;">For properties built after
                                             1985 </span>
                                         <button type="button" class="info-btn" aria-label="More info">
@@ -101,6 +103,7 @@
                             <div class="level-choice" data-level="3">
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
+                                        <span></span>
                                         <span style="font-size: 16px; font-weight: bold; margin-right: 10px">For all
                                             Property Types </span>
                                         <button type="button" class="info-btn" aria-label="More info">
@@ -137,6 +140,7 @@
                             <div class="level-choice" data-level="4">
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
+                                        <span></span>
                                         <span style="font-size: 20px; font-weight: bold; margin-right: 25px">Most
                                             Popular </span>
                                         <button type="button" class="info-btn" aria-label="More info">
@@ -238,6 +242,7 @@
                                     <!-- Estimated Costs Package -->
                                     <article class="addon-card">
                                         <div class="addon-info">
+                                            <span></span>
                                             <button type="button" class="info-btn" aria-label="More info">
                                                 <i class="fa-solid fa-info"></i>
                                             </button>
@@ -270,6 +275,7 @@
                                     <!-- Drone Package -->
                                     <article class="addon-card">
                                         <div class="addon-info">
+                                            <span></span>
                                             <button type="button" class="info-btn" aria-label="More info">
                                                 <i class="fa-solid fa-info"></i>
                                             </button>
@@ -284,7 +290,7 @@
                                         </div>
 
                                         <div class="addon-icon">
-                                            <img src="{{ asset('assets/user/icons/drone.gif') }}" alt="Drone Package">
+                                            <img src="{{ asset('assets/user/icons/dron.gif') }}" alt="Drone Package">
                                         </div>
 
                                         <h4 class="addon-title-strong">Aerial Drone <br> Package</h4>
@@ -301,6 +307,7 @@
                                     <!-- Reinstatement Package -->
                                     <article class="addon-card">
                                         <div class="addon-info">
+                                            <span></span>
                                             <button type="button" class="info-btn" aria-label="More info">
                                                 <i class="fa-solid fa-info"></i>
                                             </button>

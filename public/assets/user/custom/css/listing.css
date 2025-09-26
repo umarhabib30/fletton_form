@@ -531,8 +531,11 @@ body {
 }
 .addon-info {
     position: relative;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
 }
+
+
 .addon-info .info-btn {
     display: inline-flex
 ;
@@ -702,7 +705,7 @@ body {
     }
     .addon-info {
     position: relative;
-    width: 95%;
+    width: 100%;
 }
 }
 
@@ -1021,7 +1024,7 @@ input#termsCheckbox {
   background: var(--ink);
   color:#fff;
   border-radius: var(--radius);
-  padding: 18px 18px 14px 60px; /* left room for back btn */
+  padding: 18px  60px; /* left room for back btn */
   margin: 40px 0 10px;
 }
 .addons-back{
@@ -1073,12 +1076,13 @@ input#termsCheckbox {
   color: var(--primary);
   cursor:pointer;
 }
-}
-@media (max-width:640px){
-  .addons-header{
-    padding:14px 14px 12px 54px;
+ .addons-header{
+    padding:14px 32px;
     margin-top:16px;
   }
+}
+@media (max-width:640px){
+  
   .addons-title{ font-size:22px; }
   .addons-subtitle{ font-size:14px; }
   .addons-grid.cards-3{ grid-template-columns:1fr; }
