@@ -428,6 +428,69 @@
         }
     </script>
 
+<style>
+  /* make sure the bubble can sit above cards */
+  .addon-info { position: relative; }
+  .addon-pop  { display: none; z-index: 10; }
+  .addon-info.is-open .addon-pop { display: block; }
+</style>
+
+<script>
+  (function () {
+    // Close all open popovers
+    function closeAll() {
+      document.querySelectorAll('.addon-info.is-open')
+        .forEach(n => n.classList.remove('is-open'));
+    }
+
+    // Toggle one popover
+    function togglePopover(wrapper) {
+      const already = wrapper.classList.contains('is-open');
+      closeAll();
+      if (!already) wrapper.classList.add('is-open');
+    }
+
+    // Event delegation: works for both desktop & mobile
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.info-btn');
+      const pop = e.target.closest('.addon-pop');
+
+      // Clicked the info button -> toggle its own popover
+      if (btn) {
+        const wrapper = btn.closest('.addon-info');
+        if (wrapper) {
+          e.preventDefault();
+          e.stopPropagation();
+          togglePopover(wrapper);
+        }
+        return;
+      }
+
+      // Clicked *inside* an open popover -> keep it open
+      if (pop) {
+        e.stopPropagation();
+        return;
+      }
+
+      // Clicked anywhere else -> close all
+      closeAll();
+    }, { passive: true });
+
+    // Escape key closes
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll();
+    });
+
+    // Prevent scroll-jump when tapping inside popover on iOS
+    document.addEventListener('touchstart', function (e) {
+      if (e.target.closest('.addon-pop')) {
+        e.stopPropagation();
+      }
+    }, { passive: true });
+  })();
+</script>
+
+
 </body>
 
 </html>
