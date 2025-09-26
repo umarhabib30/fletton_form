@@ -281,9 +281,7 @@
                     <div class="step-label">Summary</div>
                 </div> --}}
                 <div class="progress-step" data-step="2">
-                    <div class="step-circle" style="background: var(--primary);
-    border-color: var(--primary);
-    color: #1A202C;">1</div>
+                    <div class="step-circle" style="background: var(--primary);  border-color: var(--primary); color: #1A202C;">1</div>
                     <div class="step-label">Client Details</div>
                 </div>
                 <div class="progress-step" data-step="3">

@@ -145,7 +145,7 @@ function nextStep() {
 }
 
 function prevStep() {
-    if (currentStep > 1) {
+    if (currentStep > 2) {
         currentStep--;
         updateStep();
     }
