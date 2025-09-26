@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function setupEventListeners() {
     // Navigation buttons
     document.getElementById('nextBtn').addEventListener('click', nextStep);
-    document.getElementById('prevBtn').addEventListener('click', prevStep);
+    document.getElementById('headerBackBtn').addEventListener('click', prevStep);
     document.getElementById('submitBtn').addEventListener('click', handleSubmit);
 
     // Progress steps click
@@ -199,7 +199,7 @@ function updateProgressBar() {
 }
 
 function updateNavigationButtons() {
-    const prevBtn = document.getElementById('prevBtn');
+    const prevBtn = document.getElementById('headerBackBtn');
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
 
@@ -481,6 +481,7 @@ function initAddressAutocomplete() {
 }
 
 $(document).ready(function () {
+    initIntlTel('solicitorPhone');
     initIntlTel('telephone_number');
     initIntlTel('agentPhone');
     initAddressAutocomplete();

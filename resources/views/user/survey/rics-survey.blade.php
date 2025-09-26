@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ asset('assets/user/custom/css/customer-signup.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-  
+
 
     <!-- Google Places JS (put your real API key) -->
 <script
@@ -287,7 +287,7 @@
                     <div class="step-label">Agents</div>
                 </div>
                 <div class="progress-step" data-step="6">
-                    <div class="step-circle">6</div>
+                    <div class="step-circle">5</div>
                     <div class="step-label">Terms & Payment</div>
                 </div>
             </div>
@@ -493,11 +493,15 @@
 
                         <div class="form-group">
                             <label for="solicitorPhone">Solicitor Phone Number <span class="required">*</span></label>
-                            <input type="tel" id="solicitorPhone" name="inf_custom_SolicitorPhoneNumber1"
-                                class="form-control" placeholder="Enter solicitor phone number" />
+                            <div class="telephone-field">
+                                <input type="tel" id="solicitorPhone" name="inf_custom_SolicitorPhoneNumber1"
+                                    class="tel-input form-control"  />
+
+
+                            </div>
                         </div>
 
-                        
+
                         <div class="form-group">
                             <label for="solicitorEmail">Solicitor's Email <span class="required">*</span></label>
                             <input type="email" id="solicitorEmail" name="inf_custom_SolicitorsEmail"
@@ -707,10 +711,10 @@
                 document.body.classList.remove('is-landing');
                 if ($landing) $landing.style.display = 'none';
                 if ($progress) $progress.style.display = '';
-                if ($next) {
-                    $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-                    $next.style.display = 'none'; // Hide Next button, as we don’t need to go to the next step
-                }
+                // if ($next) {
+                //     $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
+                //     $next.style.display = 'none'; // Hide Next button, as we don’t need to go to the next step
+                // }
                 setStep(startStep); // Ensure only the first step is shown
             }
 
@@ -734,9 +738,9 @@
 
             // Click handlers
             $proceed?.addEventListener('click', () => showWizard(MIN_STEP)); // Ensure we start at step 2
-            $backHead?.addEventListener('click', () => {
-                showLanding(); // Only go back to the landing, no navigation to previous steps
-            });
+            // $backHead?.addEventListener('click', () => {
+            //     showLanding(); // Only go back to the landing, no navigation to previous steps
+            // });
 
             // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
         })();
