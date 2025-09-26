@@ -121,10 +121,10 @@ function validateField(event) {
 
     if (!isValid) {
         field.style.borderColor = '#ff6b6b';
-        field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
+        // field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
     } else {
         field.style.borderColor = '#C1EC4A';
-        field.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
+        // field.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
     }
 }
 
@@ -589,3 +589,56 @@ document.querySelectorAll('input[name="inf_custom_SolicitorFirm"]').forEach(radi
         }
     });
 });
+
+
+
+
+
+
+
+/* ---------- Google Places (apply to all address fields) ---------- */
+function initAddressAutocomplete() {
+  if (!(window.google && google.maps && google.maps.places)) return;
+
+  const pairs = [
+    { addr: "homeAddress",      pc: "postalCode" },
+    { addr: "surveyAddress",    pc: "surveyPostalCode" },
+    { addr: "agentAddress",     pc: "agentPostalCode" },
+    { addr: "solicitorAddress", pc: "solicitorPostalCode" }
+  ];
+
+  pairs.forEach(({ addr, pc }) => {
+    const addressField = document.getElementById(addr);
+    const pcField = document.getElementById(pc);
+    if (!addressField) return;
+
+    const ac = new google.maps.places.Autocomplete(addressField, {
+      types: ["address"],
+      componentRestrictions: { country: "gb" }
+    });
+    if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
+
+    ac.addListener("place_changed", function () {
+      const place = ac.getPlace();
+      if (!place || !place.formatted_address) return;
+
+      // Clean country suffix
+      let formatted = place.formatted_address
+        .replace(/,\s*United Kingdom$/i, "")
+        .replace(/,\s*UK$/i, "");
+
+      // Extract postcode and set paired field
+      const comps = place.address_components || [];
+      const pcComp = comps.find(c => c.types.includes("postal_code"));
+      if (pcComp) {
+        const postcode = pcComp.long_name.toUpperCase();
+        // remove postcode from end of address if present
+        formatted = formatted.replace(new RegExp("\\s?" + postcode + "$", "i"), "").trim();
+        if (pcField) pcField.value = postcode;
+      }
+
+      addressField.value = formatted;
+    });
+  });
+}
+

@@ -7,7 +7,8 @@
     /* page bg */
     --card: #ffffff;
     /* card bg */
-    --border: #e5e7eb;
+   
+     --border: #d5d7d9;
     /* light gray */
     --muted: #6b7280;
     /* gray text */
@@ -125,7 +126,7 @@ body {
     justify-content: space-evenly; /* Ensures equal spacing between steps */
     align-items: center;
     position: relative;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
     width: 100%; /* Make sure the progress bar takes full width */
 }
 .progress-bar::before {
@@ -360,7 +361,7 @@ body {
 .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(147, 193, 32, .12)
+    /* box-shadow: 0 0 0 4px rgba(147, 193, 32, .12) */
 }
 
 .form-control::placeholder {
@@ -844,8 +845,19 @@ textarea.form-control {
     }
 
     .progress-container {
-        padding: 18px
+        padding: 18px 10px;
     }
+    .checkbox-group input[type="checkbox"] {
+    appearance: none;
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #cbd5e1;
+    border-radius: 0;
+    cursor: pointer;
+    transition: .2s;
+    position: relative;
+    margin-top: 2px;
+}
 
     .step-circle {
         width: 36px;
@@ -867,7 +879,7 @@ textarea.form-control {
     }
 
     .radio-group {
-        flex-direction: column;
+        flex-direction: ROW;
         gap: 10px
     }
 
@@ -1251,6 +1263,11 @@ textarea.form-control {
 
 /* responsive behaviour */
 @media (max-width: 768px) {
+    
+body:not(.is-landing) .form-content{
+
+    padding: 20PX!important;
+}
   .summary-tab {
     flex-wrap:wrap;
     align-items:flex-start;

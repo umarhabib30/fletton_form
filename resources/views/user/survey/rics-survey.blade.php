@@ -14,7 +14,12 @@
     <link rel="stylesheet" href="{{ asset('assets/user/custom/css/customer-signup.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+  
 
+    <!-- Google Places JS (put your real API key) -->
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7xLp13hLBGIDOt4BIJZrJF99ItTsya0g&libraries=places&callback=initAddressAutocomplete"
+        defer></script>
     <style>
         /* ---------- tiny page-specific tweaks ---------- */
         .header-back-btn {
@@ -492,6 +497,7 @@
                                 class="form-control" placeholder="Enter solicitor phone number" />
                         </div>
 
+                        
                         <div class="form-group">
                             <label for="solicitorEmail">Solicitor's Email <span class="required">*</span></label>
                             <input type="email" id="solicitorEmail" name="inf_custom_SolicitorsEmail"
