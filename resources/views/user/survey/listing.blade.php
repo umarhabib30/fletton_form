@@ -45,7 +45,10 @@
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                            A stand-alone external roof survey using a drone, providing you with a full independent report on the condition of the roof structure, roof coverings, flashings, gutters, chimneys, and related elements.
+                                            A stand-alone external roof survey using a drone, providing a full independent
+                                            report on the condition of the roof structure, roof coverings, flashings, gutters,
+                                            chimneys, and related elements. External inspection only; no internal inspection
+                                            is included.
                                         </div>
                                     </div>
                                 </div>
@@ -72,7 +75,11 @@
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                            Breakdown of repairs and upgrades to help you budget and negotiate.
+                                            A Level 2 Home Survey provides a detailed visual inspection of the property,
+                                            reporting on its condition, construction, and any significant issues such as
+                                            defects, repairs, and maintenance requirements. It is suitable for conventional
+                                            homes in reasonable condition. The inspection is non-intrusive and does not
+                                            include opening up the structure or specialist testing.
                                         </div>
                                     </div>
 
@@ -100,7 +107,14 @@
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                            Breakdown of repairs and upgrades to help you budget and negotiate.
+                                            A Level 3 Home Survey provides a comprehensive and detailed inspection of
+                                            the property, covering its construction, condition, and all visible defects. It
+                                            includes advice on remedial works, future maintenance, and potential risks to
+                                            the building. This survey is suitable for older, altered, or non-standard
+                                            properties, or where significant defects are suspected. The inspection is
+                                            thorough but non-intrusive and does not include opening up the structure or
+                                            specialist testing.
+
                                         </div>
                                     </div>
 
@@ -129,7 +143,12 @@
                                             <i class="fa-solid fa-info"></i>
                                         </button>
                                         <div class="addon-pop" bis_skin_checked="1">
-                                            Breakdown of repairs and upgrades to help you budget and negotiate.
+                                            A Level 3+ Home Survey provides the most comprehensive inspection available,
+                                            combining the full Level 3 service with all additional add-on packages. This
+                                            includes drone roof images, an insurance reinstatement cost assessment, a
+                                            breakdown of estimated repair costs, and extension or conversion feasibility
+                                            advice. It offers the highest level of detail, giving you a complete understanding
+                                            of the property’s condition, costs, and future potential.
                                         </div>
                                     </div>
 
@@ -223,7 +242,12 @@
                                                 <i class="fa-solid fa-info"></i>
                                             </button>
                                             <div class="addon-pop">
-                                                Breakdown of repairs and upgrades to help you budget and negotiate.
+                                                The Breakdown of Estimated Costs package provides a detailed schedule of
+                                                essential works, recommended improvement works, and provisional sums.
+                                                Provisional sums cover costs that may be required subject to further
+                                                investigation or specialist input. This add-on gives you clarity on likely
+                                                expenditure, helping you budget accurately and plan for both immediate and
+                                                future property needs.
                                             </div>
                                         </div>
 
@@ -250,7 +274,12 @@
                                                 <i class="fa-solid fa-info"></i>
                                             </button>
                                             <div class="addon-pop">
-                                                Drone images of roofs and chimneys for a clear view of condition.
+                                                The Drone Package provides high-level aerial photographs of the roof and
+                                                other hard-to-reach areas of the property. These images supplement your
+                                                survey by offering a clear visual record of the condition of roof coverings,
+                                                chimneys, gutters, and other external features that may not be fully visible from
+                                                ground level. This add-on enhances your report but does not constitute a full
+                                                stand-alone roof survey
                                             </div>
                                         </div>
 
@@ -276,7 +305,11 @@
                                                 <i class="fa-solid fa-info"></i>
                                             </button>
                                             <div class="addon-pop">
-                                                Accurate rebuild cost for insurance, ensuring full protection without overpaying.
+                                                The Reinstatement Cost package provides an insurance reinstatement
+                                                valuation, assessing the estimated cost of rebuilding the property in the event
+                                                of total loss. This figure is essential for arranging the correct level of buildings
+                                                insurance and helps ensure you are neither under-insured nor overpaying on
+                                                your premiums.
                                             </div>
                                         </div>
 
