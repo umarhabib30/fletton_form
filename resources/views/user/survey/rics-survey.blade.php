@@ -17,7 +17,7 @@
 
 
     <!-- Google Places JS (put your real API key) -->
-<script
+    <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7xLp13hLBGIDOt4BIJZrJF99ItTsya0g&libraries=places&callback=initAddressAutocomplete"
         defer></script>
     <style>
@@ -157,11 +157,13 @@
 
             <!-- Survey Selected -->
             <div class="summary-tab">
-                <div class="summary-icon">
-                    <img src="{{ $surveyIcon }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Survey Selected:</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ $surveyIcon }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Survey Selected:</h4>
+                    </div>
                 </div>
                 <div class="summary-value">{{ $displayLabel }}</div>
             </div>
@@ -169,11 +171,13 @@
             {{-- Add-ons block rules --}}
             @if ($showAddonsBlock)
             <div class="summary-tab" id="addonsSummaryTab">
-                <div class="summary-icon">
-                    <img src="{{ asset('assets/user/icons/Adda-on chosen.png') }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Add-ons Selected:</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ asset('assets/user/icons/Adda-on chosen.png') }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Add-ons Selected:</h4>
+                    </div>
                 </div>
                 <div class="summary-value">
                     @if ($forceAllAddons)
@@ -199,33 +203,39 @@
 
             <!-- Property Address -->
             <div class="summary-tab">
-                <div class="summary-icon">
-                    <img src="{{ asset('assets/user/icons/Property address.png') }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Property Address:</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ asset('assets/user/icons/Property address.png') }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Property Address:</h4>
+                    </div>
                 </div>
                 <div class="summary-value">{{ $survey->full_address }}</div>
             </div>
 
             <!-- Property Type -->
             <div class="summary-tab">
-                <div class="summary-icon">
-                    <img src="{{ asset('assets/user/icons/Property type.png') }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Property Type:</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ asset('assets/user/icons/Property type.png') }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Property Type:</h4>
+                    </div>
                 </div>
                 <div class="summary-value">{{ $survey->house_or_flat }}</div>
             </div>
 
             <!-- Size -->
             <div class="summary-tab">
-                <div class="summary-icon">
-                    <img src="{{ asset('assets/user/icons/Propert size.png') }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Property Size (if over 1650 sqft):</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ asset('assets/user/icons/Propert size.png') }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Property Size (if over 1650 sqft):</h4>
+                    </div>
                 </div>
                 @if ($survey->over1650 == 'yes')
                 <div class="summary-value">{{ $survey->sqft_area }}</div>
@@ -237,11 +247,13 @@
 
             <!-- Bedrooms -->
             <div class="summary-tab">
-                <div class="summary-icon">
-                    <img src="{{ asset('assets/user/icons/Number of bedrooms.png') }}" style="width:80%" alt="">
-                </div>
-                <div class="summary-title">
-                    <h4>Number of Bedrooms:</h4>
+                <div class="summary-icon-title">
+                    <div class="summary-icon">
+                        <img src="{{ asset('assets/user/icons/Number of bedrooms.png') }}" style="width:80%" alt="">
+                    </div>
+                    <div class="summary-title">
+                        <h4>Number of Bedrooms:</h4>
+                    </div>
                 </div>
                 <div class="summary-value">{{ $survey->number_of_bedrooms }}</div>
             </div>
@@ -495,7 +507,7 @@
                             <label for="solicitorPhone">Solicitor Phone Number <span class="required">*</span></label>
                             <div class="telephone-field">
                                 <input type="tel" id="solicitorPhone" name="inf_custom_SolicitorPhoneNumber1"
-                                    class="tel-input form-control"  />
+                                    class="tel-input form-control" />
 
 
                             </div>

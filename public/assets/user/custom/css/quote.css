@@ -18,6 +18,7 @@
 html,
 body {
     margin: 0;
+    font-size: 16px;
 }
 
 /* kill default margins */
@@ -338,7 +339,7 @@ body {
     .form-container input,
     .form-container select,
     .form-container textarea {
-        font-size: 18px;
+        font-size: 16px;
         /* field text 18px */
         height: var(--ctl-h);
     }

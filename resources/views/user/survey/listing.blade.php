@@ -347,7 +347,7 @@
 
                                     <div class="abb-right">
                                         <div class="btns">
-                                            <div class="btn-style level-3-confirm buy-now-btn" data-level="3">
+                                            <div class="btn-style level-3-confirm buy-now-btn color-fix" data-level="3">
                                                 <span class="btn-loader"></span><span class="btn-text">Proceed</span>
                                             </div>
                                         </div>
