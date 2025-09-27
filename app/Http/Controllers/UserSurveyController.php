@@ -117,6 +117,7 @@ class UserSurveyController extends Controller
 
     private function topRedirect(string $url)
     {
+        dd($url);
         $escaped = e($url);
 
         $html = <<<HTML
