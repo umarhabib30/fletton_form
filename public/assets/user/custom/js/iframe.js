@@ -1,136 +1,79 @@
-(function () {
-    var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
-    var lastH = 0, ticking = false;
-    var heightInterval = null; // Variable to hold the interval timer
+(function(){
+  // ---------- A) Auto-height broadcaster ----------
+  function sendHeight(){
+    var h = Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight, document.documentElement.offsetHeight,
+      document.body.clientHeight, document.documentElement.clientHeight
+    );
+    try{ window.parent.postMessage({ frameHeight: h }, '*'); }catch(_){}
+  }
 
-    // --- Helper Functions for Iframe Resizing ---
-    function docHeight() {
-        return Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight,
-            document.body.offsetHeight,
-            document.documentElement.offsetHeight,
-            document.body.clientHeight,
-            document.documentElement.clientHeight
-        );
-    }
+  window.addEventListener('message', function(e){
+    if (e.data && e.data.requestHeight) sendHeight();
+  });
 
-    function sendHeight() {
-        var h = docHeight();
-        if (h !== lastH) {
-            lastH = h;
-            // Send the new content height to the parent
-            try { window.parent.postMessage({ frameHeight: h }, '*'); } catch (_) {}
-        }
-        ticking = false;
-    }
+  document.addEventListener('DOMContentLoaded', sendHeight);
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', function(){ requestAnimationFrame(sendHeight); });
 
-    function ping() {
-        if (!ticking) {
-            ticking = true;
-            (raf || setTimeout)(sendHeight, 0);
-        }
-    }
+  if ('MutationObserver' in window){
+    var mo = new MutationObserver(function(){ requestAnimationFrame(sendHeight); });
+    mo.observe(document.body, { childList:true, subtree:true, attributes:true });
+  }
+  if ('ResizeObserver' in window){
+    var ro = new ResizeObserver(function(){ requestAnimationFrame(sendHeight); });
+    ro.observe(document.documentElement);
+    ro.observe(document.body);
+  }
+  setInterval(sendHeight, 1200);
 
-    // --- NEW LOGIC: Full Height Control ---
+  // ---------- B) Popup open/close detector ----------
+  var POP = document.getElementById('confirm-popup-conteiner');
 
-    /**
-     * Notifies the parent to set the iframe height to 100vh
-     * and stops the automatic height calculation.
-     */
-    function setIframeFullHeight() {
-        // Clear the periodic pinging interval
-        if (heightInterval) {
-            clearInterval(heightInterval);
-            heightInterval = null;
-        }
+  function notifyOpen(){
+    // lock child page scroll and tell parent to lock + 100vh
+    document.documentElement.classList.add('child-lock');
+    document.body.classList.add('child-lock');
+    try{
+      window.parent.postMessage({ popupOpen:true, centerMe:true }, '*');
+    }catch(_){}
+  }
+  function notifyClose(){
+    document.documentElement.classList.remove('child-lock');
+    document.body.classList.remove('child-lock');
+    try{
+      window.parent.postMessage({ popupClose:true }, '*');
+    }catch(_){}
+    // height normal pe wapas
+    sendHeight();
+  }
 
-        // Send message to parent
-        try {
-            window.parent.postMessage({ setFullHeight: true }, '*');
-        } catch (_) {}
+  // show/hide helpers you can call from your flow
+  window.openConfirmPopup = function(){
+    if (!POP) return;
+    POP.style.display = 'flex';
+    notifyOpen();
+  };
+  window.closeConfirmPopup = function(){
+    if (!POP) return;
+    POP.style.display = 'none';
+    notifyClose();
+  };
 
-        // Optional: Scroll the iframe content to the top when modal opens
-        window.scrollTo(0, 0);
-    }
-
-    /**
-     * Notifies the parent to restore the height based on content
-     * and restarts the automatic height calculation.
-     */
-    function setIframeNormalHeight() {
-        // Send message to parent
-        try {
-            window.parent.postMessage({ setNormalHeight: true }, '*');
-        } catch (_) {}
-
-        // Restart the periodic pinging
-        if (!heightInterval) {
-            heightInterval = setInterval(ping, 1500);
-        }
-        ping(); // Ping immediately to restore size
-    }
-
-
-    // --- Event Listeners and Initial Setup ---
-
-    // Parent se ping aaya (for initial or manual request)
-    window.addEventListener('message', function (e) {
-        if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
+  // Agar aap already popup ko CSS/JS se display:flex/block par laa rahe ho,
+  // to MutationObserver se bhi catch kar lete hain:
+  if (POP && 'MutationObserver' in window){
+    var wasVisible = false;
+    var ob = new MutationObserver(function(){
+      var nowVisible = window.getComputedStyle(POP).display !== 'none';
+      if (nowVisible && !wasVisible) notifyOpen();
+      if (!nowVisible && wasVisible) notifyClose();
+      wasVisible = nowVisible;
     });
-
-    // Initial pinging on load
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', ping);
-    } else {
-        ping();
-    }
-    window.addEventListener('load', ping);
-    window.addEventListener('resize', ping);
-
-    // DOM changes observe (Mutations/Resizes)
-    if ('MutationObserver' in window) {
-        var mo = new MutationObserver(ping);
-        mo.observe(document.body, { childList: true, subtree: true, attributes: true });
-    }
-    if ('ResizeObserver' in window) {
-        var ro = new ResizeObserver(ping);
-        ro.observe(document.body);
-        ro.observe(document.documentElement);
-    }
-
-    // Periodic keep-alive
-    heightInterval = setInterval(ping, 1500);
-
-    // --- Modal/Popup Event Handling (You must customize these selectors) ---
-
-    // 🔹 Popup open hone par (assuming a click opens the modal)
-    document.addEventListener('click', function (e) {
-        // Customize these selectors to match your modal open buttons
-        if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes') || e.target.closest('.modal-open-selector')) {
-            setIframeFullHeight();
-        }
-    });
-
-    // 🔹 Popup close hone par (must be triggered by a close action)
-    document.addEventListener('click', function (e) {
-        // Customize these selectors to match your modal close buttons or backdrop
-        if (e.target.closest('.modal-close') || e.target.closest('.confirm-no') || e.target.classList.contains('modal-backdrop') || e.target.closest('.modal-close-selector')) {
-            // Use a slight delay to ensure the modal's DOM cleanup is complete
-            setTimeout(setIframeNormalHeight, 50);
-        }
-    });
-
-    // --- Original Scroll Notifications (Kept for compatibility) ---
-
-    // 🔹 Step change hone par parent ko upar scroll karna
-    function notifyStepChange() {
-      try { window.parent.postMessage({ scrollTop: true }, '*'); } catch (_) {}
-    }
-    document.addEventListener('click', function (e) {
-      if (e.target.closest('#nextBtn') || e.target.closest('#proceedBtn')) {
-        notifyStepChange();
-      }
-    });
-
+    ob.observe(POP, { attributes:true, attributeFilter:['style','class'] });
+    // init state
+    wasVisible = window.getComputedStyle(POP).display !== 'none';
+    if (wasVisible) notifyOpen();
+  }
 })();
