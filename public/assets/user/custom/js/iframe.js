@@ -1,146 +1,136 @@
 (function () {
-  /* ------------ HEIGHT PINGS (as you had) ------------ */
-  var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
-  var lastH = 0, ticking = false;
-  function docHeight() {
-    return Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.offsetHeight,
-      document.body.clientHeight,
-      document.documentElement.clientHeight
-    );
-  }
-  function sendHeight() {
-    var h = docHeight();
-    if (h !== lastH) {
-      lastH = h;
-      try { window.parent.postMessage({ frameHeight: h }, '*'); } catch (_) {}
+    var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
+    var lastH = 0, ticking = false;
+    var heightInterval = null; // Variable to hold the interval timer
+
+    // --- Helper Functions for Iframe Resizing ---
+    function docHeight() {
+        return Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight,
+            document.body.clientHeight,
+            document.documentElement.clientHeight
+        );
     }
-    ticking = false;
-  }
-  function ping() {
-    if (!ticking) {
-      ticking = true;
-      (raf || setTimeout)(sendHeight, 0);
+
+    function sendHeight() {
+        var h = docHeight();
+        if (h !== lastH) {
+            lastH = h;
+            // Send the new content height to the parent
+            try { window.parent.postMessage({ frameHeight: h }, '*'); } catch (_) {}
+        }
+        ticking = false;
     }
-  }
-  window.addEventListener('message', function (e) {
-    if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
-  });
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ping);
-  } else { ping(); }
-  window.addEventListener('load', ping);
-  window.addEventListener('resize', ping);
-  if ('MutationObserver' in window) {
-    new MutationObserver(ping).observe(document.body, { childList: true, subtree: true, attributes: true });
-  }
-  if ('ResizeObserver' in window) {
-    var ro = new ResizeObserver(ping);
-    ro.observe(document.body);
-    ro.observe(document.documentElement);
-  }
-  setInterval(ping, 1500);
 
-  /* ------------ STEP/NEXT -> parent ko top pe lao ------------ */
-  function notifyStep() {
-    try { window.parent.postMessage({ type: 'SCROLL_TOP' }, '*'); } catch (_) {}
-  }
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('#nextBtn') || e.target.closest('#proceedFromSummaryBtn') || e.target.closest('#proceedBtn')) {
-      notifyStep();
+    function ping() {
+        if (!ticking) {
+            ticking = true;
+            (raf || setTimeout)(sendHeight, 0);
+        }
     }
-  }, { passive: true });
 
-  /* ============================================================
-     POPUP LOCK + CENTER
-     - detect #confirm-popup-conteiner open/close
-     - child ko lock (no scroll) + 100dvh
-     - parent ko POPUP_OPEN / POPUP_CLOSE bhejna
-     ============================================================ */
-  var POPUP_SEL = '#confirm-popup-conteiner';   // tumhara popup wrapper
-  var popup = null;
-  function havePopup() {
-    if (!popup) popup = document.querySelector(POPUP_SEL);
-    return !!popup;
-  }
-  // child side body/html lock class
-  var LOCK_CLASS = 'ewm-popup-lock';
-  // add CSS just once
-  (function injectPopupCSS(){
-    var id = 'ewm-popup-lock-css';
-    if (document.getElementById(id)) return;
-    var st = document.createElement('style'); st.id = id;
-    st.textContent = `
-      html.${LOCK_CLASS}, body.${LOCK_CLASS}{ overflow:hidden !important; }
-      @supports (height: 100dvh){
-        html.${LOCK_CLASS}, body.${LOCK_CLASS}{ height:100dvh !important; max-height:100dvh !important; }
-      }
-      /* safety: make sure popup is truly viewport-fixed */
-      ${POPUP_SEL}{
-        position: fixed !important;
-        inset: 0 !important;
-        z-index: 2147483000 !important;
-        display: none; /* tumhari JS kholti band karti hogi; yahan force nahi */
-      }
-    `;
-    document.head.appendChild(st);
-  })();
+    // --- NEW LOGIC: Full Height Control ---
 
-  function isPopupVisible() {
-    if (!havePopup()) return false;
-    var cs = getComputedStyle(popup);
-    return cs.display !== 'none' && cs.visibility !== 'hidden' && popup.offsetParent !== null || cs.position === 'fixed';
-  }
+    /**
+     * Notifies the parent to set the iframe height to 100vh
+     * and stops the automatic height calculation.
+     */
+    function setIframeFullHeight() {
+        // Clear the periodic pinging interval
+        if (heightInterval) {
+            clearInterval(heightInterval);
+            heightInterval = null;
+        }
 
-  function setChildLock(on){
-    [document.documentElement, document.body].forEach(function(n){
-      if (!n) return;
-      if (on) n.classList.add(LOCK_CLASS);
-      else n.classList.remove(LOCK_CLASS);
+        // Send message to parent
+        try {
+            window.parent.postMessage({ setFullHeight: true }, '*');
+        } catch (_) {}
+
+        // Optional: Scroll the iframe content to the top when modal opens
+        window.scrollTo(0, 0);
+    }
+
+    /**
+     * Notifies the parent to restore the height based on content
+     * and restarts the automatic height calculation.
+     */
+    function setIframeNormalHeight() {
+        // Send message to parent
+        try {
+            window.parent.postMessage({ setNormalHeight: true }, '*');
+        } catch (_) {}
+
+        // Restart the periodic pinging
+        if (!heightInterval) {
+            heightInterval = setInterval(ping, 1500);
+        }
+        ping(); // Ping immediately to restore size
+    }
+
+
+    // --- Event Listeners and Initial Setup ---
+
+    // Parent se ping aaya (for initial or manual request)
+    window.addEventListener('message', function (e) {
+        if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
     });
-  }
 
-  var lastOpen = false;
-  function syncPopupState(force){
-    var open = isPopupVisible();
-    if (force || open !== lastOpen){
-      lastOpen = open;
-      setChildLock(open);
-      try {
-        window.parent.postMessage({ type: open ? 'POPUP_OPEN' : 'POPUP_CLOSE' }, '*');
-      } catch(_){}
-      if (open){
-        // ensure immediately visible
-        try { window.parent.postMessage({ type: 'SCROLL_IFRAME_CENTER' }, '*'); } catch(_){}
+    // Initial pinging on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ping);
+    } else {
+        ping();
+    }
+    window.addEventListener('load', ping);
+    window.addEventListener('resize', ping);
+
+    // DOM changes observe (Mutations/Resizes)
+    if ('MutationObserver' in window) {
+        var mo = new MutationObserver(ping);
+        mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+    }
+    if ('ResizeObserver' in window) {
+        var ro = new ResizeObserver(ping);
+        ro.observe(document.body);
+        ro.observe(document.documentElement);
+    }
+
+    // Periodic keep-alive
+    heightInterval = setInterval(ping, 1500);
+
+    // --- Modal/Popup Event Handling (You must customize these selectors) ---
+
+    // 🔹 Popup open hone par (assuming a click opens the modal)
+    document.addEventListener('click', function (e) {
+        // Customize these selectors to match your modal open buttons
+        if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes') || e.target.closest('.modal-open-selector')) {
+            setIframeFullHeight();
+        }
+    });
+
+    // 🔹 Popup close hone par (must be triggered by a close action)
+    document.addEventListener('click', function (e) {
+        // Customize these selectors to match your modal close buttons or backdrop
+        if (e.target.closest('.modal-close') || e.target.closest('.confirm-no') || e.target.classList.contains('modal-backdrop') || e.target.closest('.modal-close-selector')) {
+            // Use a slight delay to ensure the modal's DOM cleanup is complete
+            setTimeout(setIframeNormalHeight, 50);
+        }
+    });
+
+    // --- Original Scroll Notifications (Kept for compatibility) ---
+
+    // 🔹 Step change hone par parent ko upar scroll karna
+    function notifyStepChange() {
+      try { window.parent.postMessage({ scrollTop: true }, '*'); } catch (_) {}
+    }
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('#nextBtn') || e.target.closest('#proceedBtn')) {
+        notifyStepChange();
       }
-    }
-  }
-
-  // hooks: buttons that open/close
-  document.addEventListener('click', function(e){
-    // open buttons (tumhare buttons)
-    if (e.target.closest('.buy-now-btn, .confirm-yes, .proceed')) {
-      setTimeout(function(){ syncPopupState(true); }, 0);
-    }
-    // close buttons (X/back/dismiss)
-    if (e.target.closest('.confirm-popup-close, .confirm-popup-back')) {
-      setTimeout(function(){ syncPopupState(true); }, 0);
-    }
-  }, { passive:true });
-
-  // observe popup node for class/style changes
-  var watchStarted = false;
-  function startWatching(){
-    if (watchStarted || !havePopup()) return;
-    watchStarted = true;
-    new MutationObserver(function(){ syncPopupState(false); })
-      .observe(popup, { attributes:true, attributeFilter:['style','class'], subtree:true, childList:true });
-  }
-  if (document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ startWatching(); syncPopupState(true); });
-  } else { startWatching(); syncPopupState(true); }
+    });
 
 })();
