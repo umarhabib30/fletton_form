@@ -1,85 +1,107 @@
 (function () {
-  var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
-  var lastH = 0, ticking = false;
+  var iframe = document.getElementById('flettonsForm');
+  var ALLOWED = ['https://quote.flettons.group'];
+  var lockForPopup = false;
 
-  function docHeight() {
-    return Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.offsetHeight,
-      document.body.clientHeight,
-      document.documentElement.clientHeight
-    );
+  function headerOffset() {
+    var off = 0;
+    var admin  = document.getElementById('wpadminbar');
+    var header = document.querySelector('.site-header, header.site-header, .Kadence_Pro_Header');
+    if (admin)  off += admin.offsetHeight || 0;
+    if (header) off += header.offsetHeight || 0;
+    // thoda breathing room
+    return off + 8;
   }
 
-  function sendHeight() {
-    var h = docHeight();
-    if (h !== lastH) {
-      lastH = h;
-      try { window.parent.postMessage({ frameHeight: h }, '*'); } catch (_) {}
-    }
-    ticking = false;
+  function setIframeHeight(h) {
+    if (!lockForPopup && h > 0) iframe.style.height = h + 'px';
   }
 
-  function ping() {
-    if (!ticking) {
-      ticking = true;
-      (raf || setTimeout)(sendHeight, 0);
-    }
+  function requestChildHeight() {
+    try { iframe.contentWindow.postMessage({ requestHeight: true }, '*'); } catch(_){}
   }
 
-  // Parent se ping aaya
-  window.addEventListener('message', function (e) {
-    if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
-  });
-
-  // Initial
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ping);
-  } else {
-    ping();
-  }
-  window.addEventListener('load', ping);
-  window.addEventListener('resize', ping);
-
-  // DOM changes observe
-  if ('MutationObserver' in window) {
-    var mo = new MutationObserver(ping);
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true });
-  }
-  if ('ResizeObserver' in window) {
-    var ro = new ResizeObserver(ping);
-    ro.observe(document.body);
-    ro.observe(document.documentElement);
+  // --- ROBUST CENTER FOR REAL MOBILE ---
+  function centerIframeNow() {
+    if (!iframe) return;
+    var rect = iframe.getBoundingClientRect();
+    var vvH  = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    var target = window.pageYOffset + rect.top + (rect.height / 2) - (vvH / 2) - headerOffset();
+    target = Math.max(0, Math.round(target));
+    // smooth + hard set fallback
+    window.scrollTo({ top: target, behavior: 'smooth' });
+    setTimeout(function(){ window.scrollTo(0, target); }, 180);
+    setTimeout(function(){ window.scrollTo(0, target); }, 650);
   }
 
-  // Periodic keep-alive
-  setInterval(ping, 1500);
-
-  // 🔹 Step change hone par parent ko upar scroll karna
-  function notifyStepChange() {
-    try { window.parent.postMessage({ scrollTop: true }, '*'); } catch (_) {}
+  // while the popup is on, keep iframe 100dvh tall so center looks perfect
+  function lockPopupMode() {
+    lockForPopup = true;
+    var use100dvh = (window.CSS && CSS.supports('height','100dvh'));
+    iframe.style.height = use100dvh ? '100dvh' : (window.innerHeight + 'px');
   }
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('#nextBtn') || e.target.closest('#proceedBtn')) {
-      notifyStepChange();
-    }
-  });
+  function unlockPopupMode() {
+    lockForPopup = false;
+    requestChildHeight();
+  }
 
-  // 🔹 Popup Observer: agar popup visible hai → parent ko centerMe bhejna
-  var popup = document.getElementById('confirm-popup-conteiner');
-  if (popup && 'MutationObserver' in window) {
-    var wasVisible = false;
-    var popObs = new MutationObserver(function () {
-      var nowVisible = window.getComputedStyle(popup).display !== 'none';
-      if (nowVisible && !wasVisible) {
-        // Popup just opened
-        try { window.parent.postMessage({ centerMe: true }, '*'); } catch (_) {}
+  // re-center for 1s if visualViewport changes (iOS url bar effects)
+  function recenterForASecond() {
+    if (!window.visualViewport) return;
+    var until = Date.now() + 1000;
+    function onVV() {
+      centerIframeNow();
+      if (Date.now() > until) {
+        visualViewport.removeEventListener('resize', onVV);
+        visualViewport.removeEventListener('scroll', onVV);
       }
-      wasVisible = nowVisible;
-    });
-    popObs.observe(popup, { attributes: true, attributeFilter: ['style','class'] });
+    }
+    visualViewport.addEventListener('resize', onVV, { passive:true });
+    visualViewport.addEventListener('scroll', onVV,  { passive:true });
   }
 
+  // --- MESSAGE HANDLER ---
+  function onMessage(e) {
+    if (ALLOWED.indexOf(e.origin) === -1) return;
+    var d = e.data || {};
+    if (typeof d !== 'object') return;
+
+    if ('frameHeight' in d) {
+      var h = parseInt(d.frameHeight, 10);
+      if (!isNaN(h)) setIframeHeight(h);
+      return;
+    }
+
+    if (d.scrollTop) {
+      // step change → top of iframe
+      iframe.scrollIntoView({ behavior:'smooth', block:'start' });
+      setTimeout(function(){ iframe.scrollIntoView({ block:'start' }); }, 180);
+      return;
+    }
+
+    if (d.centerMe) {
+      // popup open → lock height & center, with mobile-proof retries
+      lockPopupMode();
+      centerIframeNow();
+      recenterForASecond();
+      return;
+    }
+
+    if (d.popupClosed) {
+      // (optional) child bheje to unlock
+      unlockPopupMode();
+    }
+  }
+
+  window.addEventListener('message', onMessage, false);
+
+  // initial height request
+  iframe.addEventListener('load', requestChildHeight);
+  window.addEventListener('resize', function () {
+    if (lockForPopup) {
+      iframe.style.height = (window.CSS && CSS.supports('height','100dvh')) ? '100dvh' : (window.innerHeight + 'px');
+    } else {
+      requestChildHeight();
+    }
+  });
 })();
