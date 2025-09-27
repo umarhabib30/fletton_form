@@ -709,6 +709,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"></script>
     <script src="{{ asset('assets/user/custom/js/customer-signup.js') }}"></script>
+    <script src="{{ asset('assets/user/custom/js/iframe.js') }}"></script>
+    
     <script src="{{ asset('assets/user/custom/js/telephone.js') }}"></script>
 
     <!-- Unified wizard controller (no FOUC) -->

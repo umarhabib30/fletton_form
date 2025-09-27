@@ -142,6 +142,8 @@
     <!-- App JS -->
     <script src="{{ asset('assets/user/custom/js/telephone.js') }}"></script>
     <script src="{{ asset('assets/user/custom/js/quote.js') }}"></script>
+    <script src="{{ asset('assets/user/custom/js/iframe.js') }}"></script>
+
 </body>
 
 </html>
