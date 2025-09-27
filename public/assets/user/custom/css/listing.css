@@ -537,12 +537,13 @@ body {
 
 
 .addon-info .info-btn {
-    display: inline-flex
-;
+    margin-right: -22px;
+    margin-top: -21px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
@@ -1035,7 +1036,7 @@ input#termsCheckbox {
   transform:translateY(-50%);
   background-color: transparent;
   display:flex; align-items:center; justify-content:center;
- 
+
   color: var(--primary);
   cursor:pointer;
 }
@@ -1070,9 +1071,9 @@ input#termsCheckbox {
   left:16px;
   top:38px;
   transform:translateY(-50%);
-  
+
   display:flex; align-items:center; justify-content:center;
- 
+
   color: var(--primary);
   cursor:pointer;
 }
@@ -1082,7 +1083,7 @@ input#termsCheckbox {
   }
 }
 @media (max-width:640px){
-  
+
   .addons-title{ font-size:22px; }
   .addons-subtitle{ font-size:14px; }
   .addons-grid.cards-3{ grid-template-columns:1fr; }

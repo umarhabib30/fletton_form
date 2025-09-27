@@ -7,7 +7,8 @@
     <title>RICS Survey Instruction Form</title>
 
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
     <!-- App CSS -->
@@ -38,7 +39,7 @@
         }
 
         .header-back-btn:hover {
-            color: #7da817;
+            color: #C1EC4A;
         }
 
         .form-header {
@@ -96,54 +97,56 @@
 
         {{-- ====== Always-visible Step-0 (Booking Summary) ====== --}}
         @php
-        // 1) Resolve numeric level (e.g. "Level 3 +" -> 3)
-        $levelRaw = $survey->level ?? $survey->survey_level ?? ($survey->level_selected ?? '');
-        $numLevel = (int) preg_replace('/\D+/', '', (string) $levelRaw);
+            // 1) Resolve numeric level (e.g. "Level 3 +" -> 3)
+            $levelRaw = $survey->level ?? ($survey->survey_level ?? ($survey->level_selected ?? ''));
+            $numLevel = (int) preg_replace('/\D+/', '', (string) $levelRaw);
 
-        // 2) Add-on flags
-        $hasAerial = !empty($survey->aerial);
-        $hasInsurance = !empty($survey->insurance);
-        $hasBreakdown = !empty($survey->breakdown);
-        $hasAddon = $hasAerial || $hasInsurance || $hasBreakdown;
-        $hasAllAddons = $hasAerial && $hasInsurance && $hasBreakdown;
+            // 2) Add-on flags
+            $hasAerial = !empty($survey->aerial);
+            $hasInsurance = !empty($survey->insurance);
+            $hasBreakdown = !empty($survey->breakdown);
+            $hasAddon = $hasAerial || $hasInsurance || $hasBreakdown;
+            $hasAllAddons = $hasAerial && $hasInsurance && $hasBreakdown;
 
-        // 3) Defaults + label rules
-        $displayLabel = '—';
-        $showAddonsBlock = false;
-        $forceAllAddons = false;
-        $isRoofReport = false;
+            // 3) Defaults + label rules
+            $displayLabel = '—';
+            $showAddonsBlock = false;
+            $forceAllAddons = false;
+            $isRoofReport = false;
 
-        switch ($numLevel) {
-        case 1:
-        $displayLabel = 'Roof Report';
-        $isRoofReport = true; // show drone icon (below)
-        break;
+            switch ($numLevel) {
+                case 1:
+                    $displayLabel = 'Roof Report';
+                    $isRoofReport = true; // show drone icon (below)
+                    break;
 
-        case 2:
-        $displayLabel = 'Level 2';
-        break;
+                case 2:
+                    $displayLabel = 'Level 2';
+                    break;
 
-        case 3:
-        // If ALL 3 add-ons chosen, show "Level 3+"
-        $displayLabel = $hasAllAddons ? 'Level 3+' : 'Level 3';
-        $showAddonsBlock = true; // show selected or "No add-ons selected"
-        break;
+                case 3:
+                    // If ALL 3 add-ons chosen, show "Level 3+"
+                    $displayLabel = $hasAllAddons ? 'Level 3+' : 'Level 3';
+                    $showAddonsBlock = true; // show selected or "No add-ons selected"
+                    break;
 
-        case 4:
-        // Backend Level 4 = UI "Level 3+" and always show ALL add-ons
-        $displayLabel = 'Level 3+';
-        $showAddonsBlock = true;
-        $forceAllAddons = true;
-        break;
+                case 4:
+                    // Backend Level 4 = UI "Level 3+" and always show ALL add-ons
+                    $displayLabel = 'Level 3+';
+                    $showAddonsBlock = true;
+                    $forceAllAddons = true;
+                    break;
 
-        default:
-        if ($numLevel > 0) $displayLabel = 'Level ' . $numLevel;
-        }
+                default:
+                    if ($numLevel > 0) {
+                        $displayLabel = 'Level ' . $numLevel;
+                    }
+            }
 
-        // 4) Icon: Roof Report -> Drone; otherwise Survey icon
-        $surveyIcon = $isRoofReport
-        ? asset('assets/user/icons/Drone.png') // update path if needed
-        : asset('assets/user/icons/Survey type.png');
+            // 4) Icon: Roof Report -> Drone; otherwise Survey icon
+            $surveyIcon = $isRoofReport
+                ? asset('assets/user/icons/Drone.png') // update path if needed
+                : asset('assets/user/icons/Survey type.png');
         @endphp
 
         <div id="bookingSummarySticky" class="booking-summary-sticky">
@@ -170,42 +173,50 @@
 
             {{-- Add-ons block rules --}}
             @if ($showAddonsBlock)
-            <div class="summary-tab" id="addonsSummaryTab">
-                <div class="summary-icon-title">
-                    <div class="summary-icon">
-                        <img src="{{ asset('assets/user/icons/Adda-on chosen.png') }}" style="width:80%" alt="">
+                <div class="summary-tab" id="addonsSummaryTab">
+                    <div class="summary-icon-title">
+                        <div class="summary-icon">
+                            <img src="{{ asset('assets/user/icons/Adda-on chosen.png') }}" style="width:80%"
+                                alt="">
+                        </div>
+                        <div class="summary-title">
+                            <h4>Add-ons Selected:</h4>
+                        </div>
                     </div>
-                    <div class="summary-title">
-                        <h4>Add-ons Selected:</h4>
+                    <div class="summary-value">
+                        @if ($forceAllAddons)
+                            <ul class="custom-list">
+                                <li>Aerial Images</li>
+                                <li>Reinstatement</li>
+                                <li>Estimated Costings</li>
+                            </ul>
+                        @else
+                            @if (!$hasAddon)
+                                <span>No add-ons selected</span>
+                            @else
+                                <ul class="custom-list">
+                                    @if ($hasAerial)
+                                        <li>Aerial Images</li>
+                                    @endif
+                                    @if ($hasInsurance)
+                                        <li>Reinstatement</li>
+                                    @endif
+                                    @if ($hasBreakdown)
+                                        <li>Estimated Costings</li>
+                                    @endif
+                                </ul>
+                            @endif
+                        @endif
                     </div>
                 </div>
-                <div class="summary-value">
-                    @if ($forceAllAddons)
-                    <ul class="custom-list">
-                        <li>Aerial Images</li>
-                        <li>Reinstatement</li>
-                        <li>Estimated Costings</li>
-                    </ul>
-                    @else
-                    @if (!$hasAddon)
-                    <span>No add-ons selected</span>
-                    @else
-                    <ul class="custom-list">
-                        @if ($hasAerial) <li>Aerial Images</li> @endif
-                        @if ($hasInsurance) <li>Reinstatement</li> @endif
-                        @if ($hasBreakdown) <li>Estimated Costings</li> @endif
-                    </ul>
-                    @endif
-                    @endif
-                </div>
-            </div>
             @endif
 
             <!-- Property Address -->
             <div class="summary-tab">
                 <div class="summary-icon-title">
                     <div class="summary-icon">
-                        <img src="{{ asset('assets/user/icons/Property address.png') }}" style="width:80%" alt="">
+                        <img src="{{ asset('assets/user/icons/Property address.png') }}" style="width:80%"
+                            alt="">
                     </div>
                     <div class="summary-title">
                         <h4>Property Address:</h4>
@@ -238,10 +249,10 @@
                     </div>
                 </div>
                 @if ($survey->over1650 == 'yes')
-                <div class="summary-value">{{ $survey->sqft_area }}</div>
+                    <div class="summary-value">{{ $survey->sqft_area }}</div>
                 @else
-                <div class="summary-value" style="width: 40%">The dwelling including any outbuildings and/or garages is below 1650 SqFt.</div>
-
+                    <div class="summary-value" style="width: 40%">The dwelling including any outbuildings and/or garages
+                        is below 1650 SqFt.</div>
                 @endif
             </div>
 
@@ -249,7 +260,8 @@
             <div class="summary-tab">
                 <div class="summary-icon-title">
                     <div class="summary-icon">
-                        <img src="{{ asset('assets/user/icons/Number of bedrooms.png') }}" style="width:80%" alt="">
+                        <img src="{{ asset('assets/user/icons/Number of bedrooms.png') }}" style="width:80%"
+                            alt="">
                     </div>
                     <div class="summary-title">
                         <h4>Number of Bedrooms:</h4>
@@ -281,7 +293,8 @@
                     <div class="step-label">Summary</div>
                 </div> --}}
                 <div class="progress-step" data-step="2">
-                    <div class="step-circle" style="background: var(--primary);  border-color: var(--primary); color: #1A202C;">1</div>
+                    <div class="step-circle"
+                        style="background: var(--primary);  border-color: var(--primary); color: #1A202C;">1</div>
                     <div class="step-label">Client Details</div>
                 </div>
                 <div class="progress-step" data-step="3">
@@ -318,7 +331,7 @@
 
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <select id="title" name="inf_field_Title" class="form-control">
+                        <select id="title" name="inf_field_Title" class="form-control inf_field_Title" style="width: 25%; ">
                             <option value="">Please select one</option>
                             <option value="Dr.">Dr.</option>
                             <option value="Lord.">Lord.</option>
@@ -347,7 +360,8 @@
                     <div class="form-group">
                         <label for="email">Email <span class="required">*</span></label>
                         <input type="email" id="email" name="inf_field_Email" class="form-control"
-                            value="{{ $survey->email_address }}" placeholder="Enter your email address" required readonly />
+                            value="{{ $survey->email_address }}" placeholder="Enter your email address" required
+                            readonly />
                     </div>
 
                     <div class="form-group">
@@ -390,8 +404,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="propertyLink">Rightmove/Zoopla/Agent's Link <span class="required">*</span></label>
-                        <input type="url" id="propertyLink" name="inf_custom_PropertyLink" class="form-control"
+                        <label for="propertyLink">Rightmove/Zoopla/Agent's Link <span
+                                class="required">*</span></label>
+                        <input type="text" id="propertyLink" name="inf_custom_PropertyLink" class="form-control"
                             placeholder="https://www.rightmove.co.uk/..." required />
                     </div>
 
@@ -399,11 +414,13 @@
                         <label for="vacant">Vacant or Occupied <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="vacant" name="inf_custom_VacantorOccupied" value="Vacant" required />
+                                <input type="radio" id="vacant" name="inf_custom_VacantorOccupied"
+                                    value="Vacant" required />
                                 <label for="vacant">Vacant</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="occupied" name="inf_custom_VacantorOccupied" value="Occupied" required />
+                                <input type="radio" id="occupied" name="inf_custom_VacantorOccupied"
+                                    value="Occupied" required />
                                 <label for="occupied">Occupied</label>
                             </div>
                         </div>
@@ -413,11 +430,13 @@
                         <label for="extensionsYes">Any Extensions? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="extensionsYes" name="inf_custom_AnyExtensions" value="1" required />
+                                <input type="radio" id="extensionsYes" name="inf_custom_AnyExtensions"
+                                    value="1" required />
                                 <label for="extensionsYes">Yes</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="extensionsNo" name="inf_custom_AnyExtensions" value="0" required />
+                                <input type="radio" id="extensionsNo" name="inf_custom_AnyExtensions"
+                                    value="0" required />
                                 <label for="extensionsNo">No</label>
                             </div>
                         </div>
@@ -427,11 +446,13 @@
                         <label for="garageYes">Garage? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="garageYes" name="inf_custom_Garage" value="1" required />
+                                <input type="radio" id="garageYes" name="inf_custom_Garage" value="1"
+                                    required />
                                 <label for="garageYes">Yes</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="garageNo" name="inf_custom_Garage" value="0" required />
+                                <input type="radio" id="garageNo" name="inf_custom_Garage" value="0"
+                                    required />
                                 <label for="garageNo">No</label>
                             </div>
                         </div>
@@ -447,17 +468,19 @@
                         <label for="gardenYes">Garden? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="gardenYes" name="inf_custom_Garden" value="1" required checked />
+                                <input type="radio" id="gardenYes" name="inf_custom_Garden" value="1"
+                                    required  />
                                 <label for="gardenYes">Yes</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="gardenNo" name="inf_custom_Garden" value="0" required />
+                                <input type="radio" id="gardenNo" name="inf_custom_Garden" value="0"
+                                    required />
                                 <label for="gardenNo">No</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group" id="gardenLocationField" style="display:block">
+                    <div class="form-group" id="gardenLocationField" style="display:none">
                         <label for="gardenLocation">Garden Location</label>
                         <input type="text" id="gardenLocation" name="inf_custom_GardenLocation"
                             class="form-control" placeholder="Describe the garden location" />
@@ -478,11 +501,13 @@
                         <label for="solicitorYes">Do you have a solicitor? <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="solicitorYes" name="inf_custom_SolicitorFirm" value="yes" required />
+                                <input type="radio" id="solicitorYes" name="inf_custom_SolicitorFirm"
+                                    value="yes" required />
                                 <label for="solicitorYes">Yes</label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="solicitorNo" name="inf_custom_SolicitorFirm" value="no" required />
+                                <input type="radio" id="solicitorNo" name="inf_custom_SolicitorFirm"
+                                    value="no" required />
                                 <label for="solicitorNo">No</label>
                             </div>
                         </div>
@@ -496,7 +521,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="conveyancerName">Conveyancer (Direct Contact Name) <span class="required">*</span></label>
+                            <label for="conveyancerName">Conveyancer (Direct Contact Name) <span
+                                    class="required">*</span></label>
                             <input type="text" id="conveyancerName" name="inf_custom_ConveyancerName"
                                 class="form-control" placeholder="Enter conveyancer name" />
                         </div>
@@ -534,11 +560,13 @@
                             <label>Do you know the exchange date?</label>
                             <div class="radio-group">
                                 <div class="radio-option">
-                                    <input type="radio" id="exchangeKnownYes" name="inf_custom_exchange_known" value="yes" />
+                                    <input type="radio" id="exchangeKnownYes" name="inf_custom_exchange_known"
+                                        value="yes" />
                                     <label for="exchangeKnownYes">Yes</label>
                                 </div>
                                 <div class="radio-option">
-                                    <input type="radio" id="exchangeKnownNo" name="inf_custom_exchange_known" value="no" />
+                                    <input type="radio" id="exchangeKnownNo" name="inf_custom_exchange_known"
+                                        value="no" />
                                     <label for="exchangeKnownNo">No</label>
                                 </div>
                             </div>
@@ -546,7 +574,8 @@
 
                         <div class="form-group" id="exchangeDateField" style="display:none">
                             <label for="exchangeDate">Exchange Date <span class="required">*</span></label>
-                            <input type="date" id="exchangeDate" name="inf_custom_ExchangeDate" class="form-control" />
+                            <input type="date" id="exchangeDate" name="inf_custom_ExchangeDate"
+                                class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -600,18 +629,26 @@
 
                     <div class="important-notice">
                         <h3>IMPORTANT NOTICE:</h3>
-                        <p>Please ensure that you have chosen the correct survey for your property before payment. Our policy is as follows:</p>
-                        <p>1. You confirm that all of the information provided in the quote process is factual and correct.</p>
-                        <p>2. I understand that If the property is house or flat built before 1985, or has been altered structurally in any way, a LEVEL THREE SURVEY is required, not a LEVEL TWO SURVEY. We do not deviate from this policy.</p>
+                        <p>Please ensure that you have chosen the correct survey for your property before payment. Our
+                            policy is as follows:</p>
+                        <p>1. You confirm that all of the information provided in the quote process is factual and
+                            correct.</p>
+                        <p>2. I understand that If the property is house or flat built before 1985, or has been altered
+                            structurally in any way, a LEVEL THREE SURVEY is required, not a LEVEL TWO SURVEY. We do not
+                            deviate from this policy.</p>
                         <p>Please see our home page for the
-                            <strong class="hover-a-tag"><a href="https://flettons.group/wp-content/uploads/2025/07/FLOW-CHART-FINAL-2023-1086x1536-1.webp" target="_blank" rel="noopener noreferrer">WHICH SURVEY</a></strong>
+                            <strong class="hover-a-tag"><a
+                                    href="https://flettons.group/wp-content/uploads/2025/07/FLOW-CHART-FINAL-2023-1086x1536-1.webp"
+                                    target="_blank" rel="noopener noreferrer">WHICH SURVEY</a></strong>
                             flow chart.
                         </p>
-                        <p>If you proceed to book incorrectly, we will cancel the order and charge 1.25% of the transaction fee to cover the cost of the transaction.</p>
+                        <p>If you proceed to book incorrectly, we will cancel the order and charge 1.25% of the
+                            transaction fee to cover the cost of the transaction.</p>
                     </div>
 
                     <div class="form-group" style="max-width:100%">
-                        <label for="signature" style="font-weight:bold">Signature <span class="required">*</span></label>
+                        <label for="signature" style="font-weight:bold">Signature <span
+                                class="required">*</span></label>
 
                         <canvas id="signatureCanvas" width="400" height="120"></canvas>
                         <input type="hidden" id="signatureInput" name="inf_custom_infcustomSignature" required />
@@ -626,9 +663,11 @@
                     <div class="form-group">
                         <div class="checkbox-group">
                             <input type="checkbox" id="termsCheckbox"
-                                name="inf_option_IconfirmthatIhavereadandunderstandtheterms" value="921" required />
+                                name="inf_option_IconfirmthatIhavereadandunderstandtheterms" value="921"
+                                required />
                             <label for="termsCheckbox">I confirm that I have read and understand the
-                                <a target="_blank" href="https://www.flettons.com/toe">Terms of Engagement</a>. <span class="required">*</span>
+                                <a target="_blank" href="https://www.flettons.com/toe">Terms of Engagement</a>. <span
+                                    class="required">*</span>
                             </label>
                         </div>
                     </div>
@@ -645,7 +684,7 @@
                     Proceed <i class="fas fa-arrow-right"></i>
                 </button>
                 <button type="submit" id="submitBtn" class="btn btn-submit" style="display:none">
-                    <i class="fas fa-credit-card"></i> Instruct and Pay
+                     Instruct and Pay
                 </button>
             </div>
         </form>
@@ -659,7 +698,8 @@
                 You will now be taken to a secure payment page<br />
                 <span class="ewm-red">Do not click back or refresh the screen.</span>
             </p>
-            <div class="ewm-ring"></div>
+            {{-- <div class="ewm-ring"></div> --}}
+            <img src="{{ asset('assets/user/icons/Loading.png') }}" class="loading-image" alt="Loading...">
         </div>
     </div>
 
@@ -673,87 +713,90 @@
 
     <!-- Unified wizard controller (no FOUC) -->
     <script>
-        (function() {
-            const $landing = document.getElementById('bookingSummarySticky');
-            const $progress = document.getElementById('progressContainer');
-            const $next = document.getElementById('nextBtn');
-            const $submit = document.getElementById('submitBtn');
-            const $backHead = document.getElementById('headerBackBtn');
-            const $proceed = document.getElementById('proceedFromSummaryBtn');
-            const $prev = document.getElementById('prevBtn'); // stay hidden by CSS
-
-            const MIN_STEP = 2,
-                MAX_STEP = 6;
+        const $landing = $('#bookingSummarySticky');
+        const $progress = $('#progressContainer');
+        const $next = $('#nextBtn');
+        const $submit = $('#submitBtn');
+        const $backHead = $('#headerBackBtn');
+        const $proceed = $('#proceedFromSummaryBtn');
+        const $prev = $('#prevBtn'); // stay hidden by CSS
+        $(document).ready(function() {
+            $('.form-container').css('border','none');
+            const MIN_STEP = 2;
+            const MAX_STEP = 6;
             let currentStep = MIN_STEP;
 
-            const qsAll = (s) => Array.from(document.querySelectorAll(s));
-
             function setProgressActive(step) {
-                qsAll('.progress-step').forEach(p => p.classList.remove('active', 'completed'));
+                $('.progress-step').removeClass('active completed');
                 for (let i = 2; i <= MAX_STEP; i++) {
-                    const node = document.querySelector(`.progress-step[data-step="${i}"]`);
-                    if (!node) continue;
-                    if (i < step) node.classList.add('completed');
-                    if (i === step) node.classList.add('active');
+                    const $node = $(`.progress-step[data-step="${i}"]`);
+                    if ($node.length) {
+                        if (i < step) $node.addClass('completed');
+                        if (i === step) $node.addClass('active');
+                    }
                 }
-                document.querySelector('.progress-bar')?.setAttribute('data-progress', String(step));
+                $('.progress-bar').attr('data-progress', String(step));
             }
 
             function setStep(step) {
                 currentStep = Math.min(Math.max(step, MIN_STEP), MAX_STEP);
-                qsAll('.step').forEach(s => s.classList.remove('active'));
-                const el = document.getElementById('step' + currentStep);
-                if (el) {
-                    el.style.display = '';
-                    el.classList.add('active');
+                $('.step').removeClass('active');
+                const $el = $('#step' + currentStep);
+                if ($el.length) {
+                    $el.show().addClass('active');
                 }
                 setProgressActive(currentStep);
-                if ($next) $next.style.display = 'block'; // Hide Next button after first step
-                if ($submit) $submit.style.display = 'none'; // Hide Submit button
-                if ($backHead) $backHead.style.display = 'block'; // Show back button
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+
+                if ($next.length) $next.show(); // Show Next button after first step
+                if ($submit.length) $submit.hide(); // Hide Submit button
+                if ($backHead.length) $backHead.show(); // Show back button
+
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 'smooth');
             }
 
             function showWizard(startStep = MIN_STEP) {
-                document.body.classList.remove('is-landing');
-                if ($landing) $landing.style.display = 'none';
-                if ($progress) $progress.style.display = '';
-                // if ($next) {
-                //     $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-                //     $next.style.display = 'none'; // Hide Next button, as we don’t need to go to the next step
-                // }
+                $('body').removeClass('is-landing');
+                if ($landing.length) $landing.hide();
+                if ($progress.length) $progress.show();
+                 $('.form-container').css('border','1px solid #d5d7d9');
                 setStep(startStep); // Ensure only the first step is shown
             }
 
-            function showLanding() {
-                document.body.classList.add('is-landing');
-                if ($landing) $landing.style.display = '';
-                if ($progress) $progress.style.display = 'none';
-                if ($submit) $submit.style.display = 'none';
-                if ($next) {
-                    $next.style.display = '';
-                    $next.innerHTML = `Proceed <i class="fas fa-arrow-right"></i>`;
-                    $next.onclick = () => showWizard(MIN_STEP); // Proceed to the first step only
-                }
-                if ($backHead) $backHead.style.display = 'none';
-                qsAll('.step').forEach(s => s.classList.remove('active'));
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+            // Click handlers
+            $proceed.on('click', function() {
+                showWizard(MIN_STEP); // Ensure we start at step 2
+            });
+
+
+        });
+
+        function showLanding() {
+            // Hide step2 explicitly when landing back
+            $('#step2').css('display', 'none');
+            $('.form-container').css('border','none');
+            // Add the landing state class
+            $('body').addClass('is-landing');
+
+            // Hide all steps and then show landing elements
+            $('.step').css('display', 'none');
+            if ($landing.length) $landing.show();
+            if ($progress.length) $progress.hide();
+            if ($submit.length) $submit.hide();
+            if ($next.length) {
+                $next.show().html(`Proceed <i class="fas fa-arrow-right"></i>`).off('click').on('click', function() {
+                    showWizard(MIN_STEP); // Proceed to the first step only
                 });
             }
+            if ($backHead.length) $backHead.hide();
+            $('.step').removeClass('active');
 
-            // Click handlers
-            $proceed?.addEventListener('click', () => showWizard(MIN_STEP)); // Ensure we start at step 2
-            // $backHead?.addEventListener('click', () => {
-            //     showLanding(); // Only go back to the landing, no navigation to previous steps
-            // });
-
-            // IMPORTANT: Do NOT call showLanding() here — body already has class="is-landing"
-        })();
+            // Scroll to top
+            $('html, body').animate({
+                scrollTop: 0
+            }, 'smooth');
+        }
     </script>
 
     <noscript>

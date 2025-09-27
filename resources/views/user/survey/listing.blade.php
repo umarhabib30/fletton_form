@@ -30,7 +30,7 @@
                         <div class="header-section">
                             <h3 class="username">Your RICS Regulated Surveyor Quotes</h3>
                             <p class="custom-m1">
-                                Surveying undertaken by Fletton Surveyors Ltd -
+                                Surveying undertaken by Flettons Surveyors Ltd -
                                 Regulated by RICS. All price quote are final.
                             </p>
                         </div>

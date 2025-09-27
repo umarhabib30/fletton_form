@@ -166,7 +166,7 @@ function toggleAddon(btn) {
     const yes = group.querySelector('input[type="radio"][value="1"]');
     const no = group.querySelector('input[type="radio"][value="0"]');
 
-    const willActivate = !btn.classList.contains('active');
+    const willActivate = !btn.innerHTML.includes('✓'); // Check if the current button text is "✓"
 
     if (willActivate && yes) {
         yes.checked = true;
@@ -176,11 +176,13 @@ function toggleAddon(btn) {
         no.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    btn.classList.toggle('active', willActivate);
+    // Replace "Add" with "✓" or revert it back
+    btn.innerHTML = willActivate ? '✓' : 'Add';
 
     // Recompute using existing logic and refresh note
     updateLevel3Totals();
 }
+
 
 
 /** Sync initial button .active state from radios (in case of server defaults) */

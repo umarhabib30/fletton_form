@@ -62,14 +62,14 @@ body {
     margin: 24px auto;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    /* border-radius: 10px; */
     overflow: hidden;
     box-shadow: var(--shadow);
 }
 
 /* HEADER (keep green gradient) */
 .form-header {
-    background: linear-gradient(135deg, var(--primary) 0%, #7da817 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #C1EC4A 100%);
     padding: 30px 40px;
     text-align: center;
     position: relative;
@@ -152,7 +152,7 @@ body {
     top: 20px;
     left: 0;
     height: 3px;
-    /* background: linear-gradient(90deg, var(--primary), #7da817); */
+    /* background: linear-gradient(90deg, var(--primary), #C1EC4A); */
     border-radius: 3px;
     z-index: 2;
     transition: width .6s ease;
@@ -280,7 +280,7 @@ body {
     transform: translateX(-50%);ss
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), #7da817);
+    background: linear-gradient(90deg, var(--primary), #C1EC4A);
     border-radius: 2px
 } */
 
@@ -290,7 +290,7 @@ body {
     border: 1px solid var(--primary);
     /* border-left: 4px solid var(--primary); */
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 10px;
     margin-bottom: 16px;
     transition: .2s;
     box-shadow: var(--shadow)
@@ -345,7 +345,7 @@ body {
     margin-bottom: 8px;
     font-weight: 500;
     color: var(--ink);
-    font-size: 14px
+    font-size: 20px
 }
 
 .required {
@@ -357,7 +357,7 @@ body {
     width: 100%;
     padding: 14px 16px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     background: #fff;
     color: var(--ink);
     font-size: 16px;
@@ -366,7 +366,7 @@ body {
 
 .form-control:focus {
     outline: none;
-    border-color: var(--primary);
+    /* border-color: var(--primary); */
     /* box-shadow: 0 0 0 4px rgba(147, 193, 32, .12) */
 }
 
@@ -394,7 +394,7 @@ textarea.form-control {
     padding: 10px 14px;
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     transition: .2s;
     min-width: 120px;
     justify-content: center
@@ -487,8 +487,8 @@ textarea.form-control {
 }
 
 .radio-option input[type="radio"]:checked+label:hover {
-    background: #7da817;
-    border-color: #7da817;
+    background: #C1EC4A;
+    border-color: #C1EC4A;
 }
 
 /* CHECKBOX GROUP */
@@ -498,7 +498,7 @@ textarea.form-control {
     gap: 12px;
     padding: 14px;
     background: #fff;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid var(--border);
     transition: .2s
 }
@@ -557,7 +557,7 @@ textarea.form-control {
     background: #fff;
     border: 1px solid var(--border);
     /* border-left: 4px solid var(--ink); */
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 18px;
     margin-bottom: 24px;
     box-shadow: var(--shadow)
@@ -589,7 +589,7 @@ textarea.form-control {
     max-width: 420px;
     height: 120px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     background: #fff;
     cursor: crosshair;
     touch-action: none
@@ -600,7 +600,7 @@ textarea.form-control {
     max-width: 420px;
     padding: 12px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     background: #fff;
     color: var(--ink);
     margin-top: 10px
@@ -673,7 +673,7 @@ textarea.form-control {
 }
 
 .btn-primary:hover {
-    background: #7da817;
+    background: #C1EC4A;
     color: var(--ink);
     /* /* border-color: #fff; */
     /* transform: translateY(-2px); */
@@ -708,7 +708,7 @@ textarea.form-control {
 }
 
 .btn-submit:hover {
-     background: #7da817;
+    background: #C1EC4A;
     color: var(--ink);
 }
 
@@ -726,7 +726,7 @@ textarea.form-control {
 
 .ewm-box {
     background: #fff;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 30px;
     text-align: center;
     border: 1px solid var(--border);
@@ -779,7 +779,7 @@ textarea.form-control {
 .form-control:focus {
     /* keep simple focus without glow */
     box-shadow: none !important;
-    border-color: var(--primary) !important;
+    /* border-color: var(--primary) !important; */
     /* thin brand border ok */
 }
 
@@ -811,7 +811,7 @@ textarea.form-control {
 
 .progress-step.active .step-circle {
     border-color: var(--ink) !important;
-    box-shadow: 0 0 0 4px rgba(28, 27, 55, .15) !important;
+    box-shadow: none !important;
     /* subtle ink ring */
 }
 
@@ -837,7 +837,7 @@ textarea.form-control {
 @media (max-width:768px) {
     .form-container {
         margin: 12px;
-        border-radius: 16px
+        /* border-radius: 16px */
     }
 
     .form-header {
@@ -854,6 +854,10 @@ textarea.form-control {
 
     .progress-container {
         padding: 18px 10px;
+    }
+
+    .inf_field_Title {
+        width: 55% !important;
     }
 
     .checkbox-group input[type="checkbox"] {
@@ -904,7 +908,11 @@ textarea.form-control {
 
     .btn {
         flex: 1;
-        min-width: 180px
+        max-width: fit-content;
+    }
+
+    .radio-group {
+        justify-content: center;
     }
 }
 
@@ -1007,7 +1015,7 @@ textarea.form-control {
     display: flex;
     gap: 12px;
     border: 1px solid var(--accent);
-    border-radius: 12px;
+    border-radius: 10px;
     background: var(--bg);
     padding: 12px 14px;
     align-items: flex-start;
@@ -1021,7 +1029,7 @@ textarea.form-control {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .info-card__body {
@@ -1066,6 +1074,7 @@ textarea.form-control {
     .instruction-summary {
         gap: 20px;
     }
+
 
     .info-card {
         gap: 16px;
@@ -1187,7 +1196,7 @@ textarea.form-control {
 /* top banner */
 .summary-head {
     background: #1A202C;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     text-align: center;
     padding: 14px 16px;
     margin-bottom: 20px;
@@ -1296,7 +1305,7 @@ textarea.form-control {
 .summary-totalbar {
     background: #1A202C;
     color: #fff;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     padding: 16px;
     display: flex;
     align-items: center;
@@ -1328,7 +1337,7 @@ textarea.form-control {
 }
 
 .summary-totalbar__btn:hover {
-    background: #a8d528;
+    background: #C1EC4A;
 }
 
 /* responsive behaviour */
@@ -1432,5 +1441,25 @@ textarea.form-control {
 
     .summary-icon img {
         width: 40px;
+    }
+}
+
+
+.loading-image {
+    width: 50px;
+    /* Adjust the size as needed */
+    height: 50px;
+    /* Adjust the size as needed */
+    animation: rotateImage 2s linear infinite;
+}
+
+/* Keyframes for rotating the image */
+@keyframes rotateImage {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
     }
 }

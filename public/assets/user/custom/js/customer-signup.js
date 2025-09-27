@@ -123,7 +123,7 @@ function validateField(event) {
         field.style.borderColor = '#ff6b6b';
         // field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
     } else {
-        field.style.borderColor = '#C1EC4A';
+        // field.style.borderColor = '#C1EC4A';
         // field.style.boxShadow = '0 0 10px rgba(147, 193, 32, 0.2)';
     }
 }
@@ -145,9 +145,13 @@ function nextStep() {
 }
 
 function prevStep() {
+
     if (currentStep > 2) {
         currentStep--;
         updateStep();
+    }
+    if(currentStep == 2){
+        showLanding();
     }
 }
 
@@ -158,12 +162,11 @@ function goToStep(stepNumber) {
 
 function updateStep() {
     // Hide all steps
-    document.querySelectorAll('.step').forEach(step => {
-        step.classList.remove('active');
-    });
+    $('.step').css('display', 'none').removeClass('active');
 
     // Show current step
-    document.getElementById(`step${currentStep}`).classList.add('active');
+    const $currentStep = $('#step' + currentStep);
+    $currentStep.show().addClass('active');
 
     // Update progress
     updateProgressBar();
@@ -171,11 +174,11 @@ function updateStep() {
     // Update navigation buttons
     updateNavigationButtons();
 
-    // Add animation
-    document.getElementById(`step${currentStep}`).classList.add('slide-up');
+    // Add animation for the step transition
+    $currentStep.addClass('slide-up');
 
-    // Scroll to top
-    document.querySelector('.form-container').scrollIntoView({
+    // Scroll to top of the form container
+    $('.form-container').get(0).scrollIntoView({
         behavior: 'smooth',
         block: 'start'
     });
