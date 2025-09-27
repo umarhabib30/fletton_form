@@ -67,19 +67,14 @@
     }
   });
 
-  // 🔹 Popup Observer: agar popup visible hai → parent ko centerMe bhejna
-  var popup = document.getElementById('confirm-popup-conteiner');
-  if (popup && 'MutationObserver' in window) {
-    var wasVisible = false;
-    var popObs = new MutationObserver(function () {
-      var nowVisible = window.getComputedStyle(popup).display !== 'none';
-      if (nowVisible && !wasVisible) {
-        // Popup just opened
-        try { window.parent.postMessage({ centerMe: true }, '*'); } catch (_) {}
-      }
-      wasVisible = nowVisible;
-    });
-    popObs.observe(popup, { attributes: true, attributeFilter: ['style','class'] });
+  // 🔹 Popup open hone par parent ko center me lana
+  function notifyPopupOpen() {
+    try { window.parent.postMessage({ centerMe: true }, '*'); } catch (_) {}
   }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes')) {
+      notifyPopupOpen();
+    }
+  });
 
 })();
