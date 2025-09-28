@@ -1,109 +1,69 @@
-
 (function () {
-  /* --- exact wrapper choose --- */
-  function wrapper(){
-    return document.querySelector('.form-container')
-        || document.querySelector('#quote-container')
-        || document.querySelector('.container')
-        || document.body;
-  }
+  var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn,16); };
+  var lastH=0, ticking=false;
 
-  /* --- measure only wrapper height (overlay/loader ignore) --- */
-  function measure(){
-    var el = wrapper();
-    var cs = getComputedStyle(el);
-    // element ke khud ke height + margins
-    var h  = Math.ceil(el.getBoundingClientRect().height
-             + (parseFloat(cs.marginTop)||0)
-             + (parseFloat(cs.marginBottom)||0));
-    if (!isFinite(h) || h < 1) {
-      // fallback
-      h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, 320);
-    }
-    return h;
+  function docHeight(){
+    return Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight,  document.documentElement.offsetHeight,
+      document.body.clientHeight,  document.documentElement.clientHeight
+    );
   }
-
-  /* --- sender (grow + shrink) --- */
-  var raf = window.requestAnimationFrame || function(fn){ return setTimeout(fn,16); };
-  var lastH = 0, busy = false;
-  function send(){
-    var h = measure();
+  function sendHeight(){
+    var h = docHeight();
     if (h !== lastH){
       lastH = h;
-      try{ window.parent.postMessage({ frameHeight:h }, '*'); }catch(_){}
+      try { window.parent.postMessage({ frameHeight:h }, '*'); } catch(_){}
     }
-    busy = false;
+    ticking=false;
   }
-  function tick(){ if (!busy){ busy = true; (raf||setTimeout)(send,0); } }
+  function ping(){ if (!ticking){ ticking=true; (raf||setTimeout)(sendHeight,0); } }
 
   // parent request
   window.addEventListener('message', function(e){
-    if (e.data && typeof e.data === 'object' && e.data.requestHeight) tick();
+    if (e.data && typeof e.data==='object' && e.data.requestHeight) ping();
   });
 
-  // init + common triggers
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick); else tick();
-  window.addEventListener('load',  tick, {passive:true});
-  window.addEventListener('resize', tick, {passive:true});
+  // init
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', ping); else ping();
+  window.addEventListener('load', ping);
+  window.addEventListener('resize', ping);
 
-  // observe DOM/layout changes
   if ('MutationObserver' in window){
-    new MutationObserver(tick).observe(document.body, { childList:true, subtree:true, attributes:true });
+    new MutationObserver(ping).observe(document.body,{childList:true,subtree:true,attributes:true});
   }
   if ('ResizeObserver' in window){
-    var ro = new ResizeObserver(tick);
-    ro.observe(document.body);
-    var w = wrapper(); if (w) ro.observe(w);
+    var ro=new ResizeObserver(ping); ro.observe(document.body); ro.observe(document.documentElement);
   }
-  setInterval(tick, 1400); // keep-alive
+  setInterval(ping,1200);
 
-  /* --- step change -> top + remeasure --- */
-  function stepTop(){
-    try{ window.parent.postMessage({ scrollTop:true }, '*'); }catch(_){}
-    tick();
-  }
-  document.addEventListener('click', function(e){
-    if (e.target.closest('#nextBtn') ||
-        e.target.closest('#prevBtn') ||
-        e.target.closest('#proceedBtn') ||
-        e.target.closest('.buy-now-btn')) {
-      stepTop();
+  // Step buttons → parent scrollTop
+  document.addEventListener('click',function(e){
+    if (
+      e.target.closest('#nextBtn') ||
+      e.target.closest('#proceedBtn') ||
+      e.target.closest('.buy-now-btn')
+    ){
+      try { window.parent.postMessage({ scrollTop:true }, '*'); } catch(_){}
+      setTimeout(ping,30); setTimeout(ping,250);
     }
-  }, {passive:true});
+  },{passive:true});
 
-  /* --- popup detect -> center (loader untouched) --- */
-  var POPUPS = ['#confirm-popup-conteiner','.confirm-popup-conteiner','.modal.is-open'];
-  var wasOpen = false;
-  function anyOpen(){
+  // Popup detect
+  var POPUPS=['#confirm-popup-conteiner','.confirm-popup-conteiner'];
+  function anyPopup(){
     for (var i=0;i<POPUPS.length;i++){
-      var el = document.querySelector(POPUPS[i]);
-      if (!el) continue;
-      if (getComputedStyle(el).display !== 'none') return true;
+      var el=document.querySelector(POPUPS[i]);
+      if (el && getComputedStyle(el).display!=='none') return true;
     }
     return false;
   }
-  function checkPopup(){
-    var open = anyOpen();
-    if (open && !wasOpen){
-      wasOpen = true;
-      try{ window.parent.postMessage({ centerMe:true }, '*'); }catch(_){}
-    } else if (!open && wasOpen){
-      wasOpen = false;
-    }
+  var was=false;
+  function check(){
+    var open=anyPopup();
+    if(open && !was){ was=true; window.parent.postMessage({centerMe:true},'*'); }
+    if(!open && was){ was=false; window.parent.postMessage({popupClosed:true},'*'); }
   }
-  setInterval(function(){ checkPopup(); tick(); }, 250);
-  ['click','keyup','change','transitionend','animationend'].forEach(function(ev){
-    document.addEventListener(ev, function(){ setTimeout(function(){ checkPopup(); tick(); }, 40); }, {passive:true});
-  });
-
-  /* --- ensure no fixed min-heights keep old size --- */
-  try{
-    var fix = document.createElement('style');
-    fix.textContent = `
-      html, body { height:auto!important; min-height:0!important; overflow-x:hidden; }
-      .form-container, #quote-container, .container { min-height:0!important; }
-    `;
-    document.head.appendChild(fix);
-  }catch(_){}
+  setInterval(check,200);
 })();
 
