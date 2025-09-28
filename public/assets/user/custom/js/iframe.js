@@ -1,58 +1,24 @@
 
 (function () {
-  // --- Auto height (fast + reliable) ---
-  var raf = window.requestAnimationFrame || function(fn){ return setTimeout(fn,16); };
-  var lastH = 0, ticking = false;
-  function docHeight(){
-    return Math.max(
-      document.body.scrollHeight, document.documentElement.scrollHeight,
-      document.body.offsetHeight,  document.documentElement.offsetHeight,
-      document.body.clientHeight,  document.documentElement.clientHeight
-    );
-  }
-  function sendHeight(){
-    var h = docHeight();
-    if (h !== lastH){
-      lastH = h;
-      try { window.parent.postMessage({ frameHeight:h }, '*'); } catch(_){}
-    }
-    ticking = false;
-  }
-  function ping(){ if (!ticking){ ticking = true; (raf||setTimeout)(sendHeight,0); } }
+  // --- Helpers to talk to parent ---
+  function parentMsg(obj){ try { window.parent.postMessage(obj, '*'); } catch(_){} }
 
-  // parent requests height
-  window.addEventListener('message', function(e){
-    if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
-  });
-
-  // init + observers
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ping); else ping();
-  window.addEventListener('load',  ping);
-  window.addEventListener('resize', ping);
-  if ('MutationObserver' in window){
-    new MutationObserver(ping).observe(document.body, { childList:true, subtree:true, attributes:true });
+  // STEP CHANGE → parent upar laao + loader short burst (optional)
+  function stepChange() {
+    parentMsg({ scrollTop: true });
   }
-  if ('ResizeObserver' in window){
-    var ro = new ResizeObserver(ping);
-    ro.observe(document.body); ro.observe(document.documentElement);
-  }
-  setInterval(ping, 1500);
 
-  // --- Step change -> parent top pe
-  function notifyStep(){ try { window.parent.postMessage({ scrollTop:true }, '*'); } catch(_){ } }
-  document.addEventListener('click', function(e){
-    if (
-      e.target.closest('#nextBtn') ||
-      e.target.closest('#prevBtn') ||
-      e.target.closest('#proceedBtn') ||
-      e.target.closest('.buy-now-btn')
-    ){
-      notifyStep();
-    }
-  }, {passive:true});
+  // “heavy” actions: show overlay immediately for UX
+  function showLoader(){ parentMsg({ type: 'show-loader' }); }
+  function hideLoader(){ parentMsg({ type: 'hide-loader' }); }
 
-  // --- Popup detect -> center only (no loader touch) ---
-  var POPUPS = ['#confirm-popup-conteiner','.confirm-popup-conteiner','.modal.is-open','.ewm-splash'];
+  // POPUP detect → true center while open
+  var POPUPS = [
+    '#confirm-popup-conteiner',
+    '.confirm-popup-conteiner',
+    '.ewm-splash',
+    '.modal.is-open'
+  ];
   function anyPopup(){
     for (var i=0;i<POPUPS.length;i++){
       var el = document.querySelector(POPUPS[i]);
@@ -62,20 +28,50 @@
     }
     return null;
   }
-  var popupOpen = false;
-  function watchPopup(){
+  var popupWasOpen = false;
+  function checkPopup(){
     var el = anyPopup();
-    if (el && !popupOpen){ popupOpen = true;  try { window.parent.postMessage({ centerMe:true   }, '*'); } catch(_){ } }
-    else if (!el && popupOpen){ popupOpen = false; try { window.parent.postMessage({ popupClosed:true }, '*'); } catch(_){ } }
+    if (el && !popupWasOpen){
+      popupWasOpen = true;
+      parentMsg({ centerMe: true });       // center + (parent shows overlay in our setup)
+    } else if (!el && popupWasOpen){
+      popupWasOpen = false;
+      parentMsg({ popupClosed: true });    // parent hide overlay
+    }
   }
-  setInterval(watchPopup, 250);
+  setInterval(checkPopup, 250);
   ['click','keyup','change'].forEach(function(ev){
-    document.addEventListener(ev, function(){ setTimeout(watchPopup, 40); }, {passive:true});
+    document.addEventListener(ev, function(){ setTimeout(checkPopup, 40); }, {passive:true});
   });
 
-  // ⚠️ Loader events aapka existing flow handle karta hai — hum yahan kuch change nahi kar rahe:
-  // window.parent.postMessage({ type:'show-loader' }, '*');  // (use only when you need)
-  // window.parent.postMessage({ type:'hide-loader'  }, '*');
+  // BUTTON WIRING
+  document.addEventListener('click', function(e){
+    // next/previous/proceed inside form wizard
+    if (e.target.closest('#nextBtn') || e.target.closest('#prevBtn') || e.target.closest('#proceedBtn')) {
+      stepChange();
+      showLoader();              // brief loader; hide after small delay if you like
+      setTimeout(hideLoader, 1200);
+    }
 
+    // cards (booking step) / confirm proceed
+    if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes')) {
+      stepChange();
+      showLoader();
+      // popup khulne par overlay parent hi control karega via checkPopup()
+    }
+
+    // final submit → keep loader until navigation
+    if (e.target.closest('#submitBtn')) {
+      showLoader();
+      stepChange();
+      // navigation ke baad parent page hi change ho jata hai; hide ki zaroorat nahi
+    }
+  }, {passive:true});
+
+  // On page ready, ensure parent not stuck
+  window.addEventListener('load', function(){ hideLoader(); });
+
+  // OPTIONAL: jab aapke paas final payment URL ho:
+  // parentMsg({ type:'go-to-payment', url:'https://flettons.group/flettons-order/?...' });
 })();
 
