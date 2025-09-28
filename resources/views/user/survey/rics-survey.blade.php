@@ -331,7 +331,7 @@
 
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <select id="title" name="inf_field_Title" class="form-control inf_field_Title" style="width: 25%; ">
+                        <select id="title" name="inf_field_Title" class="form-control inf_field_Title" >
                             <option value="">Please select one</option>
                             <option value="Dr.">Dr.</option>
                             <option value="Lord.">Lord.</option>

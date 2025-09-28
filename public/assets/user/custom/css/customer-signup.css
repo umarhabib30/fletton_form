@@ -825,7 +825,9 @@ textarea.form-control {
     color: #1A202C !important;
 }
 
-
+select#title {
+    width: 25% !important;
+}
 
 @keyframes spin {
     to {
@@ -839,7 +841,9 @@ textarea.form-control {
         margin: 12px;
         /* border-radius: 16px */
     }
-
+select#title {
+    width: 100% !important;
+}
     .form-header {
         padding: 24px 18px
     }
