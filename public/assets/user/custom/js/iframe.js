@@ -1,25 +1,94 @@
 
 (function () {
-  // --- Helpers to talk to parent ---
-  function parentMsg(obj){ try { window.parent.postMessage(obj, '*'); } catch(_){} }
+  // ---- Make shrink possible (safety) ----
+  try{
+    var style = document.createElement('style');
+    style.textContent = `
+      html, body { height:auto !important; min-height:0 !important; overflow-x:hidden; }
+      /* koi wrapper accidentally fixed height na laga de */
+      .form-container, #quote-container { min-height:0 !important; }
+    `;
+    document.head.appendChild(style);
+  }catch(_){}
 
-  // STEP CHANGE → parent upar laao + loader short burst (optional)
-  function stepChange() {
-    parentMsg({ scrollTop: true });
+  // ---- Precise height of the visible form area ----
+  function measureHeight(){
+    // Preferred wrappers (adjust if your top wrapper differs)
+    var wrap =
+      document.querySelector('.form-container') ||
+      document.querySelector('#quote-container') ||
+      document.querySelector('.container') ||
+      document.body;
+
+    var rect   = wrap.getBoundingClientRect();
+    var styles = getComputedStyle(wrap);
+    var mb     = parseFloat(styles.marginBottom) || 0;
+    // viewport top is 0 inside iframe, so rect.bottom is visible content height
+    var h = Math.ceil(rect.bottom + mb + 1);
+
+    // Minimum sensible height (avoid 0 during reflow)
+    if (!isFinite(h) || h < 320) h = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight,
+      320
+    );
+    return h;
   }
 
-  // “heavy” actions: show overlay immediately for UX
-  function showLoader(){ parentMsg({ type: 'show-loader' }); }
-  function hideLoader(){ parentMsg({ type: 'hide-loader' }); }
+  // ---- Throttled sender (both grow and shrink) ----
+  var raf   = window.requestAnimationFrame || function(fn){ return setTimeout(fn,16); };
+  var lastH = 0, sending = false;
+  function send(){
+    var h = measureHeight();
+    if (h !== lastH){
+      lastH = h;
+      try { window.parent.postMessage({ frameHeight:h }, '*'); } catch(_){}
+    }
+    sending = false;
+  }
+  function queue(){ if (!sending){ sending = true; (raf||setTimeout)(send, 0); } }
 
-  // POPUP detect → true center while open
-  var POPUPS = [
-    '#confirm-popup-conteiner',
-    '.confirm-popup-conteiner',
-    '.ewm-splash',
-    '.modal.is-open'
-  ];
-  function anyPopup(){
+  // Parent requests
+  window.addEventListener('message', function(e){
+    if (e.data && typeof e.data === 'object' && e.data.requestHeight) queue();
+  });
+
+  // Initial + common triggers
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', queue); else queue();
+  window.addEventListener('load',  queue, {passive:true});
+  window.addEventListener('resize', queue, {passive:true});
+
+  // React to DOM changes (step switches, validations, etc.)
+  if ('MutationObserver' in window){
+    new MutationObserver(queue).observe(document.body, { childList:true, subtree:true, attributes:true });
+  }
+  if ('ResizeObserver' in window){
+    var ro = new ResizeObserver(queue);
+    ro.observe(document.body);
+    var pref = document.querySelector('.form-container') || document.querySelector('#quote-container');
+    if (pref) ro.observe(pref);
+  }
+  // Safety keep-alive
+  setInterval(queue, 1400);
+
+  // ---- Step → parent top ----
+  function notifyStepTop(){
+    try { window.parent.postMessage({ scrollTop:true }, '*'); } catch(_){}
+  }
+  document.addEventListener('click', function(e){
+    if (e.target.closest('#nextBtn') ||
+        e.target.closest('#prevBtn') ||
+        e.target.closest('#proceedBtn') ||
+        e.target.closest('.buy-now-btn')) {
+      notifyStepTop();
+      queue(); // height may shrink on new step
+    }
+  }, {passive:true});
+
+  // ---- Popup detect → center only (loader untouched) ----
+  var POPUPS = ['#confirm-popup-conteiner','.confirm-popup-conteiner','.modal.is-open'];
+  var wasOpen = false;
+  function popupOpenEl(){
     for (var i=0;i<POPUPS.length;i++){
       var el = document.querySelector(POPUPS[i]);
       if (!el) continue;
@@ -28,50 +97,15 @@
     }
     return null;
   }
-  var popupWasOpen = false;
   function checkPopup(){
-    var el = anyPopup();
-    if (el && !popupWasOpen){
-      popupWasOpen = true;
-      parentMsg({ centerMe: true });       // center + (parent shows overlay in our setup)
-    } else if (!el && popupWasOpen){
-      popupWasOpen = false;
-      parentMsg({ popupClosed: true });    // parent hide overlay
-    }
+    var el = popupOpenEl();
+    if (el && !wasOpen){ wasOpen = true;  try{ window.parent.postMessage({ centerMe:true }, '*'); }catch(_){} }
+    else if (!el && wasOpen){ wasOpen = false; }
   }
-  setInterval(checkPopup, 250);
-  ['click','keyup','change'].forEach(function(ev){
-    document.addEventListener(ev, function(){ setTimeout(checkPopup, 40); }, {passive:true});
+  setInterval(function(){ checkPopup(); queue(); }, 250); // also refresh height while popups toggle
+  ['click','keyup','change','transitionend','animationend'].forEach(function(ev){
+    document.addEventListener(ev, function(){ setTimeout(function(){ checkPopup(); queue(); }, 40); }, {passive:true});
   });
 
-  // BUTTON WIRING
-  document.addEventListener('click', function(e){
-    // next/previous/proceed inside form wizard
-    if (e.target.closest('#nextBtn') || e.target.closest('#prevBtn') || e.target.closest('#proceedBtn')) {
-      stepChange();
-      showLoader();              // brief loader; hide after small delay if you like
-      setTimeout(hideLoader, 1200);
-    }
-
-    // cards (booking step) / confirm proceed
-    if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes')) {
-      stepChange();
-      showLoader();
-      // popup khulne par overlay parent hi control karega via checkPopup()
-    }
-
-    // final submit → keep loader until navigation
-    if (e.target.closest('#submitBtn')) {
-      showLoader();
-      stepChange();
-      // navigation ke baad parent page hi change ho jata hai; hide ki zaroorat nahi
-    }
-  }, {passive:true});
-
-  // On page ready, ensure parent not stuck
-  window.addEventListener('load', function(){ hideLoader(); });
-
-  // OPTIONAL: jab aapke paas final payment URL ho:
-  // parentMsg({ type:'go-to-payment', url:'https://flettons.group/flettons-order/?...' });
 })();
 
