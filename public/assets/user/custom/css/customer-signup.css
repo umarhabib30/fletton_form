@@ -825,9 +825,7 @@ textarea.form-control {
     color: #1A202C !important;
 }
 
-select#title {
-    width: 25% !important;
-}
+
 
 @keyframes spin {
     to {
@@ -841,10 +839,7 @@ select#title {
         margin: 12px;
         /* border-radius: 16px */
     }
-select#title {
-    width: 100% !important;
-}
-    .form-header {
+ .form-header {
         padding: 24px 18px
     }
 
@@ -861,7 +856,7 @@ select#title {
     }
 
     .inf_field_Title {
-        width: 55% !important;
+        width: 100% !important;
     }
 
     .checkbox-group input[type="checkbox"] {
