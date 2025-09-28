@@ -1,81 +1,60 @@
 
 (function () {
-  var raf = window.requestAnimationFrame || function (fn) { return setTimeout(fn, 16); };
-  var lastH = 0, ticking = false;
+  let lastH = 0;
 
-  function docHeight() {
-    return Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.offsetHeight,
-      document.body.clientHeight,
-      document.documentElement.clientHeight
-    );
+  function getVisibleHeight() {
+    // Sirf visible elements ki height
+    const steps = Array.from(document.querySelectorAll('.step, .confirm-popup-conteiner, body > *'));
+    let maxH = 0;
+
+    steps.forEach(el => {
+      if (el && el.offsetParent !== null) { // visible check
+        const rect = el.getBoundingClientRect();
+        maxH = Math.max(maxH, rect.bottom + window.scrollY);
+      }
+    });
+
+    return Math.ceil(maxH || document.body.scrollHeight);
   }
 
-  function sendHeight() {
-    var h = docHeight();
-    if (h !== lastH) {
+  function sendHeight(force = false) {
+    const h = getVisibleHeight();
+    if (force || h !== lastH) {
       lastH = h;
-      try { window.parent.postMessage({ frameHeight: h }, '*'); } catch (_) {}
-    }
-    ticking = false;
-  }
-
-  function ping() {
-    if (!ticking) {
-      ticking = true;
-      (raf || setTimeout)(sendHeight, 0);
+      try {
+        window.parent.postMessage({ frameHeight: h }, '*');
+      } catch (_) {}
     }
   }
 
-  // Parent se ping aaya
-  window.addEventListener('message', function (e) {
-    if (e.data && typeof e.data === 'object' && e.data.requestHeight) ping();
+  // Listen parent ping
+  window.addEventListener('message', e => {
+    if (e.data && typeof e.data === 'object' && e.data.requestHeight) {
+      sendHeight(true);
+    }
   });
 
-  // Initial
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ping);
-  } else {
-    ping();
-  }
-  window.addEventListener('load', ping);
-  window.addEventListener('resize', ping);
+  // Lifecycle triggers
+  document.addEventListener('DOMContentLoaded', () => sendHeight(true));
+  window.addEventListener('load', () => sendHeight(true));
+  window.addEventListener('resize', () => requestAnimationFrame(() => sendHeight(true)));
 
-  // DOM changes observe
+  // Mutation observer (steps / popup change)
   if ('MutationObserver' in window) {
-    var mo = new MutationObserver(ping);
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+    new MutationObserver(() => requestAnimationFrame(() => sendHeight(true)))
+      .observe(document.body, { childList: true, subtree: true, attributes: true });
   }
+
+  // Resize observer (layout resize)
   if ('ResizeObserver' in window) {
-    var ro = new ResizeObserver(ping);
+    const ro = new ResizeObserver(() => requestAnimationFrame(() => sendHeight(true)));
     ro.observe(document.body);
     ro.observe(document.documentElement);
   }
 
-  // Periodic keep-alive
-  setInterval(ping, 1500);
+  // Keep alive ping
+  setInterval(() => sendHeight(true), 1200);
 
-  // 🔹 Step change hone par parent ko upar scroll karna
-  function notifyStepChange() {
-    try { window.parent.postMessage({ scrollTop: true }, '*'); } catch (_) {}
-  }
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('#nextBtn') || e.target.closest('#proceedBtn')) {
-      notifyStepChange();
-    }
-  });
-
-  // 🔹 Popup open hone par parent ko center me lana
-  function notifyPopupOpen() {
-    try { window.parent.postMessage({ centerMe: true }, '*'); } catch (_) {}
-  }
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('.buy-now-btn') || e.target.closest('.confirm-yes')) {
-      notifyPopupOpen();
-    }
-  });
-
+  // Expose manual trigger
+  window.FlettonsAutoHeight = { ping: () => sendHeight(true) };
 })();
