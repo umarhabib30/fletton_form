@@ -1,14 +1,14 @@
-(function () {
-  /* 1) Measure ONLY the main wrapper (overlay/loader ko ignore) */
-  function $wrap(){
-    return document.querySelector('.form-container')
-        || document.querySelector('#quote-container')
-        || document.querySelector('.container')
-        || document.body;  // fallback
-  }
 
+(function () {
+  // --- measure only main form wrapper (ignore overlay elements)
+  function WRAP(){
+    return document.querySelector('.form-container')   ||
+           document.querySelector('#quote-container')  ||
+           document.querySelector('.container')        ||
+           document.body;
+  }
   function measure(){
-    var el = $wrap();
+    var el = WRAP();
     var r  = el.getBoundingClientRect();
     var cs = getComputedStyle(el);
     var h  = Math.ceil(r.height + (parseFloat(cs.marginTop)||0) + (parseFloat(cs.marginBottom)||0));
@@ -19,38 +19,37 @@
   }
 
   var raf   = window.requestAnimationFrame || function(fn){ return setTimeout(fn,16); };
-  var lastH = 0, ticking = false;
+  var lastH = 0, ticking=false;
   function send(){
     var h = measure();
     if (h !== lastH){
       lastH = h;
-      try{ window.parent.postMessage({ frameHeight:h }, '*'); }catch(_){}
+      try { window.parent.postMessage({ frameHeight:h }, '*'); } catch(_){}
     }
-    ticking = false;
+    ticking=false;
   }
-  function ping(){ if (!ticking){ ticking = true; (raf||setTimeout)(send,0); } }
+  function ping(){ if (!ticking){ ticking=true; (raf||setTimeout)(send,0); } }
 
-  // Parent request
+  // parent height request
   window.addEventListener('message', function(e){
     if (e.data && typeof e.data==='object' && e.data.requestHeight) ping();
   });
 
-  // Init + common triggers
+  // init + observers
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', ping); else ping();
-  window.addEventListener('load', ping, {passive:true});
+  window.addEventListener('load', ping,   {passive:true});
   window.addEventListener('resize', ping, {passive:true});
-
   if ('MutationObserver' in window){
     new MutationObserver(ping).observe(document.body,{childList:true,subtree:true,attributes:true});
   }
   if ('ResizeObserver' in window){
-    var ro = new ResizeObserver(ping);
+    var ro=new ResizeObserver(ping);
     ro.observe(document.body);
-    var w = $wrap(); if (w) ro.observe(w);
+    var w=WRAP(); if (w) ro.observe(w);
   }
   setInterval(ping, 1400);
 
-  /* 2) Step buttons → parent scrollTop (aur height re-measure) */
+  // step/nav → parent scroll to top (and remeasure soon after)
   document.addEventListener('click', function(e){
     if (e.target.closest('#nextBtn') ||
         e.target.closest('#prevBtn') ||
@@ -61,38 +60,50 @@
     }
   }, {passive:true});
 
-  /* 3) Popup/loader detect → center (parent lock karega) */
-  // apne selectors yahan add/adjust kar sakte ho:
-  var POPUPS = [
-    '#confirm-popup-conteiner',     // confirm popup
+  // ------- POPUP / LOADER DETECT & NOTIFY PARENT --------
+  // add any overlay selectors you use:
+  var OVERLAYS = [
+    '#confirm-popup-conteiner',
     '.confirm-popup-conteiner',
-    '.ewm-splash',                  // payment/loader overlay (agar use hota ho)
-    '.modal.is-open'
+    '.ewm-splash'             // loader
   ];
-  function anyOpen(){
-    for (var i=0;i<POPUPS.length;i++){
-      var el = document.querySelector(POPUPS[i]);
-      if (el && getComputedStyle(el).display !== 'none') return true;
+
+  function overlayOpen(){
+    for (var i=0;i<OVERLAYS.length;i++){
+      var el = document.querySelector(OVERLAYS[i]);
+      if (!el) continue;
+      var ds = getComputedStyle(el).display;
+      if (ds && ds !== 'none') return true;
     }
     return false;
   }
+
   var wasOpen = false;
-  function checkPopup(){
-    var open = anyOpen();
-    if (open && !wasOpen){
+  function checkOverlay(){
+    var isOpen = overlayOpen();
+    if (isOpen && !wasOpen){
       wasOpen = true;
-      try{ window.parent.postMessage({ centerMe:true }, '*'); }catch(_){}
-    } else if (!open && wasOpen){
+      // tell parent: lock + 100dvh + center
+      try { window.parent.postMessage({ type:'POPUP_ON' }, '*'); } catch(_){}
+      // a few recenter retries while CSS paints/keyboard moves stuff
+      [80, 320, 900].forEach(function(t){
+        setTimeout(function(){
+          try { window.parent.postMessage({ type:'REQUEST_CENTER' }, '*'); } catch(_){}
+        }, t);
+      });
+    } else if (!isOpen && wasOpen){
       wasOpen = false;
-      try{ window.parent.postMessage({ popupClosed:true }, '*'); }catch(_){}
+      try { window.parent.postMessage({ type:'POPUP_OFF' }, '*'); } catch(_){}
+      setTimeout(ping, 60); // height restore
     }
   }
-  setInterval(checkPopup, 250);
+
+  setInterval(checkOverlay, 250);
   ['click','keyup','change','transitionend','animationend'].forEach(function(ev){
-    document.addEventListener(ev, function(){ setTimeout(function(){ checkPopup(); ping(); }, 40); }, {passive:true});
+    document.addEventListener(ev, function(){ setTimeout(checkOverlay, 40); }, {passive:true});
   });
 
-  /* 4) Safety: koi min-height theme se aa rahi ho to neutralize (shrink-enable) */
+  // safety: neutralize theme min-heights that can block shrinking
   try{
     var fix = document.createElement('style');
     fix.textContent = `
