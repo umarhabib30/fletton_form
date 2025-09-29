@@ -1,11 +1,12 @@
-
 (function () {
+  /* 1) Measure ONLY the main wrapper (overlay/loader ko ignore) */
   function $wrap(){
     return document.querySelector('.form-container')
         || document.querySelector('#quote-container')
         || document.querySelector('.container')
-        || document.body;
+        || document.body;  // fallback
   }
+
   function measure(){
     var el = $wrap();
     var r  = el.getBoundingClientRect();
@@ -29,10 +30,12 @@
   }
   function ping(){ if (!ticking){ ticking = true; (raf||setTimeout)(send,0); } }
 
+  // Parent request
   window.addEventListener('message', function(e){
     if (e.data && typeof e.data==='object' && e.data.requestHeight) ping();
   });
 
+  // Init + common triggers
   if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', ping); else ping();
   window.addEventListener('load', ping, {passive:true});
   window.addEventListener('resize', ping, {passive:true});
@@ -47,6 +50,7 @@
   }
   setInterval(ping, 1400);
 
+  /* 2) Step buttons → parent scrollTop (aur height re-measure) */
   document.addEventListener('click', function(e){
     if (e.target.closest('#nextBtn') ||
         e.target.closest('#prevBtn') ||
@@ -57,7 +61,14 @@
     }
   }, {passive:true});
 
-  var POPUPS = ['#confirm-popup-conteiner','.confirm-popup-conteiner','.ewm-splash','.overlay','.modal.is-open'];
+  /* 3) Popup/loader detect → center (parent lock karega) */
+  // apne selectors yahan add/adjust kar sakte ho:
+  var POPUPS = [
+    '#confirm-popup-conteiner',     // confirm popup
+    '.confirm-popup-conteiner',
+    '.ewm-splash',                  // payment/loader overlay (agar use hota ho)
+    '.modal.is-open'
+  ];
   function anyOpen(){
     for (var i=0;i<POPUPS.length;i++){
       var el = document.querySelector(POPUPS[i]);
@@ -68,11 +79,20 @@
   var wasOpen = false;
   function checkPopup(){
     var open = anyOpen();
-    if (open && !wasOpen){ wasOpen = true; window.parent.postMessage({ centerMe:true }, '*'); }
-    if (!open && wasOpen){ wasOpen = false; window.parent.postMessage({ popupClosed:true }, '*'); }
+    if (open && !wasOpen){
+      wasOpen = true;
+      try{ window.parent.postMessage({ centerMe:true }, '*'); }catch(_){}
+    } else if (!open && wasOpen){
+      wasOpen = false;
+      try{ window.parent.postMessage({ popupClosed:true }, '*'); }catch(_){}
+    }
   }
   setInterval(checkPopup, 250);
+  ['click','keyup','change','transitionend','animationend'].forEach(function(ev){
+    document.addEventListener(ev, function(){ setTimeout(function(){ checkPopup(); ping(); }, 40); }, {passive:true});
+  });
 
+  /* 4) Safety: koi min-height theme se aa rahi ho to neutralize (shrink-enable) */
   try{
     var fix = document.createElement('style');
     fix.textContent = `
@@ -82,4 +102,3 @@
     document.head.appendChild(fix);
   }catch(_){}
 })();
-
