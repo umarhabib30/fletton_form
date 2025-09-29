@@ -213,9 +213,11 @@ class UserSurveyController extends Controller
             'addons' => $request->breakdown_of_estimated_repair_costs || $request->aerial_roof_and_chimney || $request->insurance_reinstatement_valuation,
             'level3_price' => ($request->level == 3) ? $request->level_total : $survey->level3_price,
             'current_step' => 1,
-            'quote_summary_page' => route('user.flettons.rics.survey.page', ['contact_id' => $encrypted_id, 'temp' => 1]),
+            'quote_summary_page' => "https://flettons.com/flettons-summary/?contact_id={$encrypted_id}&temp=1",
+
         ]);
 
+        // 'quote_summary_page' => route('user.flettons.rics.survey.page', ['contact_id' => $encrypted_id, 'temp' => 1]),
         $key = $this->get_secretbox_key_b64();
         $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
 
@@ -253,7 +255,8 @@ class UserSurveyController extends Controller
         $key = $this->get_secretbox_key_b64();
         $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
         // Temporary redirect URL back to the RICS survey page (for now)
-        $redirect_url = route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
+        // $redirect_url = route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
+        $redirect_url = "https://flettons.com/flettons-listing/?contact_id={$encrpted_id}&temp=1";
 
         $survey->update($data);
 
