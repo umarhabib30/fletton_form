@@ -6,6 +6,7 @@ use App\Models\Price;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use RuntimeException;
 
 class UserSurveyController extends Controller
 {
@@ -44,6 +45,48 @@ class UserSurveyController extends Controller
         $level3 = $settings->level3_base + ($marketValue * $settings->level3_market_percentage) + $additionalCost;
         $level4 = $settings->level4_base + ($marketValue * $settings->level4_market_percentage) + $additionalCost;
 
+        $payload = [
+            'given_name' => $request->first_name,
+            'family_name' => $request->last_name,
+            'duplicate_option' => 'Email',
+            // Billing address
+            'addresses' => [
+                [
+                    'line1' => $request->full_address,
+                    'locality' => '',
+                    'postal_code' => $request->postcode ?? '',
+                    'country_code' => '',
+                    'field' => 'BILLING'
+                ]
+            ],
+            // Phone numbers
+            'phone_numbers' => [
+                [
+                    'number' => str_replace(' ', '', $request->telephone_number),
+                    'field' => 'PHONE1'
+                ]
+            ],
+            // Email addresses
+            'email_addresses' => [
+                [
+                    'email' => $request->email_address,
+                    'field' => 'EMAIL1'
+                ]
+            ],
+        ];
+
+        // ✅ Send to Keap
+        $response = Http::withHeaders([
+            'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Content-Type' => 'application/json',
+        ])->put('https://api.infusionsoft.com/crm/rest/v1/contacts', $payload);
+        $contactData = $response->json();
+
+        if (isset($contactData['id'])) {
+            $contact_id = $contactData['id'];
+            // dd($contact_id);
+        }
         // Save
         $survey = Survey::updateOrCreate(
             ['email_address' => $request->email_address],
@@ -59,24 +102,93 @@ class UserSurveyController extends Controller
                 'listed_building' => $request->listed_building ?? 'no',
                 'over1650' => $request->over1650 ?? 'no',
                 'sqft_area' => $request->sqft_area,
-                'current_step' => 0,
-                'is_submitted' => false,
                 'level1_price' => $level1,
                 'level2_price' => $level2,
                 'level3_price' => $level3,
                 'level4_price' => $level4,
+                'current_step' => 0,
+                'is_submitted' => false,
+                'contact_id' => $contact_id ?? null,
             ]
         );
 
-        $survey->update([
-            'quote_summary_page' => url('flettons-listing-page', $survey->id)
-        ]);
-        return redirect()->route('user.flettons.listing.page', $survey->id);
+        $key = $this->get_secretbox_key_b64();
+        $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
+
+        return redirect()->route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
     }
 
-    public function flettonsListingPage($id)
+    public function flettonsListingPage()
     {
-        $survey = Survey::find($id);
+        $encrpted_id = request()->get('contact_id');
+        $key = $this->get_secretbox_key_b64();
+        $id = $this->decrypt_sodium($encrpted_id, $key);
+        $survey = Survey::where('contact_id', $id)->first();
+
+        // ------------- if survey not found -------------
+
+        if (!$survey) {
+            $url = "https://api.infusionsoft.com/crm/rest/v1/contacts/" . $id. "/?optional_properties=custom_fields";
+            $response = Http::withHeaders([
+                'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+                'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+                'Content-Type' => 'application/json',
+            ])
+                ->patch($url, (object) []);
+
+            // Dump the response to inspect it
+            $response_data = $response->json();
+
+            $data = [];
+            $data['first_name'] = $response_data['given_name'] ?? '';
+            $data['last_name'] = $response_data['family_name'] ?? '';
+            $email_address = $response_data['email_addresses'][0]['email'] ?? '';
+            $data['telephone_number'] = $response_data['phone_numbers'][0]['number'] ?? '';
+            $data['full_address'] = $response_data['addresses'][0]['line1'] ?? '';
+            $data['postcode'] = $response_data['addresses'][0]['postal_code'] ?? '';
+
+            // show direct data instead of object
+            foreach ($response_data['custom_fields'] as $key => $value) {
+                if ($value['id'] == 203) {
+                    $data['listed_building'] = $value['content'];
+                }
+                if ($value['id'] == 197) {
+                    $data['number_of_bedrooms'] = $value['content'];
+                }
+                if ($value['id'] == 195) {
+                    $data['house_or_flat'] = $value['content'];
+                }
+                if ($value['id'] == 193) {
+                    $data['market_value'] = $value['content'];
+                }
+                if ($value['id'] == 603) {
+                    $data['sqft_area'] = $value['content'];
+                    if ($data['sqft_area'] > 1650) {
+                        $data['over1650'] = 'yes';
+                    } else {
+                        $data['over1650'] = 'no';
+                    }
+                }
+                if ($value['id'] == 220) {
+                    $data['level1_price'] = $value['content'];
+                }
+                if ($value['id'] == 224) {
+                    $data['level2_price'] = $value['content'];
+                }
+                if ($value['id'] == 228) {
+                    $data['level3_price'] = $value['content'];
+                }
+                if ($value['id'] == 238) {
+                    $data['level4_price'] = $value['content'];
+                }
+            }
+
+            $survey = Survey::updateOrCreate(
+                ['email_address' => $email_address],
+                $data
+            );
+        }
+
         $price = Price::first();
         $data = [
             'survey' => $survey,
@@ -89,8 +201,9 @@ class UserSurveyController extends Controller
     public function submitListingPage(Request $request)
     {
         // dd($request);
-
-        $survey = Survey::find($request->id);
+        $survey = Survey::where('contact_id', $request->contact_id)->first();
+        $key = $this->get_secretbox_key_b64();
+        $encrypted_id = $this->encrypt_sodium($survey->contact_id, $key);
         $survey->update([
             'level' => $request->level,
             'level_total' => $request->level_total,
@@ -100,15 +213,21 @@ class UserSurveyController extends Controller
             'addons' => $request->breakdown_of_estimated_repair_costs || $request->aerial_roof_and_chimney || $request->insurance_reinstatement_valuation,
             'level3_price' => ($request->level == 3) ? $request->level_total : $survey->level3_price,
             'current_step' => 1,
+            'quote_summary_page' => route('user.flettons.rics.survey.page', ['contact_id' => $encrypted_id, 'temp' => 1]),
         ]);
 
-        return redirect()->route('user.flettons.rics.survey.page', $survey->id);
+        $key = $this->get_secretbox_key_b64();
+        $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
+
+        return redirect()->route('user.flettons.rics.survey.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
     }
 
-    public function flettonsRicsSurveyPage($id)
+    public function flettonsRicsSurveyPage()
     {
-
-        $survey = Survey::find($id);
+        $encrpted_id = request()->get('contact_id');
+        $key = $this->get_secretbox_key_b64();
+        $id = $this->decrypt_sodium($encrpted_id, $key);
+        $survey = Survey::where('contact_id', $id)->first();
         $data = [
             'survey' => $survey,
         ];
@@ -118,7 +237,6 @@ class UserSurveyController extends Controller
 
     public function submitRicsSurveyPage(Request $request)
     {
-
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
@@ -132,7 +250,10 @@ class UserSurveyController extends Controller
         $data['level3_payment_url'] = "https://flettons.group/flettons-order/?email={$survey->email_address}&total={$survey->level3_price}&level=3&order=1";
         $data['level4_payment_url'] = "https://flettons.group/flettons-order/?email={$survey->email_address}&total={$survey->level4_price}&level=4&order=1";
 
-       $redirect_url = url('flettons-listing-page', $survey->id);
+        $key = $this->get_secretbox_key_b64();
+        $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
+        // Temporary redirect URL back to the RICS survey page (for now)
+        $redirect_url = route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
 
         $survey->update($data);
 
@@ -215,10 +336,8 @@ class UserSurveyController extends Controller
                 ['id' => '208', 'content' => $survey->breakdown],
                 ['id' => '210', 'content' => $survey->aerial],
                 ['id' => '212', 'content' => $survey->insurance],
-
                 // RedirectURL
                 ['id' => '234', 'content' => $redirect_url],
-
             ]
         ];
 
@@ -313,5 +432,88 @@ class UserSurveyController extends Controller
             // Log the error response for debugging
             return false;
         }
+    }
+
+    public function encrypt_sodium(string $plaintext, string $b64key): string
+    {
+        $key = base64_decode($b64key, true);
+        if ($key === false || strlen($key) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
+            throw new RuntimeException('Invalid key');
+        }
+        $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $cipher = sodium_crypto_secretbox($plaintext, $nonce, $key);
+        // Return URL-safe base64 of nonce|cipher
+        return $this->b64url_encode($nonce . $cipher);
+    }
+
+    /**
+     * Decrypt with libsodium secretbox (accepts URL-safe or standard base64)
+     */
+    public function decrypt_sodium(string $token, string $b64key): string
+    {
+        $key = base64_decode($b64key, true);
+        if ($key === false)
+            throw new RuntimeException('Invalid key encoding');
+
+        // Prefer URL-safe decode
+        $payload = $this->b64url_decode($token);
+        if ($payload === false) {
+            // Fallback for legacy standard base64 tokens
+            $payload = base64_decode($token, true);
+        }
+        if ($payload === false)
+            throw new RuntimeException('Invalid token base64');
+
+        $nlen = SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
+        if (strlen($payload) < $nlen)
+            throw new RuntimeException('Payload too short');
+
+        $nonce = substr($payload, 0, $nlen);
+        $cipher = substr($payload, $nlen);
+        $plain = sodium_crypto_secretbox_open($cipher, $nonce, $key);
+        if ($plain === false) {
+            throw new RuntimeException('Decryption failed (tampered/wrong key)');
+        }
+        return $plain;
+    }
+
+    private function get_secretbox_key_b64(): string
+    {
+        if (!extension_loaded('sodium')) {
+            throw new RuntimeException('The sodium extension is required but not loaded.');
+        }
+
+        // Static key: SAME on both sites!
+        // You can move this to wp-config.php:
+        // define('FLETTONS_SECRETBOX_KEY_B64', 'base64:DQvwZyXGXvbB37lZDViFyM2xjGm88K3NqYg4ROoD9iI=');
+        $b64 = defined('FLETTONS_SECRETBOX_KEY_B64')
+            ? FLETTONS_SECRETBOX_KEY_B64
+            : 'base64:DQvwZyXGXvbB37lZDViFyM2xjGm88K3NqYg4ROoD9iI=';  // fallback inline
+
+        // Accept both "base64:..." and raw base64
+        if (strpos($b64, 'base64:') === 0) {
+            $b64 = substr($b64, 7);
+        }
+
+        $raw = base64_decode($b64, true);
+        if ($raw === false || strlen($raw) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
+            throw new RuntimeException('FLETTONS_SECRETBOX_KEY_B64 must be valid base64 of exactly 32 bytes.');
+        }
+
+        return $b64;
+    }
+
+    private function b64url_decode(string $b64url)
+    {
+        $b64 = strtr($b64url, '-_', '+/');
+        $pad = strlen($b64) % 4;
+        if ($pad)
+            $b64 .= str_repeat('=', 4 - $pad);
+        return base64_decode($b64, true);
+    }
+
+    private function b64url_encode(string $bin): string
+    {
+        return rtrim(strtr(base64_encode($bin), '+/', '-_'), '=');
     }
 }

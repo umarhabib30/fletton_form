@@ -48,7 +48,7 @@ Route::get('/widget/google-reviews', [GoogleReviewsController::class, 'show'])
 // user routes
 Route::get('/', [UserSurveyController::class, 'signup'])->name('user.survey.signup');
 Route::post('signup/submit', [UserSurveyController::class, 'submitSurvey'])->name('user.survey.submit');
-Route::get('flettons-listing-page/{id}', [UserSurveyController::class, 'flettonsListingPage'])->name('user.flettons.listing.page');
+Route::get('flettons-listing-page', [UserSurveyController::class, 'flettonsListingPage'])->name('user.flettons.listing.page');
 Route::post('flettons-listing-page/submit', [UserSurveyController::class, 'submitListingPage'])->name('user.flettons.listing.submit');
-Route::get('flettons-rics-survey/{id}', [UserSurveyController::class, 'flettonsRicsSurveyPage'])->name('user.flettons.rics.survey.page');
+Route::get('flettons-rics-survey', [UserSurveyController::class, 'flettonsRicsSurveyPage'])->name('user.flettons.rics.survey.page');
 Route::post('flettons-rics-survey/submit', [UserSurveyController::class, 'submitRicsSurveyPage'])->name('user.flettons.rics.survey.submit');
