@@ -118,7 +118,7 @@ class UserSurveyController extends Controller
 
     public function submitRicsSurveyPage(Request $request)
     {
-        
+
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
@@ -131,6 +131,8 @@ class UserSurveyController extends Controller
         $data['level2_payment_url'] = "https://flettons.group/flettons-order/?email={$survey->email_address}&total={$survey->level2_price}&level=2&order=1";
         $data['level3_payment_url'] = "https://flettons.group/flettons-order/?email={$survey->email_address}&total={$survey->level3_price}&level=3&order=1";
         $data['level4_payment_url'] = "https://flettons.group/flettons-order/?email={$survey->email_address}&total={$survey->level4_price}&level=4&order=1";
+
+       $redirect_url = url('flettons-listing-page', $survey->id);
 
         $survey->update($data);
 
@@ -213,6 +215,10 @@ class UserSurveyController extends Controller
                 ['id' => '208', 'content' => $survey->breakdown],
                 ['id' => '210', 'content' => $survey->aerial],
                 ['id' => '212', 'content' => $survey->insurance],
+
+                // RedirectURL
+                ['id' => '234', 'content' => $redirect_url],
+
             ]
         ];
 
