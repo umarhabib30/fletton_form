@@ -48,6 +48,7 @@ body {
     height: var(--ctl-h) !important;
     padding-left: 58px !important;
     /* room for flag */
+}
 
 .invalid {
     border-color: #ff6b6b !important;
@@ -835,7 +836,7 @@ textarea.form-control {
 /* RESPONSIVE */
 @media (max-width:768px) {
     .form-container {
-        /* margin: 12px; */
+        margin: 12px;
         /* border-radius: 16px */
     }
  .form-header {
