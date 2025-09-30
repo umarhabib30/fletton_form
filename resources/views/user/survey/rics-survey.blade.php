@@ -381,7 +381,7 @@
                     <div class="form-group">
                         <label for="postalCode">Postal Code <span class="required">*</span></label>
                         <input type="text" id="postalCode" name="inf_field_PostalCode" class="form-control"
-                            placeholder="Enter your postal code" required />
+                            placeholder="Enter your postal code" required  readonly/>
                     </div>
                 </div>
 
@@ -400,7 +400,7 @@
                         <label for="surveyPostalCode">Survey Postal Code <span class="required">*</span></label>
                         <input type="text" id="surveyPostalCode" name="inf_field_PostalCode2"
                             class="form-control" placeholder="Enter the property postal code"
-                            value="{{ $survey->postcode }}" required />
+                            value="{{ $survey->postcode }}" required readonly />
                     </div>
 
                     <div class="form-group">
@@ -553,7 +553,7 @@
                         <div class="form-group">
                             <label for="solicitorPostalCode">Postal Code</label>
                             <input type="text" id="solicitorPostalCode" name="inf_custom_SolicitorPostalCode"
-                                class="form-control" placeholder="Enter postal code" />
+                                class="form-control" placeholder="Enter postal code" readonly />
                         </div>
 
                         <div class="form-group">
@@ -619,7 +619,7 @@
                     <div class="form-group">
                         <label for="agentPostalCode">Agent Postal Code <span class="required">*</span></label>
                         <input type="text" id="agentPostalCode" name="inf_field_PostalCode3" class="form-control"
-                            placeholder="Enter agent postal code" required />
+                            placeholder="Enter agent postal code" required  readonly/>
                     </div>
                 </div>
 
@@ -710,7 +710,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"></script>
     <script src="{{ asset('assets/user/custom/js/customer-signup.js') }}"></script>
     <script src="{{ asset('assets/user/custom/js/iframe.js') }}"></script>
-    
+
     <script src="{{ asset('assets/user/custom/js/telephone.js') }}"></script>
 
     <!-- Unified wizard controller (no FOUC) -->

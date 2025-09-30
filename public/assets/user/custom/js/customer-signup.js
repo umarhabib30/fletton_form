@@ -150,7 +150,7 @@ function prevStep() {
         currentStep--;
         updateStep();
     }
-    if(currentStep == 2){
+    if (currentStep == 2) {
         showLanding();
     }
 }
@@ -602,47 +602,78 @@ document.querySelectorAll('input[name="inf_custom_SolicitorFirm"]').forEach(radi
 
 /* ---------- Google Places (apply to all address fields) ---------- */
 function initAddressAutocomplete() {
-  if (!(window.google && google.maps && google.maps.places)) return;
+    if (!(window.google && google.maps && google.maps.places)) return;
 
-  const pairs = [
-    { addr: "homeAddress",      pc: "postalCode" },
-    { addr: "surveyAddress",    pc: "surveyPostalCode" },
-    { addr: "agentAddress",     pc: "agentPostalCode" },
-    { addr: "solicitorAddress", pc: "solicitorPostalCode" }
-  ];
+    const pairs = [
+        { addr: "homeAddress", pc: "postalCode" },
+        { addr: "surveyAddress", pc: "surveyPostalCode" },
+        { addr: "agentAddress", pc: "agentPostalCode" },
+        { addr: "solicitorAddress", pc: "solicitorPostalCode" }
+    ];
 
-  pairs.forEach(({ addr, pc }) => {
-    const addressField = document.getElementById(addr);
-    const pcField = document.getElementById(pc);
-    if (!addressField) return;
+    // Track suppression per address field so we don't clear postcode during a valid selection.
+    const suppressClear = new Map();
 
-    const ac = new google.maps.places.Autocomplete(addressField, {
-      types: ["address"],
-      componentRestrictions: { country: "gb" }
-    });
-    if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
+    const attachAutocomplete = (addressId, postcodeId) => {
+        const addressField = document.getElementById(addressId);
+        const pcField = postcodeId ? document.getElementById(postcodeId) : null;
+        if (!addressField) return;
 
-    ac.addListener("place_changed", function () {
-      const place = ac.getPlace();
-      if (!place || !place.formatted_address) return;
+        const clearPC = () => { if (pcField) pcField.value = ""; };
 
-      // Clean country suffix
-      let formatted = place.formatted_address
-        .replace(/,\s*United Kingdom$/i, "")
-        .replace(/,\s*UK$/i, "");
+        // Clear postcode on any manual typing/edit (unless we’re in the middle of a Google selection).
+        addressField.addEventListener("input", () => {
+            if (!suppressClear.get(addressField)) clearPC();
+        });
 
-      // Extract postcode and set paired field
-      const comps = place.address_components || [];
-      const pcComp = comps.find(c => c.types.includes("postal_code"));
-      if (pcComp) {
-        const postcode = pcComp.long_name.toUpperCase();
-        // remove postcode from end of address if present
-        formatted = formatted.replace(new RegExp("\\s?" + postcode + "$", "i"), "").trim();
-        if (pcField) pcField.value = postcode;
-      }
+        const ac = new google.maps.places.Autocomplete(addressField, {
+            types: ["address"],
+            componentRestrictions: { country: "gb" }
+        });
+        if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
 
-      addressField.value = formatted;
-    });
-  });
+        ac.addListener("place_changed", function () {
+            suppressClear.set(addressField, true);
+
+            const place = ac.getPlace();
+            if (!place || !place.formatted_address) {
+                // No valid selection: keep postcode empty.
+                clearPC();
+                // Re-enable clearing for future manual edits.
+                setTimeout(() => suppressClear.set(addressField, false), 0);
+                return;
+            }
+
+            // Clean country suffix
+            let formatted = place.formatted_address
+                .replace(/,\s*United Kingdom$/i, "")
+                .replace(/,\s*UK$/i, "");
+
+            // Extract postcode
+            const comps = place.address_components || [];
+            const pcComp = comps.find(c => c.types && c.types.includes("postal_code"));
+
+            if (pcComp && pcComp.long_name) {
+                const postcode = pcComp.long_name.toUpperCase();
+
+                // Remove postcode if Google appended it to the formatted address
+                const endPcRegex = new RegExp(`\\s*${postcode}\\s*$`, "i");
+                const midPcRegex = new RegExp(`,\\s*${postcode}(,|\\s|$)`, "i");
+                formatted = formatted.replace(endPcRegex, "").replace(midPcRegex, "$1").trim();
+
+                if (pcField) pcField.value = postcode;
+            } else {
+                // Valid selection but no postal_code -> ensure postcode is blank
+                clearPC();
+            }
+
+            addressField.value = formatted;
+
+            // Let Google finish programmatic updates, then re-enable manual clear.
+            setTimeout(() => suppressClear.set(addressField, false), 0);
+        });
+    };
+
+    pairs.forEach(({ addr, pc }) => attachAutocomplete(addr, pc));
 }
 

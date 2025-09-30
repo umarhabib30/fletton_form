@@ -4,18 +4,37 @@ function initAddressAutocomplete() {
     if (!(window.google && google.maps && google.maps.places)) return;
 
     const addressField = document.getElementById("full_address");
-    if (!addressField) return;
+    const postcodeEl   = document.getElementById("postcode");
+    if (!addressField || !postcodeEl) return;
+
+    // If the user types/edits the address manually, clear any stale postcode.
+    // We'll temporarily suppress this when a valid Google "place_changed" fires.
+    let suppressPostcodeClear = false;
+    const clearPostcode = () => { if (postcodeEl) postcodeEl.value = ""; };
+
+    addressField.addEventListener("input", function () {
+        if (!suppressPostcodeClear) clearPostcode();
+    });
 
     const ac = new google.maps.places.Autocomplete(addressField, {
         types: ["address"],
         componentRestrictions: { country: "gb" }
     });
 
-    ac.setFields(["formatted_address", "address_components"]);
+    // For newer Maps JS versions, fields are picked via AutocompleteOptions or setOptions.
+    // Keep this for older versions:
+    if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
 
     ac.addListener("place_changed", function () {
+        // Prevent our input handler from clearing immediately as Google sets the value.
+        suppressPostcodeClear = true;
+
         const place = ac.getPlace();
-        if (!place || !place.formatted_address) return;
+        if (!place || !place.formatted_address) {
+            clearPostcode(); // no valid selection -> ensure postcode is blank
+            suppressPostcodeClear = false;
+            return;
+        }
 
         // Clean trailing ", United Kingdom" or ", UK"
         addressField.value = place.formatted_address
@@ -23,11 +42,26 @@ function initAddressAutocomplete() {
             .replace(/,\s*UK$/i, "");
 
         const pc = (place.address_components || []).find((c) => c.types.includes("postal_code"));
-        if (pc) {
+
+        if (pc && pc.long_name) {
             const postcode = pc.long_name.toUpperCase();
-            addressField.value = addressField.value.replace(`${postcode} `, "");
-            document.getElementById("postcode").value = postcode;
+
+            // Remove postcode from the address line if Google appended it there
+            // (common in formatted_address), then set the dedicated field.
+            addressField.value = addressField.value
+                .replace(new RegExp(`\\s*${postcode}\\s*,?\\s*$`, "i"), "")
+                .replace(new RegExp(`,\\s*${postcode}(,|\\s|$)`, "i"), "$1")
+                .trim();
+
+            postcodeEl.value = postcode;
+        } else {
+            // User selected a place without a postal code -> keep postcode empty.
+            clearPostcode();
         }
+
+        // Re-enable clearing for any subsequent manual edits.
+        // SetTimeout lets Google finish any final programmatic value updates.
+        setTimeout(() => { suppressPostcodeClear = false; }, 0);
     });
 }
 
@@ -97,6 +131,11 @@ $(function () {
             if (field.tagName !== 'SELECT' && !field.value) {
                 toastr.error('Please fill ' + field.placeholder);
                 field.focus();
+                return;
+            }
+
+            if(! $('#postcode').val()){
+                toastr.error('Plese select a valid address from the dropdown');
                 return;
             }
 
