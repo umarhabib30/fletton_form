@@ -126,7 +126,7 @@ class UserSurveyController extends Controller
         $survey = Survey::where('contact_id', $id)->first();
 
         // ------------- if survey not found -------------
-
+        dd($survey);
         if (!$survey) {
             $url = "https://api.infusionsoft.com/crm/rest/v1/contacts/" . $id. "/?optional_properties=custom_fields";
             $response = Http::withHeaders([
@@ -200,7 +200,7 @@ class UserSurveyController extends Controller
 
     public function submitListingPage(Request $request)
     {
-        dd($request);
+        // dd($request);
         $survey = Survey::where('contact_id', $request->contact_id)->first();
         $key = $this->get_secretbox_key_b64();
         $encrypted_id = $this->encrypt_sodium($survey->contact_id, $key);
