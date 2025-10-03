@@ -126,7 +126,7 @@ class UserSurveyController extends Controller
         $survey = Survey::where('contact_id', $id)->first();
 
         // ------------- if survey not found -------------
-        dd($survey);
+        dd('i am here');
         if (!$survey) {
             $url = "https://api.infusionsoft.com/crm/rest/v1/contacts/" . $id. "/?optional_properties=custom_fields";
             $response = Http::withHeaders([
