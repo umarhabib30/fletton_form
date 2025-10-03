@@ -129,7 +129,7 @@
 {{-- loading --}}
   <div class="overlay" style="display: none" id="overlay">
         <img src="{{ asset('assets/user/icons/Loading.png') }}" class="loading-image" alt="Loading...">
-    </div>
+  </div>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -355,6 +355,22 @@ class UserSurveyController extends Controller
 
         if (isset($contactData['id'])) {
             $contact_id = $contactData['id'];
+            switch ($survey->level) {
+                case 1:
+                    $tag_ids = [368];
+                    break;
+                case 2:
+                    $tag_ids = [370];
+                    break;
+                case 3:
+                    $tag_ids = [372];
+                    break;
+                case 4:
+                    $tag_ids = [500];
+                    break;
+                default:
+                    $tag_ids = [];
+            }
             $tag_ids = [643];
             $this->apply_tags($contact_id, $tag_ids);
         }
