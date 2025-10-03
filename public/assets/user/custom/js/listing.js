@@ -313,6 +313,7 @@ function handleBuyNow(button, level) {
         if (levelTotalInput) levelTotalInput.value = levelTotal;
 
         var contact_id = $('#contact_id').val();
+        alert(contact_id);
         $.ajax({
             url  : $('#apply_tag_url').val() + '/' + contact_id + '/' + selectedLevel,
             type : 'GET',
