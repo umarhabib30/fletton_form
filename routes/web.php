@@ -52,3 +52,5 @@ Route::get('flettons-listing-page', [UserSurveyController::class, 'flettonsListi
 Route::post('flettons-listing-page/submit', [UserSurveyController::class, 'submitListingPage'])->name('user.flettons.listing.submit');
 Route::get('flettons-rics-survey', [UserSurveyController::class, 'flettonsRicsSurveyPage'])->name('user.flettons.rics.survey.page');
 Route::post('flettons-rics-survey/submit', [UserSurveyController::class, 'submitRicsSurveyPage'])->name('user.flettons.rics.survey.submit');
+
+Route::get('update-survey-tag/{contact_id}/{level}', [UserSurveyController::class, 'updateSurveyTag'])->name('user.survey.update.tag');

@@ -14,13 +14,13 @@
 
 <body style="overflow-x: hidden">
     <div class="container" id="quote-container">
-        {{-- <input type="hidden" id="email_address" value="john@example.com">
-        <input type="hidden" id="contact_id" value="12345"> --}}
+
+        <input type="hidden" id="apply_tag_url" value="{{ url('update-survey-tag') }}" name="" id="">
 
         <form class="quote-f" action="{{ route('user.flettons.listing.submit') }}" method="POST" id="survey-form">
             @csrf
             <input type="hidden" name="id" id="survey_id" value="{{ $survey->id }}">
-            <input type="hidden" name="contact_id" id="" value="{{ $survey->contact_id }}">
+            <input type="hidden" name="contact_id" id="contact_id" value="{{ $survey->contact_id }}">
             <input type="hidden" name="level" id="selected_level" value="">
             <input type="hidden" name="level_total" id="level_total" value="">
             <div class="overlay">

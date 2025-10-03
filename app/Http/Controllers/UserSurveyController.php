@@ -355,21 +355,7 @@ class UserSurveyController extends Controller
 
         if (isset($contactData['id'])) {
             $contact_id = $contactData['id'];
-            switch ($survey->level) {
-                case 1:
-                  $level_id = 368;
-                  break;
-                case 2:
-                    $level_id = 370;
-                    break;
-                case 3:
-                    $level_id = 372;
-                    break;
-                case 4:
-                    $level_id = 500;
-                    break;
-            }
-            $tag_ids = [643, $level_id];
+            $tag_ids = [643];
             $this->apply_tags($contact_id, $tag_ids);
         }
 
@@ -422,6 +408,23 @@ class UserSurveyController extends Controller
 
         return response($html, 200)->header('Content-Type', 'text/html; charset=utf-8');
     }
+
+    public function updateSurveyTag($contact_id, $level){
+        $tag_ids = [];
+        if($level == 1){
+            $tag_ids = [368];
+        } elseif($level == 2){
+            $tag_ids = [370];
+        } elseif($level == 3){
+            $tag_ids = [372];
+        } elseif($level == 4){
+            $tag_ids = [500];
+        }
+
+        $this->apply_tags($contact_id, $tag_ids);
+        return response()->json(['success' => true, 'message' => 'Tags applied successfully.']);
+    }
+
 
     public function apply_tags($contact_id, array $tag_ids = []): bool
     {

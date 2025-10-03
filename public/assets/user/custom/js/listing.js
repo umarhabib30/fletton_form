@@ -312,6 +312,18 @@ function handleBuyNow(button, level) {
         if (selectedLevelInput) selectedLevelInput.value = selectedLevel;
         if (levelTotalInput) levelTotalInput.value = levelTotal;
 
+        var contact_id = $('#contact_id').val();
+        $.ajax({
+            url  : $('#apply_tag_url').val() + '/' + contact_id + '/' + selectedLevel,
+            type : 'GET',
+            success:function(response){
+                console.log('Tag applied successfully');
+            },
+            error:function(err){
+                console.log('Error in applying tag');
+            }
+        });
+
         // Show the confirmation popup
         showConfirmPopup(selectedLevel);
 
