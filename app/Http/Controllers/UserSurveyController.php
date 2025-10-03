@@ -357,16 +357,16 @@ class UserSurveyController extends Controller
             $contact_id = $contactData['id'];
             switch ($survey->level) {
                 case 1:
-                  $level_id = 369;
+                  $level_id = 368;
                   break;
                 case 2:
                     $level_id = 370;
                     break;
                 case 3:
-                    $level_id = 371;
+                    $level_id = 372;
                     break;
                 case 4:
-                    $level_id = 372;
+                    $level_id = 500;
                     break;
             }
             $tag_ids = [643, $level_id];
