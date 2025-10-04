@@ -305,6 +305,8 @@ function handleBuyNow(button, level) {
             } else if (String(level) === '3') {
                 // Use numeric data from #total_with_addon
                 levelTotal = document.getElementById('total_with_addon')?.getAttribute('data-total') || 0;
+            } else if( String(level) === '4') {
+                levelTotal = document.getElementById('level4_price')?.value || 0;
             }
         }
 
@@ -313,7 +315,7 @@ function handleBuyNow(button, level) {
         if (levelTotalInput) levelTotalInput.value = levelTotal;
 
         var contact_id = $('#contact_id').val();
-        
+
         $.ajax({
             url  : $('#apply_tag_url').val() + '/' + contact_id + '/' + selectedLevel,
             type : 'GET',

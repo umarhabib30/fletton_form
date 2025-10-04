@@ -45,6 +45,12 @@ class UserSurveyController extends Controller
         $level3 = $settings->level3_base + ($marketValue * $settings->level3_market_percentage) + $additionalCost;
         $level4 = $settings->level4_base + ($marketValue * $settings->level4_market_percentage) + $additionalCost;
 
+        // ✅ Generate payment URLs
+        $level1_payment_url = "https://flettons.group/flettons-order/?email={$request->email_address}&total={$level1}&level=1&order=1";
+        $level2_payment_url = "https://flettons.group/flettons-order/?email={$request->email_address}&total={$level2}&level=2&order=1";
+        $level3_payment_url = "https://flettons.group/flettons-order/?email={$request->email_address}&total={$level3}&level=3&order=1";
+        $level4_payment_url = "https://flettons.group/flettons-order/?email={$request->email_address}&total={$level4}&level=4&order=1";
+
         $payload = [
             'given_name' => $request->first_name,
             'family_name' => $request->last_name,
@@ -72,6 +78,25 @@ class UserSurveyController extends Controller
                     'email' => $request->email_address,
                     'field' => 'EMAIL1'
                 ]
+            ],
+            // property details
+            'custom_fields' => [
+                ['id' => '191', 'content' => $request->full_address],
+                ['id' => '193', 'content' => (int) $request->market_value],
+                ['id' => '195', 'content' => $request->house_or_flat],
+                ['id' => '197', 'content' => (int) $request->number_of_bedrooms],
+                ['id' => '203', 'content' => $request->listed_building],
+                ['id' => '603', 'content' => (int) $request->sqft_area],
+                // Totals
+                ['id' => '220', 'content' => number_format($level1, 2)],
+                ['id' => '224', 'content' => number_format($level2, 2)],
+                ['id' => '228', 'content' => number_format($level3, 2)],
+                ['id' => '238', 'content' => number_format($level4, 2)],
+                // Payment links
+                ['id' => '218', 'content' => $level1_payment_url],
+                ['id' => '222', 'content' => $level2_payment_url],
+                ['id' => '226', 'content' => $level3_payment_url],
+                ['id' => '240', 'content' => $level4_payment_url],
             ],
         ];
 
@@ -106,14 +131,38 @@ class UserSurveyController extends Controller
                 'level2_price' => $level2,
                 'level3_price' => $level3,
                 'level4_price' => $level4,
+                'level1_payment_url' => $level1_payment_url,
+                'level2_payment_url' => $level2_payment_url,
+                'level3_payment_url' => $level3_payment_url,
+                'level4_payment_url' => $level4_payment_url,
                 'current_step' => 0,
                 'is_submitted' => false,
                 'contact_id' => $contact_id ?? null,
             ]
         );
 
+        $tag_ids = [643];
+        $this->apply_tags($contact_id, $tag_ids);
+
         $key = $this->get_secretbox_key_b64();
         $encrpted_id = $this->encrypt_sodium($survey->contact_id, $key);
+
+        // listing page url
+        $redirect_url = "https://flettons.com/flettons-listing/?contact_id={$encrpted_id}&temp=1";
+
+        $updatePayload = [
+            'custom_fields' => [
+                ['id' => 234, 'content' => $redirect_url],
+                ['id' => 601, 'content' => $redirect_url],
+            ],
+        ];
+
+        $updateResponse = Http::withHeaders([
+            'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])
+            ->patch("https://api.infusionsoft.com/crm/rest/v1/contacts/{$contact_id}", $updatePayload);
 
         return redirect()->route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
     }
@@ -121,14 +170,15 @@ class UserSurveyController extends Controller
     public function flettonsListingPage()
     {
         $encrpted_id = request()->get('contact_id');
+
         $key = $this->get_secretbox_key_b64();
         $id = $this->decrypt_sodium($encrpted_id, $key);
         $survey = Survey::where('contact_id', $id)->first();
 
         // ------------- if survey not found -------------
-        dd($encrpted_id);
+        // dd($encrpted_id);
         if (!$survey) {
-            $url = "https://api.infusionsoft.com/crm/rest/v1/contacts/" . $id. "/?optional_properties=custom_fields";
+            $url = 'https://api.infusionsoft.com/crm/rest/v1/contacts/' . $id . '/?optional_properties=custom_fields';
             $response = Http::withHeaders([
                 'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
                 'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
@@ -138,7 +188,7 @@ class UserSurveyController extends Controller
 
             // Dump the response to inspect it
             $response_data = $response->json();
-
+            // dd($response_data);
             $data = [];
             $data['first_name'] = $response_data['given_name'] ?? '';
             $data['last_name'] = $response_data['family_name'] ?? '';
@@ -146,9 +196,13 @@ class UserSurveyController extends Controller
             $data['telephone_number'] = $response_data['phone_numbers'][0]['number'] ?? '';
             $data['full_address'] = $response_data['addresses'][0]['line1'] ?? '';
             $data['postcode'] = $response_data['addresses'][0]['postal_code'] ?? '';
+            $data['contact_id'] = $id ?? '';
 
             // show direct data instead of object
             foreach ($response_data['custom_fields'] as $key => $value) {
+                if ($value['id'] == 191) {
+                    $data['full_address'] = $value['content'];
+                }
                 if ($value['id'] == 203) {
                     $data['listed_building'] = $value['content'];
                 }
@@ -187,6 +241,8 @@ class UserSurveyController extends Controller
                 ['email_address' => $email_address],
                 $data
             );
+
+            // dd($survey);
         }
 
         $price = Price::first();
@@ -200,7 +256,6 @@ class UserSurveyController extends Controller
 
     public function submitListingPage(Request $request)
     {
-        // dd($request);
         $survey = Survey::where('contact_id', $request->contact_id)->first();
         $key = $this->get_secretbox_key_b64();
         $encrypted_id = $this->encrypt_sodium($survey->contact_id, $key);
@@ -214,7 +269,6 @@ class UserSurveyController extends Controller
             'level3_price' => ($request->level == 3) ? $request->level_total : $survey->level3_price,
             'current_step' => 1,
             'quote_summary_page' => "https://flettons.com/flettons-summary/?contact_id={$encrypted_id}&temp=1",
-
         ]);
 
         // 'quote_summary_page' => route('user.flettons.rics.survey.page', ['contact_id' => $encrypted_id, 'temp' => 1]),
@@ -409,22 +463,22 @@ class UserSurveyController extends Controller
         return response($html, 200)->header('Content-Type', 'text/html; charset=utf-8');
     }
 
-    public function updateSurveyTag($contact_id, $level){
+    public function updateSurveyTag($contact_id, $level)
+    {
         $tag_ids = [];
-        if($level == 1){
+        if ($level == 1) {
             $tag_ids = [368];
-        } elseif($level == 2){
+        } elseif ($level == 2) {
             $tag_ids = [370];
-        } elseif($level == 3){
+        } elseif ($level == 3) {
             $tag_ids = [372];
-        } elseif($level == 4){
+        } elseif ($level == 4) {
             $tag_ids = [500];
         }
 
         $this->apply_tags($contact_id, $tag_ids);
         return response()->json(['success' => true, 'message' => 'Tags applied successfully.']);
     }
-
 
     public function apply_tags($contact_id, array $tag_ids = []): bool
     {
