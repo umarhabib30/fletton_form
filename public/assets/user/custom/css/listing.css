@@ -533,7 +533,7 @@ body {
     position: relative;
     display: flex;
     justify-content: flex-end;
-    width: 100%;
+    width: 100%!important
 }
 
 
@@ -563,7 +563,7 @@ body {
     top: 36px;
     right: 0;
     text-align: left;
-   margin-right: -10px;
+   margin-right: -10px!important;
     padding: 12px 14px;
     border-radius: 10px;
     background: #fff;
