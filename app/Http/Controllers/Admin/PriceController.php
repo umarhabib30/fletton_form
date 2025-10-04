@@ -34,14 +34,14 @@ class PriceController extends Controller
             'level4_market_percentage' => 'nullable|numeric|min:0|max:100',
 
             // Other costs
-            'repair_cost' => 'nullable|numeric|min:0',
-            'aerial_chimney_cost' => 'nullable|numeric|min:0',
-            'insurance_cost' => 'nullable|numeric|min:0',
-            'thermal_image_cost' => 'nullable|numeric|min:0',
-            'listing_cost' => 'nullable|numeric|min:0',
-            'extra_sqft_cost' => 'nullable|numeric|min:0',
-            'extra_reception_room_cost' => 'nullable|numeric|min:0',
-            'extra_room_cost' => 'nullable|numeric|min:0',
+            'repair_cost' => 'required',
+            'aerial_chimney_cost' => 'required',
+            'insurance_cost' => 'required',
+            'thermal_image_cost' => 'required',
+            'listing_cost' => 'required',
+            'extra_sqft_cost' => 'required',
+            'extra_reception_room_cost' => 'required',
+            'extra_room_cost' => 'required',
         ]);
 
         // Normalize nulls to 0 so we don't store NULLs
