@@ -55,6 +55,7 @@ class UserSurveyController extends Controller
             'given_name' => $request->first_name,
             'family_name' => $request->last_name,
             'lead_source_id' => 329,
+            "contact_type"=> "Prospective",
 
             'duplicate_option' => 'Email',
             // Billing address
