@@ -54,6 +54,8 @@ class UserSurveyController extends Controller
         $payload = [
             'given_name' => $request->first_name,
             'family_name' => $request->last_name,
+            'lead_source_id' => 329,
+
             'duplicate_option' => 'Email',
             // Billing address
             'addresses' => [
