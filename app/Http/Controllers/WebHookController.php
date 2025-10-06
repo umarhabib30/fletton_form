@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Price;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class WebHookController extends Controller
 {
     public function updateKeapContactFromId()
     {
-        $contact_id =$_REQUEST['id'];
+        $contact_id = $_REQUEST['id'];
         // 1. Fetch contact from Keap
         $response = Http::withHeaders([
             'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
@@ -74,6 +75,9 @@ class WebHookController extends Controller
             ],
         ];
 
+        Log::info('Update Payload:');
+        Log::info($updatePayload);
+
         // 6. Update contact
         Http::withHeaders([
             'Authorization' => 'Bearer YOUR_KEAP_API_KEY',
@@ -100,7 +104,6 @@ class WebHookController extends Controller
         }
         return null;
     }
-
 
     public function encrypt_sodium(string $plaintext, string $b64key): string
     {
@@ -184,7 +187,4 @@ class WebHookController extends Controller
     {
         return rtrim(strtr(base64_encode($bin), '+/', '-_'), '=');
     }
-
-
-
 }
