@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Price;
+use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -13,9 +14,9 @@ class WebHookController extends Controller
     public function updateKeapContactFromId()
     {
         $contact_id = $_REQUEST['id'];
-       if (empty($contact_id) || !is_numeric($contact_id)) {
+        if (empty($contact_id) || !is_numeric($contact_id)) {
             throw new \Exception('Invalid contact ID');
-        }else{
+        } else {
             Log::info('Processing contact ID: ' . $contact_id);
         }
         // 1. Fetch contact from Keap
@@ -90,6 +91,43 @@ class WebHookController extends Controller
             'Content-Type' => 'application/json',
         ])->patch("https://api.infusionsoft.com/crm/rest/v1/contacts/{$contact_id}", $updatePayload);
 
+        // Start with base details
+        $data = [];
+        $data['first_name'] = $contact['given_name'] ?? '';
+        $data['last_name'] = $contact['family_name'] ?? '';
+        $data['email_address'] = $contact['email_addresses'][0]['email'] ?? '';
+        $data['telephone_number'] = $contact['phone_numbers'][0]['number'] ?? '';
+        $data['full_address'] = $contact['addresses'][0]['line1'] ?? '';
+        $data['postcode'] = $contact['addresses'][0]['postal_code'] ?? '';
+        $data['contact_id'] = $contact['id'] ?? '';
+
+        // --- NOW USE GENERATED VALUES INSTEAD OF OLD API FIELDS ---
+
+        $data['level1_price'] = number_format($level1, 2, '.', '');
+        $data['level2_price'] = number_format($level2, 2, '.', '');
+        $data['level3_price'] = number_format($level3, 2, '.', '');
+        $data['level4_price'] = number_format($level4, 2, '.', '');
+
+        $data['level1_payment_url'] = $level1_payment_url;
+        $data['level2_payment_url'] = $level2_payment_url;
+        $data['level3_payment_url'] = $level3_payment_url;
+        $data['level4_payment_url'] = $level4_payment_url;
+
+        $data['listing_url'] = $listing_url;
+
+        // Optional: keep these from Keap or recalculate
+        $data['listed_building'] = $listed;
+        $data['number_of_bedrooms'] = $bedrooms;
+        $data['market_value'] = $marketValue;
+        $data['sqft_area'] = $sqft;
+        $data['over1650'] = $sqft > 1650 ? 'yes' : 'no';
+
+        $survey = Survey::updateOrCreate(
+            ['email_address' => $data['email_address']],
+            $data
+        );
+
+        // dd($survey);
         return [
             'contact_id' => $contact_id,
             'listing_url' => $listing_url,
