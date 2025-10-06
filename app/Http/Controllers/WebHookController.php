@@ -86,7 +86,7 @@ class WebHookController extends Controller
 
         // 6. Update contact
         Http::withHeaders([
-            'Authorization' => 'Bearer YOUR_KEAP_API_KEY',
+            'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ])->patch("https://api.infusionsoft.com/crm/rest/v1/contacts/{$contact_id}", $updatePayload);
