@@ -13,6 +13,11 @@ class WebHookController extends Controller
     public function updateKeapContactFromId()
     {
         $contact_id = $_REQUEST['id'];
+       if (empty($contact_id) || !is_numeric($contact_id)) {
+            throw new \Exception('Invalid contact ID');
+        }else{
+            Log::info('Processing contact ID: ' . $contact_id);
+        }
         // 1. Fetch contact from Keap
         $response = Http::withHeaders([
             'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
