@@ -540,18 +540,19 @@ body {
 .addon-info .info-btn {
     margin-right: -22px;
     margin-top: -21px;
-    display: inline-flex;
+    display: inline-flex
+;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 30px !important;
+    height: 30px !important;
     border-radius: 50%;
+    position: absolute;
     border: none;
     cursor: pointer;
     background: var(--ink);
     color: var(--primary);
 }
-
 .addon-info .info-btn i {
     font-size: 16px;
     line-height: 1;
