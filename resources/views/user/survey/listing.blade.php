@@ -42,7 +42,7 @@
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
                                         
-                                        <span style="font-size: 14px; font-weight: bold;">A stand-alone roof survey </span>
+                                        <span style="width: 100%;text-align: center;font-size: 14px; font-weight: bold;">A stand-alone roof survey </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
                                         </button>
@@ -72,7 +72,7 @@
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
                                         
-                                        <span style="font-size: 14px; font-weight: bold;">For properties built after
+                                        <span style="width: 100%;text-align: center;font-size: 14px; font-weight: bold;">For properties built after
                                             1985 </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
@@ -105,7 +105,7 @@
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
                                        
-                                        <span style="font-size: 16px; font-weight: bold; margin-right: 10px">For all
+                                        <span style="width: 100%;text-align: center;font-size: 16px; font-weight: bold; margin-right: 10px">For all
                                             Property Types </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
@@ -142,7 +142,7 @@
                                 <div class="level-head-section">
                                     <div class="addon-info" bis_skin_checked="1">
                                       
-                                        <span style="font-size: 20px; font-weight: bold; margin-right: 25px">Most
+                                        <span style="width: 100%;text-align: center;font-size: 20px; font-weight: bold; margin-right: 25px">Most
                                             Popular </span>
                                         <button type="button" class="info-btn" aria-label="More info">
                                             <i class="fa-solid fa-info"></i>
