@@ -55,9 +55,10 @@ class UserSurveyController extends Controller
             'given_name' => $request->first_name,
             'family_name' => $request->last_name,
             'lead_source_id' => 329,
-            "contact_type"=> "Prospective",
-
+            'contact_type' => 'Prospective',
             'duplicate_option' => 'Email',
+            // ✅ Add this line
+            'opt_in_reason' => 'Explicit consent provided during website registration',
             // Billing address
             'addresses' => [
                 [
@@ -82,7 +83,7 @@ class UserSurveyController extends Controller
                     'field' => 'EMAIL1'
                 ]
             ],
-            // property details
+            // Property details in custom fields
             'custom_fields' => [
                 ['id' => '191', 'content' => $request->full_address],
                 ['id' => '193', 'content' => (int) $request->market_value],
