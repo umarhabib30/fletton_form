@@ -381,7 +381,7 @@
                     <div class="form-group">
                         <label for="postalCode">Postal Code <span class="required">*</span></label>
                         <input type="text" id="postalCode" name="inf_field_PostalCode" class="form-control"
-                            placeholder="Enter your postal code" required  readonly/>
+                            placeholder="Enter your postal code" required />
                     </div>
                 </div>
 
