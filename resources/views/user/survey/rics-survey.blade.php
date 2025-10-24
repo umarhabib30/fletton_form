@@ -400,7 +400,7 @@
                         <label for="surveyPostalCode">Survey Postal Code <span class="required">*</span></label>
                         <input type="text" id="surveyPostalCode" name="inf_field_PostalCode2"
                             class="form-control" placeholder="Enter the property postal code"
-                            value="{{ $survey->postcode }}" required readonly />
+                            value="{{ $survey->postcode }}" required  />
                     </div>
 
                     <div class="form-group">
