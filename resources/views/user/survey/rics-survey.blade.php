@@ -619,7 +619,7 @@
                     <div class="form-group">
                         <label for="agentPostalCode">Agent Postal Code <span class="required">*</span></label>
                         <input type="text" id="agentPostalCode" name="inf_field_PostalCode3" class="form-control"
-                            placeholder="Enter agent postal code" required  readonly/>
+                            placeholder="Enter agent postal code" required  />
                     </div>
                 </div>
 
