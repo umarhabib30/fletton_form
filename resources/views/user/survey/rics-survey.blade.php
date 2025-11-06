@@ -553,7 +553,7 @@
                         <div class="form-group">
                             <label for="solicitorPostalCode">Postal Code</label>
                             <input type="text" id="solicitorPostalCode" name="inf_custom_SolicitorPostalCode"
-                                class="form-control" placeholder="Enter postal code" readonly />
+                                class="form-control" placeholder="Enter postal code"  />
                         </div>
 
                         <div class="form-group">
