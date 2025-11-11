@@ -4,7 +4,7 @@ function initAddressAutocomplete() {
     if (!(window.google && google.maps && google.maps.places)) return;
 
     const addressField = document.getElementById("full_address");
-    const postcodeEl   = document.getElementById("postcode");
+    const postcodeEl = document.getElementById("postcode");
     if (!addressField || !postcodeEl) return;
 
     // If the user types/edits the address manually, clear any stale postcode.
@@ -134,7 +134,7 @@ $(function () {
                 return;
             }
 
-            if(! $('#postcode').val()){
+            if (!$('#postcode').val()) {
                 toastr.error('Plese select a valid address from the dropdown');
                 return;
             }
@@ -155,6 +155,16 @@ $(function () {
                 toastr.error('You must agree to the terms');
                 $('#agree_terms').focus();
                 return;
+            }
+
+            // ✅ New validation for sqft
+            if ($('#over1650').is(':checked')) {
+                const sqftVal = parseInt($('#sqft_area').val(), 10);
+                if (sqftVal > 5000) {
+                    toastr.error('Floor area cannot exceed 5000 sqft');
+                    $('#sqft_area').focus();
+                    return;
+                }
             }
         }
         $('#overlay').show();
