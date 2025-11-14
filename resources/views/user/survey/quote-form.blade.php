@@ -15,6 +15,43 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7xLp13hLBGIDOt4BIJZrJF99ItTsya0g&libraries=places&callback=initAddressAutocomplete"
         defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <style>
+        #toast-container>.toast {
+            font-family: sans-serif !important;
+        }
+
+        #toast-container.toast-top-center {
+            top: 20px;
+            /* move slightly down from the top */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .field-error {
+            color: #ff0000;
+            /* Brighter red */
+            font-size: 15px;
+            margin-top: 4px;
+            display: block;
+            font-family: sans-serif;
+        }
+
+
+        input.error,
+        select.error {
+            border-color: #ff0019 !important;
+        }
+
+        #toast-container.toast-top-center {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #toast-container>.toast {
+            font-family: sans-serif !important;
+        }
+    </style>
 
 </head>
 
@@ -95,7 +132,8 @@
                     <div class="switch-option">
                         <label class="switch-label" for="over1650">Over 1650 sqft?</label>
                         <label class="switch">
-                            <input type="checkbox" id="over1650" name="over1650" value="yes" onchange="toggleSqftAreaBox()" />
+                            <input type="checkbox" id="over1650" name="over1650" value="yes"
+                                onchange="toggleSqftAreaBox()" />
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -126,10 +164,10 @@
         </div>
     </div>
 
-{{-- loading --}}
-  <div class="overlay" style="display: none" id="overlay">
+    {{-- loading --}}
+    <div class="overlay" style="display: none" id="overlay">
         <img src="{{ asset('assets/user/icons/Loading.png') }}" class="loading-image" alt="Loading...">
-  </div>
+    </div>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

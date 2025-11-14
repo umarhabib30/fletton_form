@@ -642,7 +642,7 @@
                                     target="_blank" rel="noopener noreferrer">WHICH SURVEY</a></strong>
                             flow chart.
                         </p>
-                        <p>If you proceed to book incorrectly, we will cancel the order and charge 1.25% of the
+                        <p>If you proceed to book incorrectly, we will cancel the order and charge <strong>5%</strong> of the
                             transaction fee to cover the cost of the transaction.</p>
                     </div>
 
