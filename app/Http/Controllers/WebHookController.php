@@ -98,6 +98,11 @@ class WebHookController extends Controller
         $data['email_address'] = $contact['email_addresses'][0]['email'] ?? '';
         $data['telephone_number'] = $contact['phone_numbers'][0]['number'] ?? '';
         $data['full_address'] = $contact['addresses'][0]['line1'] ?? '';
+
+        // If empty, fallback to custom field 191
+        if (empty($data['full_address'])) {
+            $data['full_address'] = $this->getFieldValue($contact['custom_fields'], 191);
+        }
         $data['postcode'] = $contact['addresses'][0]['postal_code'] ?? '';
         $data['contact_id'] = $contact['id'] ?? '';
 
