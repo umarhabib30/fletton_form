@@ -399,6 +399,7 @@ class UserSurveyController extends Controller
                 ['id' => '212', 'content' => $survey->insurance],
                 // RedirectURL
                 ['id' => '234', 'content' => $redirect_url],
+                ['id' => '665', 'content' => $survey->inf_field_Title],
             ]
         ];
 
