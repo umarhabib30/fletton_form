@@ -1,56 +1,106 @@
 /* ---------- Google Places (optional) ---------- */
 function initAddressAutocomplete() {
-    if (!(window.google && google.maps && google.maps.places)) return;
+  if (!(window.google && google.maps && google.maps.places)) return;
 
-    const addressField = document.getElementById("full_address");
-    const postcodeEl = document.getElementById("postcode");
-    if (!addressField || !postcodeEl) return;
+  const addressField = document.getElementById("full_address");
+  const postcodeEl = document.getElementById("postcode");
+  if (!addressField || !postcodeEl) return;
 
-    let suppressPostcodeClear = false;
-    const clearPostcode = () => { if (postcodeEl) postcodeEl.value = ""; };
+  let suppressPostcodeClear = false;
+  const clearPostcode = () => { postcodeEl.value = ""; };
 
-    addressField.addEventListener("input", function () {
-        if (!suppressPostcodeClear) clearPostcode();
-    });
+  const geocoder = new google.maps.Geocoder();
+  let lastBiasPostcode = "";
+  let biasTimer = null;
 
-    const ac = new google.maps.places.Autocomplete(addressField, {
-        types: ["address"],
-        componentRestrictions: { country: "gb" }
-    });
+  // Use geocode rather than address for better postcode behavior
+  const ac = new google.maps.places.Autocomplete(addressField, {
+    types: ["geocode"],
+    componentRestrictions: { country: "gb" }
+  });
 
-    if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
+  if (ac.setFields) ac.setFields(["formatted_address", "address_components", "geometry"]);
 
-    ac.addListener("place_changed", function () {
-        suppressPostcodeClear = true;
+  // Clear postcode when user edits manually (unless suppressed)
+  addressField.addEventListener("input", function () {
+    if (!suppressPostcodeClear) clearPostcode();
 
-        const place = ac.getPlace();
-        if (!place || !place.formatted_address) {
-            clearPostcode();
-            suppressPostcodeClear = false;
-            return;
+    const v = addressField.value.trim();
+
+    // Debounce biasing so we don't hammer Geocoder
+    clearTimeout(biasTimer);
+    biasTimer = setTimeout(() => {
+      const pc = extractUKPostcode(v);
+      if (!pc) return;
+
+      // Don’t re-bias for same postcode repeatedly
+      if (pc.toUpperCase() === lastBiasPostcode) return;
+      lastBiasPostcode = pc.toUpperCase();
+
+      geocoder.geocode(
+        { address: pc, componentRestrictions: { country: "GB" } },
+        (results, status) => {
+          if (status !== "OK" || !results || !results[0]) return;
+          const r = results[0];
+          if (r.geometry && r.geometry.viewport) {
+            ac.setBounds(r.geometry.viewport);
+            ac.setOptions({ strictBounds: false });
+          }
         }
+      );
+    }, 250);
+  });
 
-        addressField.value = place.formatted_address
-            .replace(/,\s*United Kingdom$/i, "")
-            .replace(/,\s*UK$/i, "");
+  ac.addListener("place_changed", function () {
+    suppressPostcodeClear = true;
 
-        const pc = (place.address_components || []).find((c) => c.types.includes("postal_code"));
+    const place = ac.getPlace();
+    if (!place || !place.formatted_address) {
+      clearPostcode();
+      suppressPostcodeClear = false;
+      return;
+    }
 
-        if (pc && pc.long_name) {
-            const postcode = pc.long_name.toUpperCase();
+    // Remove trailing UK
+    addressField.value = place.formatted_address
+      .replace(/,\s*United Kingdom$/i, "")
+      .replace(/,\s*UK$/i, "");
 
-            addressField.value = addressField.value
-                .replace(new RegExp(`\\s*${postcode}\\s*,?\\s*$`, "i"), "")
-                .replace(new RegExp(`,\\s*${postcode}(,|\\s|$)`, "i"), "$1")
-                .trim();
+    const pc = (place.address_components || []).find(c => c.types.includes("postal_code"));
 
-            postcodeEl.value = postcode;
-        } else {
-            clearPostcode();
-        }
+    if (pc && pc.long_name) {
+      const postcode = pc.long_name.toUpperCase();
 
-        setTimeout(() => { suppressPostcodeClear = false; }, 0);
-    });
+      // Remove postcode from address text (keep it in postcode field)
+      addressField.value = addressField.value
+        .replace(new RegExp(`\\s*${escapeRegExp(postcode)}\\s*,?\\s*$`, "i"), "")
+        .replace(new RegExp(`,\\s*${escapeRegExp(postcode)}(,|\\s|$)`, "i"), "$1")
+        .trim();
+
+      postcodeEl.value = postcode;
+    } else {
+      // If they selected something without a postcode, don't force-clear if you don't want to
+      clearPostcode();
+    }
+
+    setTimeout(() => { suppressPostcodeClear = false; }, 0);
+  });
+
+  function extractUKPostcode(str) {
+    // Find a postcode anywhere in the string (handles "N1 5QL", "n15ql", etc.)
+    const m = str.match(/\b([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\b/i);
+    return m ? normalizeUKPostcode(m[1]) : "";
+  }
+
+  function normalizeUKPostcode(pc) {
+    pc = pc.toUpperCase().replace(/\s+/g, "");
+    // Insert a space before last 3 chars
+    return pc.length > 3 ? pc.slice(0, -3) + " " + pc.slice(-3) : pc;
+  }
+
+  function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
 }
 
 /* ---------- UI: sqft toggle ---------- */
@@ -139,10 +189,10 @@ $(function () {
         }
 
         // Address check
-        if (!$('#postcode').val()) {
-            showFieldError($('#full_address'), 'Select a valid address from the dropdown');
-            return;
-        }
+        // if (!$('#postcode').val()) {
+        //     showFieldError($('#full_address'), 'Select a valid address from the dropdown');
+        //     return;
+        // }
 
         // Phone validation
         if ($('#telephone_number').hasClass('is-invalid')) {

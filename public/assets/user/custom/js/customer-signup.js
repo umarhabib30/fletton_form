@@ -450,39 +450,6 @@ document.addEventListener('keydown', function (e) {
 });
 
 
-
-// google address autocomplete
-function initAddressAutocomplete() {
-    if (!(window.google && google.maps && google.maps.places)) return;
-
-    const addressField = document.getElementById("homeAddress");
-    if (!addressField) return;
-
-    const ac = new google.maps.places.Autocomplete(addressField, {
-        types: ["address"],
-        componentRestrictions: { country: "gb" }
-    });
-
-    ac.setFields(["formatted_address", "address_components"]);
-
-    ac.addListener("place_changed", function () {
-        const place = ac.getPlace();
-        if (!place || !place.formatted_address) return;
-
-        // Clean trailing ", United Kingdom" or ", UK"
-        addressField.value = place.formatted_address
-            .replace(/,\s*United Kingdom$/i, "")
-            .replace(/,\s*UK$/i, "");
-
-        const pc = (place.address_components || []).find((c) => c.types.includes("postal_code"));
-        if (pc) {
-            const postcode = pc.long_name.toUpperCase();
-            addressField.value = addressField.value.replace(`${postcode} `, "");
-            document.getElementById("postalCode").value = postcode;
-        }
-    });
-}
-
 $(document).ready(function () {
     initIntlTel('solicitorPhone');
     initIntlTel('telephone_number');
@@ -611,69 +578,144 @@ function initAddressAutocomplete() {
         { addr: "solicitorAddress", pc: "solicitorPostalCode" }
     ];
 
+    const geocoder = new google.maps.Geocoder();
+
     // Track suppression per address field so we don't clear postcode during a valid selection.
     const suppressClear = new Map();
+    const lastBiasPostcode = new Map();
+    const biasTimers = new Map();
+
+    const clearBiasTimer = (addressField) => {
+        const t = biasTimers.get(addressField);
+        if (t) clearTimeout(t);
+        biasTimers.delete(addressField);
+    };
+
+    const scheduleBiasFromPostcode = (ac, addressField, postcodeCandidate) => {
+        clearBiasTimer(addressField);
+        biasTimers.set(addressField, setTimeout(() => {
+            const pc = extractUKPostcode(postcodeCandidate);
+            if (!pc) return;
+
+            const pcUpper = pc.toUpperCase();
+            if (pcUpper === (lastBiasPostcode.get(addressField) || "")) return;
+            lastBiasPostcode.set(addressField, pcUpper);
+
+            geocoder.geocode(
+                { address: pc, componentRestrictions: { country: "GB" } },
+                (results, status) => {
+                    if (status !== "OK" || !results || !results[0]) return;
+                    const r = results[0];
+                    if (r.geometry && r.geometry.viewport) {
+                        ac.setBounds(r.geometry.viewport);
+                        ac.setOptions({ strictBounds: false });
+                    }
+                }
+            );
+        }, 250));
+    };
 
     const attachAutocomplete = (addressId, postcodeId) => {
         const addressField = document.getElementById(addressId);
         const pcField = postcodeId ? document.getElementById(postcodeId) : null;
         if (!addressField) return;
 
+        suppressClear.set(addressField, false);
+        lastBiasPostcode.set(addressField, "");
+
         const clearPC = () => { if (pcField) pcField.value = ""; };
 
-        // Clear postcode on any manual typing/edit (unless we’re in the middle of a Google selection).
-        addressField.addEventListener("input", () => {
-            if (!suppressClear.get(addressField)) clearPC();
-        });
-
+        // Use geocode rather than address for better postcode behavior
         const ac = new google.maps.places.Autocomplete(addressField, {
-            types: ["address"],
+            types: ["geocode"],
             componentRestrictions: { country: "gb" }
         });
-        if (ac.setFields) ac.setFields(["formatted_address", "address_components"]);
+        if (ac.setFields) ac.setFields(["formatted_address", "address_components", "geometry"]);
+
+        // Clear postcode when user edits address manually (unless suppressed) + bias suggestions by postcode.
+        addressField.addEventListener("input", () => {
+            if (!suppressClear.get(addressField)) clearPC();
+
+            const pcFromField = pcField ? String(pcField.value || "").trim() : "";
+            const pcFromAddress = String(addressField.value || "").trim();
+            scheduleBiasFromPostcode(ac, addressField, pcFromField || pcFromAddress);
+        });
+
+        // If they type a postcode in the dedicated postcode field, also bias the dropdown for address.
+        if (pcField) {
+            pcField.addEventListener("input", () => {
+                scheduleBiasFromPostcode(ac, addressField, String(pcField.value || "").trim());
+            });
+        }
 
         ac.addListener("place_changed", function () {
             suppressClear.set(addressField, true);
 
             const place = ac.getPlace();
             if (!place || !place.formatted_address) {
-                // No valid selection: keep postcode empty.
                 clearPC();
-                // Re-enable clearing for future manual edits.
                 setTimeout(() => suppressClear.set(addressField, false), 0);
                 return;
             }
 
-            // Clean country suffix
+            // Remove trailing UK
             let formatted = place.formatted_address
                 .replace(/,\s*United Kingdom$/i, "")
                 .replace(/,\s*UK$/i, "");
 
-            // Extract postcode
             const comps = place.address_components || [];
             const pcComp = comps.find(c => c.types && c.types.includes("postal_code"));
+            const subpremiseComp = comps.find(c => c.types && c.types.includes("subpremise"));
+
+            // Ensure flat/unit (subpremise) is included in the SAME address field if available.
+            // Google sometimes returns subpremise in address_components but not in formatted_address.
+            if (subpremiseComp && subpremiseComp.long_name) {
+                const flatVal = String(subpremiseComp.long_name).trim();
+                if (flatVal) {
+                    const flatRegex = new RegExp(`(^|,\\s*)${escapeRegExp(flatVal)}(,|\\s|$)`, "i");
+                    if (!flatRegex.test(formatted)) {
+                        formatted = `${flatVal}, ${formatted}`;
+                    }
+                }
+            }
 
             if (pcComp && pcComp.long_name) {
-                const postcode = pcComp.long_name.toUpperCase();
+                const postcode = normalizeUKPostcode(pcComp.long_name);
 
-                // Remove postcode if Google appended it to the formatted address
-                const endPcRegex = new RegExp(`\\s*${postcode}\\s*$`, "i");
-                const midPcRegex = new RegExp(`,\\s*${postcode}(,|\\s|$)`, "i");
-                formatted = formatted.replace(endPcRegex, "").replace(midPcRegex, "$1").trim();
+                // Remove postcode from address text (keep it in postcode field)
+                formatted = formatted
+                    .replace(new RegExp(`\\s*${escapeRegExp(postcode)}\\s*,?\\s*$`, "i"), "")
+                    .replace(new RegExp(`,\\s*${escapeRegExp(postcode)}(,|\\s|$)`, "i"), "$1")
+                    .trim();
 
                 if (pcField) pcField.value = postcode;
             } else {
-                // Valid selection but no postal_code -> ensure postcode is blank
                 clearPC();
             }
 
             addressField.value = formatted;
 
-            // Let Google finish programmatic updates, then re-enable manual clear.
             setTimeout(() => suppressClear.set(addressField, false), 0);
         });
     };
 
     pairs.forEach(({ addr, pc }) => attachAutocomplete(addr, pc));
+
+    function extractUKPostcode(str) {
+        const s = String(str || "");
+        // Find a postcode anywhere in the string (handles "N1 5QL", "n15ql", etc.)
+        const m = s.match(/\b([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\b/i);
+        return m ? normalizeUKPostcode(m[1]) : "";
+    }
+
+    function normalizeUKPostcode(pc) {
+        pc = String(pc || "").toUpperCase().replace(/\s+/g, "");
+        // Insert a space before last 3 chars
+        return pc.length > 3 ? pc.slice(0, -3) + " " + pc.slice(-3) : pc;
+    }
+
+    function escapeRegExp(s) {
+        return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
 }
 

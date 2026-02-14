@@ -331,7 +331,8 @@
 
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <select id="title" name="inf_field_Title" class="form-control inf_field_Title" style="width: 25%; " required >
+                        <select id="title" name="inf_field_Title" class="form-control inf_field_Title"
+                            style="width: 25%; " required>
                             <option value="">Please select one</option>
                             <option value="Dr.">Dr.</option>
                             <option value="Lord.">Lord.</option>
@@ -373,6 +374,27 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="homeAddress">Address Line 1<span class="required">*</span></label>
+                        <input type="text" id="homeAddress" name="inf_field_StreetAddress1" class="form-control"
+                            placeholder="Enter your home address" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="homeAddress">Address Line 2 (optional)</label>
+                        <input type="text" id="homeAddress" name="inf_field_StreetAddress2" class="form-control"
+                            placeholder="Enter your home address"  />
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Town / City<span class="required">*</span></label>
+                        <input type="text" id="postalCode" name="inf_field_StreetAddress2" class="form-control"
+                            placeholder="Enter your street address" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Postal Code <span class="required">*</span></label>
+                        <input type="text" id="postalCode" name="inf_field_PostalCode" class="form-control"
+                            placeholder="Enter your postal code" required />
+                    </div>
+
+                    {{-- <div class="form-group">
                         <label for="homeAddress">Your Home Address <span class="required">*</span></label>
                         <input type="text" id="homeAddress" name="inf_field_StreetAddress1" class="form-control"
                             placeholder="Enter your home address" required />
@@ -382,7 +404,12 @@
                         <label for="postalCode">Postal Code <span class="required">*</span></label>
                         <input type="text" id="postalCode" name="inf_field_PostalCode" class="form-control"
                             placeholder="Enter your postal code" required />
-                    </div>
+                    </div> --}}
+                    {{-- <div class="form-group">
+                        <label for="postalCode">Street Address <span class="required">*</span></label>
+                        <input type="text" id="postalCode" name="inf_field_StreetAddress2" class="form-control"
+                            placeholder="Enter your street address" required />
+                    </div> --}}
                 </div>
 
                 <!-- Step 3: Survey Property Details -->
@@ -400,7 +427,7 @@
                         <label for="surveyPostalCode">Survey Postal Code <span class="required">*</span></label>
                         <input type="text" id="surveyPostalCode" name="inf_field_PostalCode2"
                             class="form-control" placeholder="Enter the property postal code"
-                            value="{{ $survey->postcode }}" required  />
+                            value="{{ $survey->postcode }}" required />
                     </div>
 
                     <div class="form-group">
@@ -469,7 +496,7 @@
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="gardenYes" name="inf_custom_Garden" value="1"
-                                    required  />
+                                    required />
                                 <label for="gardenYes">Yes</label>
                             </div>
                             <div class="radio-option">
@@ -553,7 +580,7 @@
                         <div class="form-group">
                             <label for="solicitorPostalCode">Postal Code</label>
                             <input type="text" id="solicitorPostalCode" name="inf_custom_SolicitorPostalCode"
-                                class="form-control" placeholder="Enter postal code"  />
+                                class="form-control" placeholder="Enter postal code" />
                         </div>
 
                         <div class="form-group">
@@ -619,7 +646,7 @@
                     <div class="form-group">
                         <label for="agentPostalCode">Agent Postal Code <span class="required">*</span></label>
                         <input type="text" id="agentPostalCode" name="inf_field_PostalCode3" class="form-control"
-                            placeholder="Enter agent postal code" required  />
+                            placeholder="Enter agent postal code" required />
                     </div>
                 </div>
 
@@ -642,7 +669,8 @@
                                     target="_blank" rel="noopener noreferrer">WHICH SURVEY</a></strong>
                             flow chart.
                         </p>
-                        <p>If you proceed to book incorrectly, we will cancel the order and charge <strong>5%</strong> of the
+                        <p>If you proceed to book incorrectly, we will cancel the order and charge <strong>5%</strong>
+                            of the
                             transaction fee to cover the cost of the transaction.</p>
                     </div>
 
@@ -684,7 +712,7 @@
                     Proceed <i class="fas fa-arrow-right"></i>
                 </button>
                 <button type="submit" id="submitBtn" class="btn btn-submit" style="display:none">
-                     Instruct and Pay
+                    Instruct and Pay
                 </button>
             </div>
         </form>
@@ -723,7 +751,7 @@
         const $proceed = $('#proceedFromSummaryBtn');
         const $prev = $('#prevBtn'); // stay hidden by CSS
         $(document).ready(function() {
-            $('.form-container').css('border','none');
+            $('.form-container').css('border', 'none');
             const MIN_STEP = 2;
             const MAX_STEP = 6;
             let currentStep = MIN_STEP;
@@ -762,7 +790,7 @@
                 $('body').removeClass('is-landing');
                 if ($landing.length) $landing.hide();
                 if ($progress.length) $progress.show();
-                 $('.form-container').css('border','1px solid #d5d7d9');
+                $('.form-container').css('border', '1px solid #d5d7d9');
                 setStep(startStep); // Ensure only the first step is shown
             }
 
@@ -777,7 +805,7 @@
         function showLanding() {
             // Hide step2 explicitly when landing back
             $('#step2').css('display', 'none');
-            $('.form-container').css('border','none');
+            $('.form-container').css('border', 'none');
             // Add the landing state class
             $('body').addClass('is-landing');
 

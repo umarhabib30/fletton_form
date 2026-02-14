@@ -33,6 +33,7 @@ body {
     /* no vertical padding => no scroll */
     padding-inline: 12px;
     /* little side breathing room */
+    justify-content: center;
 }
 
 /* Card */
@@ -262,7 +263,7 @@ body {
 }
 
 .form-container button:hover {
-    background: var(--primary-dark);
+    background: var(--ink);
     color: #fff;
 }
 
@@ -377,6 +378,21 @@ body {
 
 /* ================= Mobile (<=768px) tweaks ================= */
 @media (max-width:768px) {
+    
+  
+.switch-label {
+    width: 70%;
+    white-space: normal;  /* text wrap enabled */
+    line-height: 1.3;
+}
+
+.switch {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+    
     .form-container {
         max-width: 100%;
         width: 100%;

@@ -16,6 +16,33 @@
         defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <style>
+    
+    
+    /* FULL PAGE BACKGROUND IMAGE */
+body {
+    background: url('/assets/img/bg.png') center center / cover no-repeat fixed;
+    position: relative;
+}
+
+/* DARK OVERLAY ON BACKGROUND */
+body::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.15); /* darker overlay */
+    backdrop-filter: blur(2px); /* optional blur */
+    z-index: -1;  /* keeps behind form */
+}
+
+/* Ensure form stays above overlay */
+.screen-center,
+.form-container {
+    position: relative;
+    z-index: 10;
+}
         #toast-container>.toast {
             font-family: sans-serif !important;
         }
@@ -130,7 +157,7 @@
                         </label>
                     </div>
                     <div class="switch-option">
-                        <label class="switch-label" for="over1650">Over 1650 sqft?</label>
+                        <label class="switch-label" for="over1650">Over 1650 sqft (Including any outbuildings)?</label>
                         <label class="switch">
                             <input type="checkbox" id="over1650" name="over1650" value="yes"
                                 onchange="toggleSqftAreaBox()" />
@@ -146,7 +173,7 @@
                 <input type="hidden" name="action" value="process_quote_form" />
                 <input type="hidden" name="quote_form_nonce" value="quote_form_nonce_placeholder" />
                 <div class="buttons">
-                    <button type="" id="proceedBtn">GET INSTANT QUOTE</button>
+                    <button type="" id="proceedBtn" style="font-size: 21px !important; font-weight:700;">Get Instant Quote</button>
                     <div class="loading-spinner" id="loading">
                         <svg viewBox="0 0 50 50">
                             <circle cx="25" cy="25" r="20"></circle>

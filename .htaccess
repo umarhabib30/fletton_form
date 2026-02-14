@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+# That was ONLY to protect you from 500 errors
+# if your server did not have mod_rewrite enabled
+
+RewriteEngine On
+# RewriteBase /
+# NOT needed unless you're using mod_alias to redirect
+
+RewriteCond %{REQUEST_URI} !/public
+RewriteRule ^(.*)$ public/$1 [L]
+# Direct all requests to /public folder
+
+</IfModule>
+# DO NOT REMOVE THIS LINE AND THE LINES BELOW IPALLOWID:KxO2DaVzux
+allow from 192.168.1.6
+# DO NOT REMOVE THIS LINE AND THE LINES ABOVE KxO2DaVzux:IPALLOWID
+
+
+# DO NOT REMOVE THIS LINE AND THE LINES BELOW IPALLOWID:W0ICffvncc
+allow from 139.135.54.180
+# DO NOT REMOVE THIS LINE AND THE LINES ABOVE W0ICffvncc:IPALLOWID
+

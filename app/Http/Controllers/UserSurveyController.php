@@ -63,6 +63,7 @@ class UserSurveyController extends Controller
             'addresses' => [
                 [
                     'line1' => $request->full_address,
+                    'line2' => $request->full_address,
                     'locality' => '',
                     'postal_code' => $request->postcode ?? '',
                     'country_code' => '',
@@ -171,92 +172,122 @@ class UserSurveyController extends Controller
         return redirect()->route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
     }
 
-    public function flettonsListingPage()
-    {
-        $encrpted_id = request()->get('contact_id');
+public function flettonsListingPage()
+{
+    $encrpted_id = request()->get('contact_id');
 
-        $key = $this->get_secretbox_key_b64();
-        $id = $this->decrypt_sodium($encrpted_id, $key);
-        $survey = Survey::where('contact_id', $id)->first();
+    $key = $this->get_secretbox_key_b64();
+    $id  = $this->decrypt_sodium($encrpted_id, $key);
 
-        // ------------- if survey not found -------------
-        // dd($encrpted_id);
-        if (!$survey) {
-            $url = 'https://api.infusionsoft.com/crm/rest/v1/contacts/' . $id . '/?optional_properties=custom_fields';
-            $response = Http::withHeaders([
-                'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
-                'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
-                'Content-Type' => 'application/json',
-            ])
-                ->patch($url, (object) []);
+    $survey = Survey::where('contact_id', $id)->first();
 
-            // Dump the response to inspect it
-            $response_data = $response->json();
-            // dd($response_data);
-            $data = [];
-            $data['first_name'] = $response_data['given_name'] ?? '';
-            $data['last_name'] = $response_data['family_name'] ?? '';
-            $email_address = $response_data['email_addresses'][0]['email'] ?? '';
-            $data['telephone_number'] = $response_data['phone_numbers'][0]['number'] ?? '';
-            $data['full_address'] = $response_data['addresses'][0]['line1'] ?? '';
-            $data['postcode'] = $response_data['addresses'][0]['postal_code'] ?? '';
-            $data['contact_id'] = $id ?? '';
+    // Helper: convert "1,400.00", "£1,400.00", " 1400 " -> 1400.00 (float)
+    $toNumber = function ($value, $default = null) {
+        if ($value === null) return $default;
 
-            // show direct data instead of object
-            foreach ($response_data['custom_fields'] as $key => $value) {
-                if ($value['id'] == 191) {
-                    $data['full_address'] = $value['content'];
-                }
-                if ($value['id'] == 203) {
-                    $data['listed_building'] = $value['content'];
-                }
-                if ($value['id'] == 197) {
-                    $data['number_of_bedrooms'] = $value['content'];
-                }
-                if ($value['id'] == 195) {
-                    $data['house_or_flat'] = $value['content'];
-                }
-                if ($value['id'] == 193) {
-                    $data['market_value'] = $value['content'];
-                }
-                if ($value['id'] == 603) {
-                    $data['sqft_area'] = $value['content'];
-                    if ($data['sqft_area'] > 1650) {
-                        $data['over1650'] = 'yes';
-                    } else {
-                        $data['over1650'] = 'no';
-                    }
-                }
-                if ($value['id'] == 220) {
-                    $data['level1_price'] = $value['content'];
-                }
-                if ($value['id'] == 224) {
-                    $data['level2_price'] = $value['content'];
-                }
-                if ($value['id'] == 228) {
-                    $data['level3_price'] = $value['content'];
-                }
-                if ($value['id'] == 238) {
-                    $data['level4_price'] = $value['content'];
-                }
-            }
+        // If already numeric, just return it
+        if (is_int($value) || is_float($value)) return $value;
 
-            $survey = Survey::updateOrCreate(
-                ['email_address' => $email_address],
-                $data
-            );
+        $str = trim((string) $value);
 
-            // dd($survey);
+        // Remove common formatting: commas, currency symbols, spaces
+        // Keep digits, dot, and minus only
+        $str = preg_replace('/[^\d\.\-]/', '', $str);
+
+        if ($str === '' || $str === '-' || $str === '.' || $str === '-.') {
+            return $default;
         }
 
-        $price = Price::first();
-        $data = [
-            'survey' => $survey,
-            'price' => $price
-        ];
+        return (float) $str;
+    };
 
-        return view('user.survey.listing', $data);
+    if (!$survey) {
+        $url = 'https://api.infusionsoft.com/crm/rest/v1/contacts/' . $id . '/?optional_properties=custom_fields';
+
+        $response = Http::withHeaders([
+            'X-Keap-API-Key'   => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Authorization'    => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+            'Content-Type'     => 'application/json',
+        ])->patch($url, (object) []);
+
+        $response_data = $response->json();
+
+        $data = [];
+        $data['first_name']        = $response_data['given_name'] ?? '';
+        $data['last_name']         = $response_data['family_name'] ?? '';
+        $email_address             = $response_data['email_addresses'][0]['email'] ?? '';
+        $data['telephone_number']  = $response_data['phone_numbers'][0]['number'] ?? '';
+        $data['full_address']      = $response_data['addresses'][0]['line1'] ?? '';
+        $data['postcode']          = $response_data['addresses'][0]['postal_code'] ?? '';
+        $data['contact_id']        = $id ?? '';
+
+        // Make sure custom_fields exists and is iterable
+        $customFields = $response_data['custom_fields'] ?? [];
+
+        foreach ($customFields as $value) {
+            $fieldId  = $value['id'] ?? null;
+            $content  = $value['content'] ?? null;
+
+            if ($fieldId == 191) {
+                $data['full_address'] = (string) $content;
+            }
+
+            if ($fieldId == 203) {
+                $data['listed_building'] = (string) $content;
+            }
+
+            if ($fieldId == 197) {
+                $data['number_of_bedrooms'] = (string) $content;
+            }
+
+            if ($fieldId == 195) {
+                $data['house_or_flat'] = (string) $content;
+            }
+
+            if ($fieldId == 193) {
+                // market value can also come formatted
+                $data['market_value'] = $toNumber($content);
+            }
+
+            if ($fieldId == 603) {
+                $data['sqft_area'] = $toNumber($content);
+
+                // if sqft_area is null, treat as not over
+                $data['over1650'] = ($data['sqft_area'] !== null && $data['sqft_area'] > 1650) ? 'yes' : 'no';
+            }
+
+            if ($fieldId == 220) {
+                $data['level1_price'] = $toNumber($content);
+            }
+
+            if ($fieldId == 224) {
+                $data['level2_price'] = $toNumber($content);
+            }
+
+            if ($fieldId == 228) {
+                $data['level3_price'] = $toNumber($content);
+            }
+
+            if ($fieldId == 238) {
+                // This is the one that was failing (e.g. "1,400.00")
+                $data['level4_price'] = $toNumber($content);
+            }
+        }
+
+        $survey = Survey::updateOrCreate(
+            ['email_address' => $email_address],
+            $data
+        );
     }
+
+    $price = Price::first();
+
+    return view('user.survey.listing', [
+        'survey' => $survey,
+        'price'  => $price,
+    ]);
+}
+
 
     public function submitListingPage(Request $request)
     {

@@ -10,6 +10,218 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="{{ asset('assets/user/custom/css/listing.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    
+    <!-- offer model css -->
+  <style>
+:root {
+  --navy: #1A202C;
+  --navy-soft: #1b2742;
+  --lime: #C1EC4A;
+}
+
+/* =====================================================
+   PROMO MODAL BACKDROP
+===================================================== */
+.promo-modal-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.70);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 18px;
+}
+
+.promo-modal-backdrop.is-open{
+  display: flex;
+}
+
+/* =====================================================
+   MODAL WRAPPER (CENTERED + SLOW ZOOM)
+===================================================== */
+.promo-modal{
+  position: relative;
+  width: min(420px, 100%);
+  transform-origin: center;
+
+  /* Initial hidden state */
+  opacity: 0;
+  transform: scale(0.88);
+
+  /* Slower premium transition */
+  transition:
+    transform 1400ms cubic-bezier(.16,1,.3,1),
+    opacity 1100ms ease;
+}
+
+/* Visible state */
+.promo-modal-backdrop.is-open .promo-modal{
+  opacity: 1;
+  transform: scale(1);
+  animation: promoZoomSlow 1500ms cubic-bezier(.16,1,.3,1) both;
+}
+
+/* Luxury zoom animation */
+@keyframes promoZoomSlow {
+  0%   { transform: scale(0.88); opacity: 0; }
+  70%  { transform: scale(1.01); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+.promo-modal-close{
+  position: absolute;
+  top: 10px;
+  right: 45px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: var(--navy);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  z-index: 2;
+}
+
+@media (max-width: 480px){
+  .promo-modal-close{
+    right: 10px;
+  }
+}
+
+
+/* =====================================================
+   PROMO CARD CONTENT
+===================================================== */
+#promoModal .promo-banner{
+  margin: auto;
+  width: 350px;
+  max-width: 100%;
+  background: radial-gradient(circle at center, var(--navy-soft) 0%, var(--navy) 70%);
+  border: 6px solid var(--lime);
+  border-radius: 16px;
+  padding: 18px 14px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(200, 240, 0, 0.15);
+}
+
+#promoModal a{
+  text-decoration: none;
+}
+
+/* Logo */
+#promoModal .brand-logo{
+  margin: 0 auto 10px;
+}
+
+#promoModal .brand-logo img{
+  max-width: 130px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* Divider */
+#promoModal .divider-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+#promoModal .divider-line{
+  width: 48px;
+  height: 1px;
+  background: var(--lime);
+}
+
+#promoModal .discount-subtitle{
+  font-size: 12px;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+
+/* Text */
+#promoModal .save-text{
+  font-size: 28px;
+  font-weight: 500;
+  color: #fff;
+  margin: 8px 0;
+}
+
+#promoModal .save-text span{
+  color: var(--lime);
+}
+
+#promoModal .discount-info{
+  font-size: 12px;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+}
+
+/* Discount Code */
+#promoModal .code-box{
+  background: var(--lime);
+  color: var(--navy);
+  font-size: 20px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 10px;
+  display: inline-block;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+/* Terms */
+#promoModal .terms-text{
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* =====================================================
+   CONFETTI CANVAS
+===================================================== */
+canvas.confetti-canvas{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99998;
+}
+
+/* =====================================================
+   REDUCED MOTION (ACCESSIBILITY)
+===================================================== */
+@media (prefers-reduced-motion: reduce){
+  .promo-modal{
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+</style>
+
+
+    
 </head>
 
 <body style="overflow-x: hidden">
@@ -410,6 +622,51 @@
             </div>
         </div>
     </div>
+    
+
+    <!-- ===== PROMO MODAL ===== -->
+    <div class="promo-modal-backdrop" id="promoModal" aria-hidden="true">
+      <div class="promo-modal" role="dialog" aria-modal="true" aria-label="January Discount">
+    
+        <button type="button" class="promo-modal-close" id="promoModalClose" aria-label="Close">
+          ✕
+        </button>
+    
+        <!-- Your existing promo content -->
+        <!--<a href="" style="text-decoration:none;">-->
+          <div class="promo-banner">
+    
+            <!-- LOGO -->
+            <div class="brand-logo">
+              <img src="https://flettons.com/wp-content/uploads/2025/04/Flettons-Logo-White-Transparent.png" alt="Flettons Logo">
+            </div>
+    
+            <div class="divider-container">
+              <div class="divider-line"></div>
+              <div class="discount-subtitle">January Discount!</div>
+              <div class="divider-line"></div>
+            </div>
+    
+            <div class="save-text">SAVE <span>10%</span></div>
+    
+            <div class="discount-info">use discount code</div>
+    
+            <div class="code-box">JAN10</div>
+    
+            <div class="terms-text">
+              Only valid if you book your survey before<br>
+              the end of January.
+            </div>
+    
+          </div>
+        <!--</a>-->
+    
+      </div>
+    </div>
+    
+
+    
+    
 
     <input type="hidden" name="" id="level1_price" value="{{ $survey->level1_price }}">
     <input type="hidden" name="" id="level2_price" value="{{ $survey->level2_price }}">
@@ -498,6 +755,138 @@
     }, { passive: true });
   })();
 </script>
+
+<!-- promo model js -->
+<!--<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>-->
+<!--<script>-->
+<!--(function () {-->
+<!--  const modal = document.getElementById('promoModal');-->
+<!--  const closeBtn = document.getElementById('promoModalClose');-->
+
+<!--  if (!modal || !closeBtn) return;-->
+
+<!--  let scrollY = 0;-->
+
+<!--  function lockScroll() {-->
+<!--    scrollY = window.scrollY || document.documentElement.scrollTop;-->
+<!--    document.body.style.position = 'fixed';-->
+<!--    document.body.style.top = `-${scrollY}px`;-->
+<!--    document.body.style.left = '0';-->
+<!--    document.body.style.right = '0';-->
+<!--    document.body.style.width = '100%';-->
+<!--  }-->
+
+<!--  function unlockScroll() {-->
+<!--    document.body.style.position = '';-->
+<!--    document.body.style.top = '';-->
+<!--    document.body.style.left = '';-->
+<!--    document.body.style.right = '';-->
+<!--    document.body.style.width = '';-->
+<!--    window.scrollTo(0, scrollY);-->
+<!--  }-->
+
+<!--  function fireConfettiBombOnce() {-->
+<!--    if (typeof confetti !== 'function') return;-->
+<!--    if (sessionStorage.getItem('confettiBombFired')) return;-->
+
+<!--    sessionStorage.setItem('confettiBombFired', '1');-->
+
+<!--    const myConfetti = confetti.create(undefined, {-->
+<!--      resize: true,-->
+<!--      useWorker: true-->
+<!--    });-->
+
+<!--    myConfetti({-->
+<!--      particleCount: 220,-->
+<!--      spread: 90,-->
+<!--      startVelocity: 55,-->
+<!--      gravity: 1.2,-->
+<!--      scalar: 0.9,-->
+<!--      ticks: 160,-->
+<!--      origin: { x: 0.5, y: 0.65 },-->
+<!--      colors: [-->
+<!--        '#C1EC4A',-->
+<!--        '#00E5FF',-->
+<!--        '#FF1744',-->
+<!--        '#FFD600',-->
+<!--        '#7C4DFF',-->
+<!--        '#FFFFFF'-->
+<!--      ],-->
+<!--      shapes: ['square'],-->
+<!--    });-->
+<!--  }-->
+
+<!--  function openModal() {-->
+<!--    modal.classList.add('is-open');-->
+<!--    modal.setAttribute('aria-hidden', 'false');-->
+<!--    lockScroll();-->
+<!--    fireConfettiBombOnce();-->
+<!--  }-->
+
+<!--  function closeModal() {-->
+<!--    modal.classList.remove('is-open');-->
+<!--    modal.setAttribute('aria-hidden', 'true');-->
+<!--    unlockScroll();-->
+<!--  }-->
+
+<!--  function getUKParts(date = new Date()) {-->
+<!--    const parts = new Intl.DateTimeFormat('en-GB', {-->
+<!--      timeZone: 'Europe/London',-->
+<!--      year: 'numeric',-->
+<!--      month: '2-digit',-->
+<!--      day: '2-digit',-->
+<!--      hour: '2-digit',-->
+<!--      minute: '2-digit',-->
+<!--      second: '2-digit',-->
+<!--      hour12: false-->
+<!--    }).formatToParts(date);-->
+
+<!--    const map = {};-->
+<!--    parts.forEach(p => { if (p.type !== 'literal') map[p.type] = p.value; });-->
+
+<!--    return {-->
+<!--      year: +map.year,-->
+<!--      month: +map.month,-->
+<!--      day: +map.day,-->
+<!--      hour: +map.hour,-->
+<!--      minute: +map.minute,-->
+<!--      second: +map.second,-->
+<!--    };-->
+<!--  }-->
+
+<!--  function isAfterUKCutoff() {-->
+<!--    const uk = getUKParts();-->
+<!--    const cutoffKey = uk.year * 1e10 + 1 * 1e8 + 31 * 1e6 + 23 * 1e4 + 59 * 1e2 + 59;-->
+<!--    const nowKey =-->
+<!--      uk.year * 1e10 + uk.month * 1e8 + uk.day * 1e6 + uk.hour * 1e4 + uk.minute * 1e2 + uk.second;-->
+
+<!--    return nowKey > cutoffKey;-->
+<!--  }-->
+
+<!--  window.addEventListener('load', function () {-->
+<!--    if (isAfterUKCutoff()) return;-->
+
+<!--    const key = 'promoModalSeen_JanDiscount';-->
+<!--    if (!sessionStorage.getItem(key)) {-->
+<!--      setTimeout(() => {-->
+<!--        if (isAfterUKCutoff()) return;-->
+<!--        openModal();-->
+<!--        sessionStorage.setItem(key, '1');-->
+<!--      }, 2000);-->
+<!--    }-->
+<!--  });-->
+
+<!--  closeBtn.addEventListener('click', closeModal);-->
+
+<!--  modal.addEventListener('click', function (e) {-->
+<!--    if (e.target === modal) closeModal();-->
+<!--  });-->
+
+<!--  document.addEventListener('keydown', function (e) {-->
+<!--    if (e.key === 'Escape') closeModal();-->
+<!--  });-->
+<!--})();-->
+<!--</script>-->
 
 
 </body>
