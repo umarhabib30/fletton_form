@@ -417,14 +417,14 @@
                     <h2 class="step-title">Survey Property Details</h2>
 
                     <div class="form-group">
-                        <label for="surveyAddress">Survey Street Address <span class="required">*</span></label>
+                        <label for="surveyAddress">Survey Address <span class="required">*</span></label>
                         <input type="text" id="surveyAddress" name="inf_field_Address2Street1"
                             class="form-control" placeholder="Enter the property address to be surveyed"
                             value="{{ $survey->full_address }}" required />
                     </div>
 
                     <div class="form-group">
-                        <label for="surveyPostalCode">Survey Postal Code <span class="required">*</span></label>
+                        <label for="surveyPostalCode">Survey Full Postal Code <span class="required">*</span></label>
                         <input type="text" id="surveyPostalCode" name="inf_field_PostalCode2"
                             class="form-control" placeholder="Enter the property postal code"
                             value="{{ $survey->postcode }}" required />
