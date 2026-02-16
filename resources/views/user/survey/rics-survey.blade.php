@@ -385,7 +385,7 @@
                     </div>
                     <div class="form-group">
                         <label for="postalCode">Town / City<span class="required">*</span></label>
-                        <input type="text" id="postalCode" name="inf_field_StreetAddress2" class="form-control"
+                        <input type="text" id="" name="inf_field_StreetAddress2" class="form-control"
                             placeholder="Enter your street address" required />
                     </div>
                     <div class="form-group">
