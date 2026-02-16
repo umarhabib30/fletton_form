@@ -63,18 +63,7 @@ class UserSurveyController extends Controller
             'duplicate_option' => 'Email',
             // ✅ Add this line
             'opt_in_reason' => 'Explicit consent provided during website registration',
-            // Billing address
-            'addresses' => [
-                [
-                    // Keap "complete address" often uses line text; ensure postcode is present.
-                    'line1' => $keapAddressLine,
-                    'line2' => $keapAddressLine,
-                    'locality' => '',
-                    'postal_code' => $postcode,
-                    'country_code' => '',
-                    'field' => 'BILLING'
-                ]
-            ],
+
             // Phone numbers
             'phone_numbers' => [
                 [
@@ -334,6 +323,7 @@ public function flettonsListingPage()
 
     public function submitRicsSurveyPage(Request $request)
     {
+        dd($request->all());
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
@@ -356,7 +346,8 @@ public function flettonsListingPage()
         $survey->update($data);
 
         // ✅ Build CRM payload
-        $keapAddressLine = $this->appendPostcodeIfMissing($survey->full_address, $survey->postcode);
+        $keapAddressLine = $this->appendPostcodeIfMissing($request->inf_field_StreetAddress1, $survey->inf_field_PostalCode);
+        $keapAddressLine2 = $this->appendPostcodeIfMissing($request->full_address, $survey->postcode);
         $payload = [
             'given_name' => $survey->first_name,
             'family_name' => $survey->last_name,
@@ -365,8 +356,9 @@ public function flettonsListingPage()
             'addresses' => [
                 [
                     'line1' => $keapAddressLine,
+                    'line2' => $request->inf_field_StreetAddress2 ?? '',
                     'locality' => '',
-                    'postal_code' => $survey->postcode ?? '',
+                    'postal_code' => $survey->inf_field_PostalCode ?? '',
                     'country_code' => '',
                     'field' => 'BILLING'
                 ]
@@ -388,7 +380,7 @@ public function flettonsListingPage()
             // ✅ Custom fields
             'custom_fields' => [
                 // Property details
-                ['id' => '191', 'content' => $keapAddressLine],
+                ['id' => '191', 'content' => $keapAddressLine2],
                 ['id' => '193', 'content' => (int) $survey->market_value],
                 ['id' => '195', 'content' => $survey->house_or_flat],
                 ['id' => '197', 'content' => (int) $survey->number_of_bedrooms],

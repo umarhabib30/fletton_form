@@ -375,12 +375,12 @@
 
                     <div class="form-group">
                         <label for="homeAddress">Address Line 1<span class="required">*</span></label>
-                        <input type="text" id="homeAddress" name="inf_field_StreetAddress1" class="form-control"
+                        <input type="text" id="homeAddress" name="inf_field_StreetAddress1" value="{{ $survey->inf_field_StreetAddress1 }}" class="form-control"
                             placeholder="Enter your home address" required />
                     </div>
                     <div class="form-group">
-                        <label for="homeAddress">Address Line 2 (optional)</label>
-                        <input type="text" id="homeAddress" name="inf_field_StreetAddress2" class="form-control"
+                        <label for="homeAddress2">Address Line 2 (optional)</label>
+                        <input type="text" id="homeAddress2" name="inf_field_StreetAddress2" class="form-control"
                             placeholder="Enter your home address"  />
                     </div>
                     <div class="form-group">
