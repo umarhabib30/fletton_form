@@ -20,6 +20,10 @@ class UserSurveyController extends Controller
         // dd($request);
         $settings = Price::first();
 
+        $fullAddress = trim((string) $request->full_address);
+        $postcode = strtoupper(trim((string) ($request->postcode ?? '')));
+        $keapAddressLine = $this->appendPostcodeIfMissing($fullAddress, $postcode);
+
         $marketValue = (float) $request->market_value;
 
         // --- Costs ---
@@ -62,10 +66,11 @@ class UserSurveyController extends Controller
             // Billing address
             'addresses' => [
                 [
-                    'line1' => $request->full_address,
-                    'line2' => $request->full_address,
+                    // Keap "complete address" often uses line text; ensure postcode is present.
+                    'line1' => $keapAddressLine,
+                    'line2' => $keapAddressLine,
                     'locality' => '',
-                    'postal_code' => $request->postcode ?? '',
+                    'postal_code' => $postcode,
                     'country_code' => '',
                     'field' => 'BILLING'
                 ]
@@ -86,7 +91,7 @@ class UserSurveyController extends Controller
             ],
             // Property details in custom fields
             'custom_fields' => [
-                ['id' => '191', 'content' => $request->full_address],
+                ['id' => '191', 'content' => $keapAddressLine],
                 ['id' => '193', 'content' => (int) $request->market_value],
                 ['id' => '195', 'content' => $request->house_or_flat],
                 ['id' => '197', 'content' => (int) $request->number_of_bedrooms],
@@ -124,8 +129,9 @@ class UserSurveyController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'telephone_number' => $request->telephone_number,
-                'full_address' => $request->full_address,
-                'postcode' => $request->postcode,
+                // Store separately for UI; Keap payload uses appended form above.
+                'full_address' => $fullAddress,
+                'postcode' => $postcode,
                 'house_or_flat' => $request->house_or_flat,
                 'number_of_bedrooms' => $request->number_of_bedrooms,
                 'market_value' => $request->market_value,
@@ -350,6 +356,7 @@ public function flettonsListingPage()
         $survey->update($data);
 
         // ✅ Build CRM payload
+        $keapAddressLine = $this->appendPostcodeIfMissing($survey->full_address, $survey->postcode);
         $payload = [
             'given_name' => $survey->first_name,
             'family_name' => $survey->last_name,
@@ -357,7 +364,7 @@ public function flettonsListingPage()
             // Billing address
             'addresses' => [
                 [
-                    'line1' => $survey->full_address,
+                    'line1' => $keapAddressLine,
                     'locality' => '',
                     'postal_code' => $survey->postcode ?? '',
                     'country_code' => '',
@@ -381,7 +388,7 @@ public function flettonsListingPage()
             // ✅ Custom fields
             'custom_fields' => [
                 // Property details
-                ['id' => '191', 'content' => $survey->full_address],
+                ['id' => '191', 'content' => $keapAddressLine],
                 ['id' => '193', 'content' => (int) $survey->market_value],
                 ['id' => '195', 'content' => $survey->house_or_flat],
                 ['id' => '197', 'content' => (int) $survey->number_of_bedrooms],
@@ -544,6 +551,31 @@ public function flettonsListingPage()
         }
     }
 
+    /**
+     * Ensure postcode is included in the address text (Keap "complete address" UI).
+     * Keeps DB fields separate; only used when building Keap payload/custom field.
+     */
+    private function appendPostcodeIfMissing(?string $address, ?string $postcode): string
+    {
+        $address = trim((string) $address);
+        $postcode = strtoupper(trim((string) $postcode));
+
+        if ($postcode === '') {
+            return $address;
+        }
+
+        // Normalize whitespace for a simple containment check.
+        $pcNorm = preg_replace('/\s+/', '', $postcode);
+        $addrNorm = preg_replace('/\s+/', '', strtoupper($address));
+
+        if ($pcNorm !== '' && $addrNorm !== '' && str_contains($addrNorm, $pcNorm)) {
+            return $address;
+        }
+
+        $address = rtrim($address, ", \t\n\r\0\x0B");
+        return $address === '' ? $postcode : ($address . ', ' . $postcode);
+    }
+
     public function encrypt_sodium(string $plaintext, string $b64key): string
     {
         $key = base64_decode($b64key, true);
@@ -597,7 +629,7 @@ public function flettonsListingPage()
         // You can move this to wp-config.php:
         // define('FLETTONS_SECRETBOX_KEY_B64', 'base64:DQvwZyXGXvbB37lZDViFyM2xjGm88K3NqYg4ROoD9iI=');
         $b64 = defined('FLETTONS_SECRETBOX_KEY_B64')
-            ? FLETTONS_SECRETBOX_KEY_B64
+            ? constant('FLETTONS_SECRETBOX_KEY_B64')
             : 'base64:DQvwZyXGXvbB37lZDViFyM2xjGm88K3NqYg4ROoD9iI=';  // fallback inline
 
         // Accept both "base64:..." and raw base64
