@@ -384,9 +384,9 @@
                             placeholder="Enter your home address"  />
                     </div>
                     <div class="form-group">
-                        <label for="postalCode">Town / City<span class="required">*</span></label>
-                        <input type="text" id="" name="inf_field_StreetAddress2" class="form-control"
-                            placeholder="Enter your street address" required />
+                        <label for="townCity">Town / City<span class="required">*</span></label>
+                        <input type="text" id="townCity" name="inf_field_City" class="form-control"
+                            placeholder="Enter your town / city" required />
                     </div>
                     <div class="form-group">
                         <label for="postalCode">Postal Code <span class="required">*</span></label>

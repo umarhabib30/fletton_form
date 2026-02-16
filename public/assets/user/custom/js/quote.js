@@ -2,8 +2,22 @@
 function initAddressAutocomplete() {
   if (!(window.google && google.maps && google.maps.places)) return;
 
-  const addressField = document.getElementById("full_address");
-  const postcodeEl = document.getElementById("postcode");
+  // Support multiple pages/forms with slightly different IDs
+  const addressField =
+    document.getElementById("full_address") ||
+    document.getElementById("homeAddress") ||
+    document.getElementById("surveyAddress");
+
+  const postcodeEl =
+    document.getElementById("postcode") ||
+    document.getElementById("postalCode") ||
+    document.getElementById("surveyPostalCode");
+
+  const townCityEl =
+    document.getElementById("townCity") ||
+    document.getElementById("town_city") ||
+    document.getElementById("city");
+
   if (!addressField || !postcodeEl) return;
 
   let suppressPostcodeClear = false;
@@ -67,6 +81,12 @@ function initAddressAutocomplete() {
       .replace(/,\s*UK$/i, "");
 
     const pc = (place.address_components || []).find(c => c.types.includes("postal_code"));
+    const town =
+      (place.address_components || []).find(c => c.types.includes("postal_town")) ||
+      (place.address_components || []).find(c => c.types.includes("locality")) ||
+      (place.address_components || []).find(c => c.types.includes("administrative_area_level_3")) ||
+      (place.address_components || []).find(c => c.types.includes("administrative_area_level_2")) ||
+      (place.address_components || []).find(c => c.types.includes("sublocality_level_1"));
 
     if (pc && pc.long_name) {
       const postcode = pc.long_name.toUpperCase();
@@ -81,6 +101,11 @@ function initAddressAutocomplete() {
     } else {
       // If they selected something without a postcode, don't force-clear if you don't want to
       clearPostcode();
+    }
+
+    // Town / City (if present)
+    if (townCityEl && town && town.long_name) {
+      townCityEl.value = town.long_name;
     }
 
     setTimeout(() => { suppressPostcodeClear = false; }, 0);
