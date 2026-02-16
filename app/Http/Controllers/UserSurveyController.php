@@ -356,17 +356,7 @@ public function flettonsListingPage()
         $survey->update($data);
 
         // ✅ Build CRM payload
-        // Use Client Details "home/billing" address for Keap.
-        $clientLine1 = trim((string) ($survey->inf_field_StreetAddress1 ?: $survey->full_address));
-        $clientLine2 = trim((string) ($survey->inf_field_StreetAddress2 ?? ''));
-        $clientCity = trim((string) ($survey->inf_field_City ?? ''));
-        $clientPostcode = strtoupper(trim((string) (($survey->inf_field_PostalCode ?: $survey->postcode) ?? '')));
-
-        // Build a "complete address" string for Keap UI/custom field 191.
-        $keapAddressLine = $this->appendPostcodeIfMissing(
-            implode(', ', array_values(array_filter([$clientLine1, $clientLine2, $clientCity]))),
-            $clientPostcode
-        );
+        $keapAddressLine = $this->appendPostcodeIfMissing($survey->full_address, $survey->postcode);
         $payload = [
             'given_name' => $survey->first_name,
             'family_name' => $survey->last_name,
@@ -374,10 +364,9 @@ public function flettonsListingPage()
             // Billing address
             'addresses' => [
                 [
-                    'line1' => $clientLine1 ?: $keapAddressLine,
-                    'line2' => $clientLine2,
-                    'locality' => $clientCity,
-                    'postal_code' => $clientPostcode,
+                    'line1' => $keapAddressLine,
+                    'locality' => '',
+                    'postal_code' => $survey->postcode ?? '',
                     'country_code' => '',
                     'field' => 'BILLING'
                 ]

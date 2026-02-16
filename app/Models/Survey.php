@@ -51,8 +51,6 @@ class Survey extends Model
     // STEP 3B: Home/billing address (client)
     // =========================
     'inf_field_StreetAddress1',
-    'inf_field_StreetAddress2',
-    'inf_field_City',
     'inf_field_PostalCode',
 
     // =========================
