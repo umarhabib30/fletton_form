@@ -323,7 +323,7 @@ public function flettonsListingPage()
 
     public function submitRicsSurveyPage(Request $request)
     {
-        dd($request->all());
+        
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
