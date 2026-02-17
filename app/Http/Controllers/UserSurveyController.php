@@ -346,7 +346,7 @@ public function flettonsListingPage()
 
         // ✅ Build CRM payload
 
-        $keapAddressLine = $request->inf_field_StreetAddress1 . ', ' . $survey->inf_field_PostalCode;
+        $keapAddressLine = $request->inf_field_StreetAddress1;
         $keapAddressLine2 = $request->full_address . ', ' . $survey->postcode;
         $payload = [
             'given_name' => $survey->first_name,
