@@ -422,7 +422,7 @@
 
                     <div class="form-group">
                         <label for="surveyAddress">Survey Address <span class="required">*</span></label>
-                        <input type="text" id="surveyAddress" name="inf_field_Address2Street1"
+                        <input type="text" id="surveyAddress" name="full_address"
                             class="form-control" placeholder="Enter the property address to be surveyed"
                             value="{{ $survey->full_address }}" required />
                     </div>
