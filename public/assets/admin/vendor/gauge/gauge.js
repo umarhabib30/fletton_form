@@ -1,9 +1,9 @@
 
 $(function() {
     "use strict";
-    // ============================================================== 
+    // ==============================================================
     // Guage 1
-    // ============================================================== 
+    // ==============================================================
     var opts = {
         angle: 0, // The span of the gauge arc
         lineWidth: 0.32, // The line thickness
@@ -16,7 +16,7 @@ $(function() {
         limitMax: false, // If false, max value increases automatically if value > maxValue
         limitMin: false, // If true, the min value of the gauge will be fixed
         colorStart: '#e4e4ee', // Colors
-        colorStop: '#5969ff', // just experiment with them
+        colorStop: '#1b202b', // just experiment with them
         strokeColor: '#e4e4ee', // to see which ones work best for you
         generateGradient: true,
         highDpiSupport: true, // High resolution support
@@ -30,9 +30,9 @@ $(function() {
     gauge.set(1850); // set actual value
 
 
-// ============================================================== 
+// ==============================================================
     // Guage 2
-    // ============================================================== 
+    // ==============================================================
 
 
 var opts = {
@@ -63,7 +63,7 @@ var opts = {
             subColor: '#666666'
         }
 
-    }; 
+    };
     var target = document.getElementById('gauge2'); // your canvas element
     var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
     gauge.maxValue = 3000; // set max gauge value
@@ -73,9 +73,9 @@ var opts = {
 
 
 
-// ============================================================== 
+// ==============================================================
     // Guage 3
-    // ============================================================== 
+    // ==============================================================
 
 
  var opts = {
@@ -89,7 +89,7 @@ var opts = {
         },
         limitMax: false, // If false, max value increases automatically if value > maxValue
         limitMin: false, // If true, the min value of the gauge will be fixed
-        colorStart: '#5969ff', // Colors
+        colorStart: '#1b202b', // Colors
         colorStop: '#8FC0DA', // just experiment with them
         strokeColor: '#E0E0E0', // to see which ones work best for you
         generateGradient: true,
@@ -129,9 +129,9 @@ var opts = {
 
 
 
-  // ============================================================== 
+  // ==============================================================
     // Guage 4
-    // ============================================================== 
+    // ==============================================================
 
 
 

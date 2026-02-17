@@ -1,6 +1,6 @@
 /*-- Chart --*/
 .c3 svg {
-  font-size: 14px; font-family: 'Circular Std Book';
+  font-size: 14px; font-family: 'sans-serif !important';
   -webkit-tap-highlight-color:#71748d; fill: #71748d; }
 
 .c3 path, .c3 line {
@@ -10,10 +10,10 @@
 .c3 text {
   -webkit-user-select: none;
   -moz-user-select: none;
-  user-select: none; 
+  user-select: none;
   fill: #71748d; }
 
- 
+
 
 .c3-legend-item-tile,
 .c3-xgrid-focus,
@@ -31,7 +31,7 @@
 
 .c3-chart-arc text {
   fill: #fff;
-   font-size: 13px; font-family: 'Circular Std Book'; }
+   font-size: 13px; font-family: 'sans-serif !important'; }
 
 /*-- Axis --*/
 /*-- Grid --*/
@@ -93,7 +93,7 @@
 /*-- Select - Drag --*/
 /*-- Legend --*/
 .c3-legend-item {
-   font-size: 14px; font-family: 'Circular Std Book'; }
+   font-size: 14px; font-family: 'sans-serif !important'; }
 
 .c3-legend-item-hidden {
   opacity: 0.15; }
@@ -145,7 +145,7 @@
   margin-right: 6px; }
 
 .c3-tooltip td.value {
-  text-align: right; color: #5969ff;
+  text-align: right; color: #1b202b;
   font-family:'Circular Std Medium'; }
 
 /*-- Area --*/

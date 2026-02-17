@@ -1,63 +1,254 @@
 @extends('layouts.admin')
+
 @section('content')
+<style>
+    :root{
+        --bg:#eef0f5;
+        --card:#151b26;
+        --lime:#c1ec4a;
+        --muted:#6b7280;
+        --axis:rgba(17,24,39,.70);
+        --grid:rgba(17,24,39,.10);
+        --shadow:0 10px 24px rgba(16,24,40,.18);
+        --radius:10px;
+    }
+
+    .ecommerce-widget{
+        background: var(--bg);
+        padding: 22px;
+        border-radius: 12px;
+    }
+
+    /* Metric cards */
+    .metric-card{
+        background: var(--card);
+        border: 0;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        min-height: 92px;
+    }
+    .metric-card .card-body{ padding: 18px; }
+
+    .metric-title{
+        color: var(--lime);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .metric-value{
+        color: var(--lime);
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 1;
+        margin: 0;
+    }
+    .metric-sub{
+        color: rgba(255,255,255,.65);
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    /* Chart cards */
+    .chart-card{
+        background: transparent;
+        border: 0;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+    .chart-card .card-body{ padding: 18px; }
+
+    .chart-title{
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* Light chart background like screenshot */
+    .chart-wrap{
+        background: #f4f6fb;
+        border-radius: 10px;
+        padding: 14px 14px 8px;
+        border: 1px solid rgba(17,24,39,.06);
+    }
+</style>
+
 <div class="ecommerce-widget">
-    <div class="row">
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="card">
+    {{-- TOP METRICS --}}
+    <div class="row g-3">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="card metric-card">
                 <div class="card-body">
-                    <h5 class="text-muted">Total Surveys</h5>
-                    <div class="metric-value d-inline-block">
-                        <h1 class="mb-1">{{ $survey_count }}</h1>
-                    </div>
-                    {{-- <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                        <span><i class="fa fa-fw fa-arrow-up"></i></span><span>5.86%</span>
-                    </div> --}}
+                    <div class="metric-title">Total Surveys</div>
+                    <h2 class="metric-value">{{ $survey_count }}</h2>
                 </div>
-                <div id="sparkline-revenue"></div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="card">
+
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="card metric-card">
                 <div class="card-body">
-                    <h5 class="text-muted">Affiliate Revenue</h5>
-                    <div class="metric-value d-inline-block">
-                        <h1 class="mb-1">$12099</h1>
-                    </div>
-                    <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                        <span><i class="fa fa-fw fa-arrow-up"></i></span><span>5.86%</span>
-                    </div>
+                    <div class="metric-title">Submitted Surveys</div>
+                    <h2 class="metric-value">{{ $submitted_count }}</h2>
                 </div>
-                <div id="sparkline-revenue2"></div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="card">
+
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="card metric-card">
                 <div class="card-body">
-                    <h5 class="text-muted">Refunds</h5>
-                    <div class="metric-value d-inline-block">
-                        <h1 class="mb-1">0.00</h1>
-                    </div>
-                    <div class="metric-label d-inline-block float-right text-primary font-weight-bold">
-                        <span>N/A</span>
-                    </div>
+                    <div class="metric-title">Completion Rate</div>
+                    <h2 class="metric-value">{{ $completion_rate }}%</h2>
                 </div>
-                <div id="sparkline-revenue3"></div>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-            <div class="card">
+
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="card metric-card">
                 <div class="card-body">
-                    <h5 class="text-muted">Avg. Revenue Per User</h5>
-                    <div class="metric-value d-inline-block">
-                        <h1 class="mb-1">$28000</h1>
-                    </div>
-                    <div class="metric-label d-inline-block float-right text-secondary font-weight-bold">
-                        <span>-2.00%</span>
+                    <div class="metric-title">Current Base (L1–L3)</div>
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <div class="metric-sub">L1</div>
+                            <div class="metric-value" style="font-size:22px;">
+                                £{{ number_format($price->level1_base ?? 0, 2) }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="metric-sub">L2</div>
+                            <div class="metric-value" style="font-size:22px;">
+                                £{{ number_format($price->level2_base ?? 0, 2) }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="metric-sub">L3</div>
+                            <div class="metric-value" style="font-size:22px;">
+                                £{{ number_format($price->level3_base ?? 0, 2) }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div id="sparkline-revenue4"></div>
+            </div>
+        </div>
+    </div>
+
+    {{-- CHARTS --}}
+    <div class="row g-3 mt-3">
+        {{-- Base Prices --}}
+        <div class="col-md-6 col-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <div class="chart-title">Base Prices (L1–L3)</div>
+                    <div class="chart-wrap">
+                        <canvas id="basePricesBar" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Survey Status (NOW BAR CHART) --}}
+        <div class="col-md-6 col-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <div class="chart-title">Survey Status</div>
+                    <div class="chart-wrap">
+                        <canvas id="surveyStatusBar" height="140"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const NAVY   = '#151b26';
+    const DARK   = '#374151';   // Step 1
+    const GRAY   = '#9ca3af';   // Step 2
+    const LIME   = '#c1ec4a';   // Step 3
+    const RED    = '#ff5a5f';   // Step 0
+
+    const GRID   = 'rgba(17,24,39,.10)';
+    const AXIS   = 'rgba(17,24,39,.70)';
+
+    Chart.defaults.font.family = "'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+
+    // -----------------------------
+    // BASE PRICE BAR
+    // -----------------------------
+    const basePrices = @json([
+        (float)($price->level1_base ?? 0),
+        (float)($price->level2_base ?? 0),
+        (float)($price->level3_base ?? 0)
+    ]);
+
+    new Chart(document.getElementById('basePricesBar'), {
+        type: 'bar',
+        data: {
+            labels: ['Level 1', 'Level 2', 'Level 3'],
+            datasets: [{
+                data: basePrices,
+                backgroundColor: [NAVY, GRAY, LIME],
+                borderRadius: 10,
+                borderSkipped: false,
+                barThickness: 44
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: AXIS }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: GRID },
+                    ticks: { color: AXIS }
+                }
+            }
+        }
+    });
+
+    // -----------------------------
+    // SURVEY STATUS BAR
+    // -----------------------------
+    const stepCounts = @json(array_values($step_counts));
+
+    new Chart(document.getElementById('surveyStatusBar'), {
+        type: 'bar',
+        data: {
+            labels: ['Step 0', 'Step 1', 'Step 2', 'Step 3'],
+            datasets: [{
+                data: stepCounts,
+                backgroundColor: [
+                    RED,    // Step 0
+                    DARK,   // Step 1
+                    GRAY,   // Step 2
+                    LIME    // Step 3
+                ],
+                borderRadius: 10,
+                borderSkipped: false,
+                barThickness: 44
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: AXIS }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: GRID },
+                    ticks: { color: AXIS }
+                }
+            }
+        }
+    });
+</script>
 @endsection

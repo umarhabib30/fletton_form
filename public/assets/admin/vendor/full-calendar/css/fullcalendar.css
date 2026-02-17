@@ -342,14 +342,14 @@ temporary rendered events).
   font-size: 14px;
   line-height: 2;
   border-radius: 2px;
-  border: 1px solid #5969ff;
+  border: 1px solid #1b202b;
   /* default BORDER color */
   padding: 10px 15px;
   }
 
 .fc-event,
 .fc-event-dot {
-  background-color: #5969ff;
+  background-color: #1b202b;
   /* default BACKGROUND color */ }
 
 .fc-event,

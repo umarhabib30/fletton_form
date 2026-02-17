@@ -850,7 +850,7 @@ Licensed under the BSD-2-Clause License.
       hideHover: false,
       trendLine: false,
       trendLineWidth: 2,
-      trendLineColors: ['#5969ff', '#a2b3bf', '#64b764']
+      trendLineColors: ['#1b202b', '#a2b3bf', '#64b764']
     };
 
     Line.prototype.calc = function() {

@@ -15,7 +15,7 @@
                         data2: 'area-spline'
                     },
                     colors: {
-                        data1: '#5969ff',
+                        data1: '#1b202b',
                         data2: '#ff407b',
 
                     }
@@ -49,7 +49,7 @@
                     ],
                     type: 'spline',
                     colors: {
-                         data1: '#5969ff',
+                         data1: '#1b202b',
                         data2: '#ff407b',
 
                     }
@@ -75,7 +75,7 @@
                         ['sample', 30, 200, 100, 400, 150, 250, 150, 200, 170, 240, 350, 150, 100, 400, 150, 250, 150, 200, 170, 240, 100, 150, 250, 150, 200, 170, 240, 30, 200, 100, 400, 150, 250, 150, 200, 170, 240, 350, 150, 100, 400, 350, 220, 250, 300, 270, 140, 150, 90, 150, 50, 120, 70, 40]
                     ],
                     colors: {
-                        sample: '#5969ff'
+                        sample: '#1b202b'
 
 
                     }
@@ -115,7 +115,7 @@
                     ],
                     type: 'scatter',
                     colors: {
-                        setosa: '#5969ff',
+                        setosa: '#1b202b',
                         versicolor: '#ff407b',
 
                     }
@@ -176,7 +176,7 @@
                     //      order: null   // stack order by data definition.
 
                     colors: {
-                        data1: '#5969ff',
+                        data1: '#1b202b',
                         data2: '#ff407b',
                         data3: '#64ced3'
 
@@ -243,7 +243,7 @@
                     ],
 
                     colors: {
-                        data1: '#5969ff',
+                        data1: '#1b202b',
                         data2: '#ff407b',
                         data3: '#25d5f2',
                         data4: '#ffc750',
@@ -278,7 +278,7 @@
                     type: 'pie',
 
                     colors: {
-                         data1: '#5969ff',
+                         data1: '#1b202b',
                         data2: '#ff407b'
 
 
@@ -308,7 +308,7 @@
                     onmouseout: function(d, i) { console.log("onmouseout", d, i); },
 
                     colors: {
-                         data1: '#5969ff',
+                         data1: '#1b202b',
                         data2: '#ff407b'
 
 
@@ -356,7 +356,7 @@
                     onmouseover: function(d, i) { console.log("onmouseover", d, i); },
                     onmouseout: function(d, i) { console.log("onmouseout", d, i); },
                     colors: {
-                      data1: '#5969ff',
+                      data1: '#1b202b',
                         data2: '#ff407b',
                         data3: '#25d5f2',
                         data4: '#ffc750',

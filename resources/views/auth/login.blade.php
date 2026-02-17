@@ -35,7 +35,7 @@
     <!-- ============================================================== -->
     <div class="splash-container">
         <div class="card ">
-            <div class="card-header text-center "><span class="navbar-brand">FLETTONS SURVEYS</span> </div>
+            <div class="card-header text-center " style="background-color: #1b202b !important;"><img src="{{ asset('assets/logo/flettons_logo_new.png') }}" alt="logo" style="width: 100px; "></div>
             <div class="card-body">
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
