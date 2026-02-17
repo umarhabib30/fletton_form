@@ -44,6 +44,7 @@
                                 font-weight: 600 !important;
                                 color: #1b202b !important;
                                 margin-bottom: 6px;
+                                margin-top: 20px;
                             }
                             /* helps perfect alignment if some browsers render inputs slightly different */
                             .form-control{
@@ -58,7 +59,7 @@
                                 {{-- BASE AMOUNTS --}}
                                 <div class="price-section">
                                     <div class="price-section__title">
-                                        <span>Base Prices Market </span>
+                                        <span>Base Prices  </span>
                                     </div>
                                     <div class="price-section__divider"></div>
 
@@ -98,25 +99,25 @@
 
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label" for="level1_market_percentage">Level 1 Market %</label>
+                                            <label class="form-label" for="level1_market_percentage">Level 1 %</label>
                                             <input id="level1_market_percentage" name="level1_market_percentage" type="number" step="any"
                                                    class="form-control" value="{{ @$price->level1_market_percentage }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="level2_market_percentage">Level 2 Market %</label>
+                                            <label class="form-label" for="level2_market_percentage">Level 2 %</label>
                                             <input id="level2_market_percentage" name="level2_market_percentage" type="number" step="any"
                                                    class="form-control" value="{{ @$price->level2_market_percentage }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="level3_market_percentage">Level 3 Market %</label>
+                                            <label class="form-label" for="level3_market_percentage">Level 3 %</label>
                                             <input id="level3_market_percentage" name="level3_market_percentage" type="number" step="any"
                                                    class="form-control" value="{{ @$price->level3_market_percentage }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="level4_market_percentage">Level 4 Market %</label>
+                                            <label class="form-label" for="level4_market_percentage">Level 4 %</label>
                                             <input id="level4_market_percentage" name="level4_market_percentage" type="number" step="any"
                                                    class="form-control" value="{{ @$price->level4_market_percentage }}">
                                         </div>
@@ -126,7 +127,7 @@
                                 {{-- OTHER COSTS --}}
                                 <div class="price-section">
                                     <div class="price-section__title">
-                                        <span>Addon-On and Other Pricing</span>
+                                        <span>Add-on and Other Pricing</span>
                                     </div>
                                     <div class="price-section__divider"></div>
 
