@@ -375,13 +375,13 @@
 
                     <div class="form-group">
                         <label for="homeAddress">Address Line 1<span class="required">*</span></label>
-                        <input type="text" id="homeAddress" name="inf_field_StreetAddress1"  class="form-control"
+                        <input type="text" id="homeAddress" name="inf_field_StreetAddress1" class="form-control"
                             placeholder="Enter your home address" required />
                     </div>
                     <div class="form-group">
                         <label for="homeAddress2">Address Line 2 (optional)</label>
                         <input type="text" id="homeAddress2" name="inf_field_StreetAddress2" class="form-control"
-                            placeholder="Enter your home address"  />
+                            placeholder="Enter your home address" />
                     </div>
                     <div class="form-group">
                         <label for="townCity">Town / City<span class="required">*</span></label>
@@ -656,9 +656,9 @@
                         <input type="text" id="agentPostalCode" name="inf_field_PostalCode3" class="form-control"
                             placeholder="Enter agent postal code" required autocomplete="postal-code"
                             autocapitalize="characters" spellcheck="false"
-                            pattern="(GIR\s?0AA|(?:[A-PR-UWYZ][0-9]{1,2}|[A-PR-UWYZ][A-HK-Y][0-9]{1,2}|[A-PR-UWYZ][0-9][A-HJKPSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])\s?[0-9][ABD-HJLNP-UW-Z]{2})"
                             oninvalid="this.setCustomValidity('Please enter the full postcode')"
                             oninput="this.setCustomValidity('')" />
+
                     </div>
                 </div>
 
