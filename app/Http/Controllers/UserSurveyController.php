@@ -19,10 +19,9 @@ class UserSurveyController extends Controller
     {
         // dd($request);
         $settings = Price::first();
-
         $fullAddress = trim((string) $request->full_address);
         $postcode = strtoupper(trim((string) ($request->postcode ?? '')));
-        $keapAddressLine = $this->appendPostcodeIfMissing($fullAddress, $postcode);
+        $keapAddressLine = $fullAddress . ', ' . $postcode;
 
         $marketValue = (float) $request->market_value;
 
@@ -323,7 +322,7 @@ public function flettonsListingPage()
 
     public function submitRicsSurveyPage(Request $request)
     {
-        
+
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
@@ -346,8 +345,9 @@ public function flettonsListingPage()
         $survey->update($data);
 
         // ✅ Build CRM payload
-        $keapAddressLine = $this->appendPostcodeIfMissing($request->inf_field_StreetAddress1, $survey->inf_field_PostalCode);
-        $keapAddressLine2 = $this->appendPostcodeIfMissing($request->full_address, $survey->postcode);
+
+        $keapAddressLine = $request->inf_field_StreetAddress1 . ', ' . $survey->inf_field_PostalCode;
+        $keapAddressLine2 = $request->full_address . ', ' . $survey->postcode;
         $payload = [
             'given_name' => $survey->first_name,
             'family_name' => $survey->last_name,
@@ -543,30 +543,6 @@ public function flettonsListingPage()
         }
     }
 
-    /**
-     * Ensure postcode is included in the address text (Keap "complete address" UI).
-     * Keeps DB fields separate; only used when building Keap payload/custom field.
-     */
-    private function appendPostcodeIfMissing(?string $address, ?string $postcode): string
-    {
-        $address = trim((string) $address);
-        $postcode = strtoupper(trim((string) $postcode));
-
-        if ($postcode === '') {
-            return $address;
-        }
-
-        // Normalize whitespace for a simple containment check.
-        $pcNorm = preg_replace('/\s+/', '', $postcode);
-        $addrNorm = preg_replace('/\s+/', '', strtoupper($address));
-
-        if ($pcNorm !== '' && $addrNorm !== '' && str_contains($addrNorm, $pcNorm)) {
-            return $address;
-        }
-
-        $address = rtrim($address, ", \t\n\r\0\x0B");
-        return $address === '' ? $postcode : ($address . ', ' . $postcode);
-    }
 
     public function encrypt_sodium(string $plaintext, string $b64key): string
     {

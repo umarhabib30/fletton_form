@@ -115,8 +115,43 @@ function setupFormValidation() {
     });
 }
 
+// UK postcode validation (e.g. "SW1W 9SR")
+const FULL_POSTCODE_MESSAGE = 'Please enter the full postcode';
+const POSTCODE_FIELD_IDS = new Set(['postalCode', 'surveyPostalCode', 'agentPostalCode', 'solicitorPostalCode']);
+
+function normalizeUKPostcode(pc) {
+    pc = String(pc || '').toUpperCase().replace(/\s+/g, '');
+    return pc.length > 3 ? pc.slice(0, -3) + ' ' + pc.slice(-3) : pc;
+}
+
+function isValidUKPostcode(pc) {
+    const s = normalizeUKPostcode(pc).trim();
+    // Broad UK postcode validation (accepts standard formats + GIR 0AA)
+    const re = /^(GIR\s?0AA|(?:[A-PR-UWYZ][0-9]{1,2}|[A-PR-UWYZ][A-HK-Y][0-9]{1,2}|[A-PR-UWYZ][0-9][A-HJKPSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])\s?[0-9][ABD-HJLNP-UW-Z]{2})$/i;
+    return re.test(s);
+}
+
+function applyPostcodeValidity(field) {
+    if (!field || !POSTCODE_FIELD_IDS.has(field.id) || typeof field.setCustomValidity !== 'function') return;
+
+    const raw = String(field.value || '').trim();
+    if (raw === '') {
+        field.setCustomValidity('');
+        return;
+    }
+
+    if (!isValidUKPostcode(raw)) {
+        field.setCustomValidity(FULL_POSTCODE_MESSAGE);
+        return;
+    }
+
+    field.setCustomValidity('');
+    field.value = normalizeUKPostcode(raw);
+}
+
 function validateField(event) {
     const field = event.target;
+    applyPostcodeValidity(field);
     const isValid = field.checkValidity();
 
     if (!isValid) {
@@ -132,6 +167,7 @@ function clearFieldError(event) {
     const field = event.target;
     field.style.borderColor = '';
     field.style.boxShadow = '';
+    if (typeof field.setCustomValidity === 'function') field.setCustomValidity('');
 }
 
 // Navigation functions
@@ -223,11 +259,15 @@ function validateCurrentStep() {
     const currentStepElement = document.getElementById(`step${currentStep}`);
     const requiredFields = currentStepElement.querySelectorAll('[required]');
     let isValid = true;
+    let postcodeErrorShown = false;
 
     // Prevent duplicate toasts for the same radio group
     const processedRadioNames = new Set();
 
     requiredFields.forEach(field => {
+        // Ensure postcode validity is applied even if user didn't blur.
+        applyPostcodeValidity(field);
+
         // Skip duplicate radios by name
         if (field.type === 'radio') {
             if (processedRadioNames.has(field.name)) return;
@@ -238,6 +278,13 @@ function validateCurrentStep() {
         if (!field.checkValidity()) {
             isValid = false;
             validateField({ target: field });
+
+            // Specific message for incomplete postcodes
+            if (!postcodeErrorShown && POSTCODE_FIELD_IDS.has(field.id) && !isEmptyRequiredField(field)) {
+                postcodeErrorShown = true;
+                showError(FULL_POSTCODE_MESSAGE);
+                if (window.toastr) toastr.error(FULL_POSTCODE_MESSAGE);
+            }
         }
 
         // Toastr for empty required fields (label text without *)

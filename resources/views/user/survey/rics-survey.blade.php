@@ -391,7 +391,11 @@
                     <div class="form-group">
                         <label for="postalCode">Postal Code <span class="required">*</span></label>
                         <input type="text" id="postalCode" name="inf_field_PostalCode" class="form-control"
-                            placeholder="Enter your postal code" required />
+                            placeholder="Enter your postal code" required autocomplete="postal-code"
+                            autocapitalize="characters" spellcheck="false"
+                            pattern="(GIR\s?0AA|(?:[A-PR-UWYZ][0-9]{1,2}|[A-PR-UWYZ][A-HK-Y][0-9]{1,2}|[A-PR-UWYZ][0-9][A-HJKPSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])\s?[0-9][ABD-HJLNP-UW-Z]{2})"
+                            oninvalid="this.setCustomValidity('Please enter the full postcode')"
+                            oninput="this.setCustomValidity('')" />
                     </div>
 
                     {{-- <div class="form-group">
@@ -427,7 +431,11 @@
                         <label for="surveyPostalCode">Survey Full Postal Code <span class="required">*</span></label>
                         <input type="text" id="surveyPostalCode" name="inf_field_PostalCode2"
                             class="form-control" placeholder="Enter the property postal code"
-                            value="{{ $survey->postcode }}" required />
+                            value="{{ $survey->postcode }}" required autocomplete="postal-code"
+                            autocapitalize="characters" spellcheck="false"
+                            pattern="(GIR\s?0AA|(?:[A-PR-UWYZ][0-9]{1,2}|[A-PR-UWYZ][A-HK-Y][0-9]{1,2}|[A-PR-UWYZ][0-9][A-HJKPSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])\s?[0-9][ABD-HJLNP-UW-Z]{2})"
+                            oninvalid="this.setCustomValidity('Please enter the full postcode')"
+                            oninput="this.setCustomValidity('')" />
                     </div>
 
                     <div class="form-group">
@@ -646,7 +654,11 @@
                     <div class="form-group">
                         <label for="agentPostalCode">Agent Postal Code <span class="required">*</span></label>
                         <input type="text" id="agentPostalCode" name="inf_field_PostalCode3" class="form-control"
-                            placeholder="Enter agent postal code" required />
+                            placeholder="Enter agent postal code" required autocomplete="postal-code"
+                            autocapitalize="characters" spellcheck="false"
+                            pattern="(GIR\s?0AA|(?:[A-PR-UWYZ][0-9]{1,2}|[A-PR-UWYZ][A-HK-Y][0-9]{1,2}|[A-PR-UWYZ][0-9][A-HJKPSTUW]|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY])\s?[0-9][ABD-HJLNP-UW-Z]{2})"
+                            oninvalid="this.setCustomValidity('Please enter the full postcode')"
+                            oninput="this.setCustomValidity('')" />
                     </div>
                 </div>
 

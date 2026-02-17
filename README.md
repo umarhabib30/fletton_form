@@ -21,6 +21,26 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## UK postcode utilities (TypeScript)
+
+Format-level UK postcode validation + normalization lives in `src/postcode.ts`.
+
+Example:
+
+```ts
+import { normalizeUkPostcode, validateUkPostcode } from "./src/postcode";
+
+normalizeUkPostcode(" sw1w9sr "); // "SW1W 9SR"
+validateUkPostcode("SW1W");       // false
+validateUkPostcode("GIR 0AA");    // true
+```
+
+Run tests:
+
+```bash
+npm test
+```
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
