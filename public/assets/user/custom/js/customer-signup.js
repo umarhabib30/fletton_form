@@ -117,7 +117,7 @@ function setupFormValidation() {
 
 // UK postcode validation (e.g. "SW1W 9SR")
 const FULL_POSTCODE_MESSAGE = 'Please enter the full postcode';
-const POSTCODE_FIELD_IDS = new Set(['postalCode', 'surveyPostalCode', 'agentPostalCode', 'solicitorPostalCode']);
+const POSTCODE_FIELD_IDS = new Set(['postalCode', 'surveyPostalCode',  'solicitorPostalCode']);
 
 function normalizeUKPostcode(pc) {
     pc = String(pc || '').toUpperCase().replace(/\s+/g, '');
