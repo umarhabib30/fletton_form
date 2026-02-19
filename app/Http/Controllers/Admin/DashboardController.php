@@ -16,13 +16,13 @@ class DashboardController extends Controller
         // Total surveys
         $surveyCount = Survey::count();
 
-        // Step distribution (0..3) based on current_step
+        // Step distribution (0..2) based on current_step — step 3 removed
         $stepRows = Survey::query()
             ->selectRaw('COALESCE(current_step, 0) as step, COUNT(*) as total')
             ->groupBy('step')
             ->pluck('total', 'step'); // [step => total]
 
-        $steps = [0, 1, 2, 3];
+        $steps = [0, 1, 2];
         $stepCounts = [];
         foreach ($steps as $s) {
             $stepCounts[$s] = (int) ($stepRows[$s] ?? 0);
@@ -34,6 +34,11 @@ class DashboardController extends Controller
         // Optional: completion rate (submitted / total)
         $completionRate = $surveyCount > 0
             ? round(($submittedCount / $surveyCount) * 100, 1)
+            : 0;
+
+        // Failure rate (did not complete)
+        $failureRate = $surveyCount > 0
+            ? round((($surveyCount - $submittedCount) / $surveyCount) * 100, 1)
             : 0;
 
         // Optional: revenue-like stat (only if you store level_total)
@@ -59,6 +64,7 @@ class DashboardController extends Controller
             'step_counts' => $stepCounts,
             'submitted_count' => $submittedCount,
             'completion_rate' => $completionRate,
+            'failure_rate' => $failureRate,
 
             // Optional money stats
             'total_level_revenue' => $totalLevelRevenue,

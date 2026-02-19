@@ -106,27 +106,8 @@
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
             <div class="card metric-card">
                 <div class="card-body">
-                    <div class="metric-title">Current Base (L1–L3)</div>
-                    <div class="d-flex align-items-end justify-content-between">
-                        <div>
-                            <div class="metric-sub">L1</div>
-                            <div class="metric-value" style="font-size:22px;">
-                                £{{ number_format($price->level1_base ?? 0, 2) }}
-                            </div>
-                        </div>
-                        <div>
-                            <div class="metric-sub">L2</div>
-                            <div class="metric-value" style="font-size:22px;">
-                                £{{ number_format($price->level2_base ?? 0, 2) }}
-                            </div>
-                        </div>
-                        <div>
-                            <div class="metric-sub">L3</div>
-                            <div class="metric-value" style="font-size:22px;">
-                                £{{ number_format($price->level3_base ?? 0, 2) }}
-                            </div>
-                        </div>
-                    </div>
+                    <div class="metric-title">Failure Rate</div>
+                    <h2 class="metric-value">{{ $failure_rate }}%</h2>
                 </div>
             </div>
         </div>
@@ -163,11 +144,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const NAVY   = '#151b26';
-    const DARK   = '#374151';   // Step 1
-    const GRAY   = '#9ca3af';   // Step 2
-    const LIME   = '#c1ec4a';   // Step 3
-    const RED    = '#ff5a5f';   // Step 0
+    const NAVY   = '#151b26';   // --card
+    const DARK   = '#151b26';   // Step 0 - filled sign up forms (--card)
+    const GRAY   = '#9ca3af';   // Step 1 - selected survey level
+    const GREEN  = '#c1ec4a';   // Step 2 - completed the form
+    const LIME   = '#c1ec4a';   // Base Prices L3
 
     const GRID   = 'rgba(17,24,39,.10)';
     const AXIS   = 'rgba(17,24,39,.70)';
@@ -213,22 +194,17 @@
     });
 
     // -----------------------------
-    // SURVEY STATUS BAR
+    // SURVEY STATUS BAR (steps 0–2 only)
     // -----------------------------
     const stepCounts = @json(array_values($step_counts));
 
     new Chart(document.getElementById('surveyStatusBar'), {
         type: 'bar',
         data: {
-            labels: ['Step 0', 'Step 1', 'Step 2', 'Step 3'],
+            labels: ['Filled sign up forms', 'Selected survey level', 'Completed the form'],
             datasets: [{
                 data: stepCounts,
-                backgroundColor: [
-                    RED,    // Step 0
-                    DARK,   // Step 1
-                    GRAY,   // Step 2
-                    LIME    // Step 3
-                ],
+                backgroundColor: [DARK, GRAY, GREEN],
                 borderRadius: 10,
                 borderSkipped: false,
                 barThickness: 44

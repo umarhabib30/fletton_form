@@ -133,49 +133,49 @@
 
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label" for="repair_cost">Repair Cost</label>
+                                            <label class="form-label" for="repair_cost">Breakdown of Estimated Costs (£).</label>
                                             <input id="repair_cost" name="repair_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->repair_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="aerial_chimney_cost">Aerial Chimney Cost</label>
+                                            <label class="form-label" for="aerial_chimney_cost">Aerial Drone Cost (£), </label>
                                             <input id="aerial_chimney_cost" name="aerial_chimney_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->aerial_chimney_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="insurance_cost">Insurance Cost</label>
+                                            <label class="form-label" for="insurance_cost">Reinstatement Cost (£)</label>
                                             <input id="insurance_cost" name="insurance_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->insurance_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="thermal_image_cost">Thermal Image Cost</label>
+                                            <label class="form-label" for="thermal_image_cost">Thermal Imaging Cost (£)</label>
                                             <input id="thermal_image_cost" name="thermal_image_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->thermal_image_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="listing_cost">Listing Cost</label>
+                                            <label class="form-label" for="listing_cost">Listed Building Cost (£) </label>
                                             <input id="listing_cost" name="listing_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->listing_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="extra_sqft_cost">Extra Sqft Cost</label>
+                                            <label class="form-label" for="extra_sqft_cost">Excess SqFt Cost (£)</label>
                                             <input id="extra_sqft_cost" name="extra_sqft_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->extra_sqft_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="extra_reception_room_cost">Extra Reception Room Cost</label>
+                                            <label class="form-label" for="extra_reception_room_cost">Extra Reception Room Cost (£)</label>
                                             <input id="extra_reception_room_cost" name="extra_reception_room_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->extra_reception_room_cost }}">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="form-label" for="extra_room_cost">Extra Room Cost</label>
+                                            <label class="form-label" for="extra_room_cost">Extra Room Cost (£)</label>
                                             <input id="extra_room_cost" name="extra_room_cost" type="number" step="any" min="0"
                                                    class="form-control" value="{{ @$price->extra_room_cost }}">
                                         </div>
