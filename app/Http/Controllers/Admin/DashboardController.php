@@ -5,22 +5,34 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Survey;
 use App\Models\Price;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // If you have only one row in prices table, this is fine:
         $price = Price::query()->latest('id')->first();
 
-        // Total surveys
-        $surveyCount = Survey::count();
+        // Date filter (optional): from_date, to_date as Y-m-d
+        $fromDate = $request->filled('from_date') ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->filled('to_date') ? Carbon::parse($request->to_date)->endOfDay() : null;
 
-        // Step distribution (0..2) based on current_step — step 3 removed
-        $stepRows = Survey::query()
+        $surveyQuery = Survey::query();
+        if ($fromDate) {
+            $surveyQuery->where('created_at', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $surveyQuery->where('created_at', '<=', $toDate);
+        }
+
+        $surveyCount = (clone $surveyQuery)->count();
+
+        $stepQuery = (clone $surveyQuery);
+        $stepRows = $stepQuery
             ->selectRaw('COALESCE(current_step, 0) as step, COUNT(*) as total')
             ->groupBy('step')
-            ->pluck('total', 'step'); // [step => total]
+            ->pluck('total', 'step');
 
         $steps = [0, 1, 2];
         $stepCounts = [];
@@ -28,22 +40,17 @@ class DashboardController extends Controller
             $stepCounts[$s] = (int) ($stepRows[$s] ?? 0);
         }
 
-        // Submitted count (if you use is_submitted = 1/0)
-        $submittedCount = Survey::where('is_submitted', 1)->count();
+        $submittedCount = (clone $surveyQuery)->where('is_submitted', 1)->count();
 
-        // Optional: completion rate (submitted / total)
         $completionRate = $surveyCount > 0
             ? round(($submittedCount / $surveyCount) * 100, 1)
             : 0;
 
-        // Failure rate (did not complete)
-        $failureRate = $surveyCount > 0
-            ? round((($surveyCount - $submittedCount) / $surveyCount) * 100, 1)
-            : 0;
+        // Conversion rate = % who completed (same as completion rate, reversed from failure rate)
+        $conversionRate = $completionRate;
 
-        // Optional: revenue-like stat (only if you store level_total)
-        // If level_total is not reliable yet, you can remove this.
-        $totalLevelRevenue = (float) Survey::where('is_submitted', 1)
+        $totalLevelRevenue = (float) (clone $surveyQuery)
+            ->where('is_submitted', 1)
             ->whereNotNull('level_total')
             ->sum('level_total');
 
@@ -56,19 +63,17 @@ class DashboardController extends Controller
             'active' => 'dashboard',
 
             'survey_count' => $surveyCount,
-
-            // Prices
             'price' => $price,
-
-            // Steps
             'step_counts' => $stepCounts,
             'submitted_count' => $submittedCount,
             'completion_rate' => $completionRate,
-            'failure_rate' => $failureRate,
+            'conversion_rate' => $conversionRate,
 
-            // Optional money stats
             'total_level_revenue' => $totalLevelRevenue,
             'avg_revenue_per_survey' => $avgRevenuePerSurvey,
+
+            'filter_from_date' => $request->get('from_date'),
+            'filter_to_date' => $request->get('to_date'),
         ]);
     }
 }

@@ -71,9 +71,92 @@
         padding: 14px 14px 8px;
         border: 1px solid rgba(17,24,39,.06);
     }
+
+    /* Date filter bar – same as metric cards */
+    .dashboard-filter-card{
+        background: var(--card);
+        border: 0;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px 22px;
+        margin-bottom: 1rem;
+    }
+    .dashboard-filter-card .filter-label{
+        color: var(--lime);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+    .dashboard-filter-card .form-control-date{
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.15);
+        border-radius: var(--radius);
+        color: #fff;
+        padding: 8px 12px;
+        font-size: 14px;
+        min-width: 160px;
+    }
+    .dashboard-filter-card .form-control-date:focus{
+        background: rgba(255,255,255,.12);
+        border-color: var(--lime);
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(193,236,74,.25);
+        outline: 0;
+    }
+    .dashboard-filter-card .form-control-date::-webkit-calendar-picker-indicator{
+        filter: invert(1);
+        opacity: .7;
+    }
+    .btn-dashboard-apply{
+        background: var(--lime) !important;
+        color: var(--card) !important;
+        border: 0;
+        border-radius: var(--radius);
+        font-weight: 600;
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+    .btn-dashboard-apply:hover{
+        background: #b5e040 !important;
+        color: var(--card) !important;
+    }
+    .btn-dashboard-clear{
+        background: transparent;
+        color: var(--lime);
+        border: 1px solid rgba(193,236,74,.5);
+        border-radius: var(--radius);
+        font-weight: 500;
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+    .btn-dashboard-clear:hover{
+        background: rgba(193,236,74,.15);
+        color: var(--lime);
+        border-color: var(--lime);
+    }
 </style>
 
 <div class="ecommerce-widget">
+    {{-- DATE FILTER --}}
+    <form method="get" action="{{ route('admin.dashboard') }}" class="dashboard-filter-card">
+        <div class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label for="from_date" class="filter-label d-block">From date</label>
+                <input type="date" id="from_date" name="from_date" class="form-control form-control-date" value="{{ $filter_from_date ?? '' }}">
+            </div>
+            <div class="col-auto">
+                <label for="to_date" class="filter-label d-block">To date</label>
+                <input type="date" id="to_date" name="to_date" class="form-control form-control-date" value="{{ $filter_to_date ?? '' }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-dashboard-apply">Apply</button>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-dashboard-clear">Clear filter</a>
+            </div>
+        </div>
+    </form>
+
     {{-- TOP METRICS --}}
     <div class="row g-3">
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
@@ -106,8 +189,8 @@
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
             <div class="card metric-card">
                 <div class="card-body">
-                    <div class="metric-title">Failure Rate</div>
-                    <h2 class="metric-value">{{ $failure_rate }}%</h2>
+                    <div class="metric-title">Conversion Rate</div>
+                    <h2 class="metric-value">{{ $conversion_rate }}%</h2>
                 </div>
             </div>
         </div>
