@@ -1,5 +1,23 @@
 @extends('layouts.admin')
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    @endif
+    @if (session('warning'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ session('warning') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    @endif
     <div class="row">
         <!-- ============================================================== -->
         <!-- basic table  -->
@@ -18,7 +36,7 @@
                                     <th>Survey Level</th>
                                     <th>Address</th>
                                     <th>Form Stage</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                           <tbody>
@@ -30,7 +48,10 @@
                                       <td>{{ $survey->level }}</td>
                                       <td>{{ $survey->full_address }}</td>
                                       <td>{{ $survey->current_step }}</td>
-                                      <td><a href="{{ route('admin.survey.show', $survey->id) }}" class="btn btn-primary">Details</a></td>
+                                      <td>
+                                          <a href="{{ route('admin.survey.show', $survey->id) }}" class="btn btn-primary btn-sm">Details</a>
+                                          <button type="button" class="btn btn-danger btn-sm btn-delete-survey" data-url="{{ route('admin.survey.delete', $survey->id) }}" data-name="{{ $survey->first_name }} {{ $survey->last_name }}">Delete</button>
+                                      </td>
                                   </tr>
                               @endforeach
                           </tbody>
@@ -44,4 +65,29 @@
         <!-- end basic table  -->
         <!-- ============================================================== -->
     </div>
+@endsection
+
+@section('script')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.btn-delete-survey').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const url = this.getAttribute('data-url');
+        const name = this.getAttribute('data-name') || 'this survey';
+        Swal.fire({
+            title: 'Delete survey?',
+            html: 'You are about to delete the survey for <strong>' + name + '</strong>. This cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    });
+});
+</script>
 @endsection

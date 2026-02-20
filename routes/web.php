@@ -31,7 +31,7 @@ Route::group(['prefix'=> 'admin', 'middleware'=>['admin_auth']], function(){
     // survey routes
     Route::get('surveys', [SurveyController::class, 'index'])->name('admin.survey.index');
     Route::get('survey/{id}', [SurveyController::class, 'show'])->name('admin.survey.show');
-
+    Route::get('survey/delete/{id}', [SurveyController::class, 'destroy'])->name('admin.survey.delete');
     // price routes
     Route::get('prices', [PriceController::class, 'index'])->name('admin.price.index');
     Route::post('price/update', [PriceController::class, 'updateOrCreate'])->name('admin.price.update');
