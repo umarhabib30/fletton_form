@@ -75,7 +75,7 @@ document.querySelectorAll('.btn-delete-survey').forEach(function(btn) {
         const url = this.getAttribute('data-url');
         const name = this.getAttribute('data-name') || 'this survey';
         Swal.fire({
-            title: 'Delete survey?',
+            title: 'Delete record?',
             html: 'You are about to delete the survey for <strong>' + name + '</strong>. This cannot be undone.',
             icon: 'warning',
             showCancelButton: true,

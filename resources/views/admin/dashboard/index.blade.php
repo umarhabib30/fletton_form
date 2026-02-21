@@ -202,7 +202,7 @@
         <div class="col-md-6 col-12">
             <div class="card chart-card">
                 <div class="card-body">
-                    <div class="chart-title">Base Prices (L1–L3)</div>
+                    <div class="chart-title">Base Prices (L1–L4)</div>
                     <div class="chart-wrap">
                         <canvas id="basePricesBar" height="140"></canvas>
                     </div>
@@ -232,6 +232,7 @@
     const GRAY   = '#9ca3af';   // Step 1 - selected survey level
     const GREEN  = '#c1ec4a';   // Step 2 - completed the form
     const LIME   = '#c1ec4a';   // Base Prices L3
+    const INDIGO = '#151b26';   // Base Prices L4
 
     const GRID   = 'rgba(17,24,39,.10)';
     const AXIS   = 'rgba(17,24,39,.70)';
@@ -241,19 +242,15 @@
     // -----------------------------
     // BASE PRICE BAR
     // -----------------------------
-    const basePrices = @json([
-        (float)($price->level1_base ?? 0),
-        (float)($price->level2_base ?? 0),
-        (float)($price->level3_base ?? 0)
-    ]);
+    const basePrices = @json($base_prices);
 
     new Chart(document.getElementById('basePricesBar'), {
         type: 'bar',
         data: {
-            labels: ['Level 1', 'Level 2', 'Level 3'],
+            labels: ['Level 1', 'Level 2', 'Level 3', 'Level 4'],
             datasets: [{
                 data: basePrices,
-                backgroundColor: [NAVY, GRAY, LIME],
+                backgroundColor: [NAVY, GRAY, LIME, INDIGO],
                 borderRadius: 10,
                 borderSkipped: false,
                 barThickness: 44

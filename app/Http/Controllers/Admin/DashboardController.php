@@ -58,12 +58,20 @@ class DashboardController extends Controller
             ? round($totalLevelRevenue / $surveyCount, 2)
             : 0;
 
+        $basePrices = [
+            (float) ($price->level1_base ?? 0),
+            (float) ($price->level2_base ?? 0),
+            (float) ($price->level3_base ?? 0),
+            (float) ($price->level4_base ?? 0),
+        ];
+
         return view('admin.dashboard.index', [
             'title' => 'Admin Dashboard',
             'active' => 'dashboard',
 
             'survey_count' => $surveyCount,
             'price' => $price,
+            'base_prices' => $basePrices,
             'step_counts' => $stepCounts,
             'submitted_count' => $submittedCount,
             'completion_rate' => $completionRate,
