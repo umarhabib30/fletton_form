@@ -62,7 +62,6 @@ class UserSurveyController extends Controller
             'duplicate_option' => 'Email',
             // ✅ Add this line
             'opt_in_reason' => 'Explicit consent provided during website registration',
-
             // Phone numbers
             'phone_numbers' => [
                 [
@@ -166,122 +165,123 @@ class UserSurveyController extends Controller
         return redirect()->route('user.flettons.listing.page', ['contact_id' => $encrpted_id, 'temp' => 1]);
     }
 
-public function flettonsListingPage()
-{
-    $encrpted_id = request()->get('contact_id');
+    public function flettonsListingPage()
+    {
+        $encrpted_id = request()->get('contact_id');
 
-    $key = $this->get_secretbox_key_b64();
-    $id  = $this->decrypt_sodium($encrpted_id, $key);
+        $key = $this->get_secretbox_key_b64();
+        $id = $this->decrypt_sodium($encrpted_id, $key);
 
-    $survey = Survey::where('contact_id', $id)->first();
+        $survey = Survey::where('contact_id', $id)->first();
 
-    // Helper: convert "1,400.00", "£1,400.00", " 1400 " -> 1400.00 (float)
-    $toNumber = function ($value, $default = null) {
-        if ($value === null) return $default;
+        // Helper: convert "1,400.00", "£1,400.00", " 1400 " -> 1400.00 (float)
+        $toNumber = function ($value, $default = null) {
+            if ($value === null)
+                return $default;
 
-        // If already numeric, just return it
-        if (is_int($value) || is_float($value)) return $value;
+            // If already numeric, just return it
+            if (is_int($value) || is_float($value))
+                return $value;
 
-        $str = trim((string) $value);
+            $str = trim((string) $value);
 
-        // Remove common formatting: commas, currency symbols, spaces
-        // Keep digits, dot, and minus only
-        $str = preg_replace('/[^\d\.\-]/', '', $str);
+            // Remove common formatting: commas, currency symbols, spaces
+            // Keep digits, dot, and minus only
+            $str = preg_replace('/[^\d\.\-]/', '', $str);
 
-        if ($str === '' || $str === '-' || $str === '.' || $str === '-.') {
-            return $default;
+            if ($str === '' || $str === '-' || $str === '.' || $str === '-.') {
+                return $default;
+            }
+
+            return (float) $str;
+        };
+
+        if (!$survey) {
+            $url = 'https://api.infusionsoft.com/crm/rest/v1/contacts/' . $id . '/?optional_properties=custom_fields';
+
+            $response = Http::withHeaders([
+                'X-Keap-API-Key' => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+                'Authorization' => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
+                'Content-Type' => 'application/json',
+            ])->patch($url, (object) []);
+
+            $response_data = $response->json();
+
+            $data = [];
+            $data['first_name'] = $response_data['given_name'] ?? '';
+            $data['last_name'] = $response_data['family_name'] ?? '';
+            $email_address = $response_data['email_addresses'][0]['email'] ?? '';
+            $data['telephone_number'] = $response_data['phone_numbers'][0]['number'] ?? '';
+            $data['full_address'] = $response_data['addresses'][0]['line1'] ?? '';
+            $data['postcode'] = $response_data['addresses'][0]['postal_code'] ?? '';
+            $data['contact_id'] = $id ?? '';
+
+            // Make sure custom_fields exists and is iterable
+            $customFields = $response_data['custom_fields'] ?? [];
+
+            foreach ($customFields as $value) {
+                $fieldId = $value['id'] ?? null;
+                $content = $value['content'] ?? null;
+
+                if ($fieldId == 191) {
+                    $data['full_address'] = (string) $content;
+                }
+
+                if ($fieldId == 203) {
+                    $data['listed_building'] = (string) $content;
+                }
+
+                if ($fieldId == 197) {
+                    $data['number_of_bedrooms'] = (string) $content;
+                }
+
+                if ($fieldId == 195) {
+                    $data['house_or_flat'] = (string) $content;
+                }
+
+                if ($fieldId == 193) {
+                    // market value can also come formatted
+                    $data['market_value'] = $toNumber($content);
+                }
+
+                if ($fieldId == 603) {
+                    $data['sqft_area'] = $toNumber($content);
+
+                    // if sqft_area is null, treat as not over
+                    $data['over1650'] = ($data['sqft_area'] !== null && $data['sqft_area'] > 1650) ? 'yes' : 'no';
+                }
+
+                if ($fieldId == 220) {
+                    $data['level1_price'] = $toNumber($content);
+                }
+
+                if ($fieldId == 224) {
+                    $data['level2_price'] = $toNumber($content);
+                }
+
+                if ($fieldId == 228) {
+                    $data['level3_price'] = $toNumber($content);
+                }
+
+                if ($fieldId == 238) {
+                    // This is the one that was failing (e.g. "1,400.00")
+                    $data['level4_price'] = $toNumber($content);
+                }
+            }
+
+            $survey = Survey::updateOrCreate(
+                ['email_address' => $email_address],
+                $data
+            );
         }
 
-        return (float) $str;
-    };
+        $price = Price::first();
 
-    if (!$survey) {
-        $url = 'https://api.infusionsoft.com/crm/rest/v1/contacts/' . $id . '/?optional_properties=custom_fields';
-
-        $response = Http::withHeaders([
-            'X-Keap-API-Key'   => 'KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
-            'Authorization'    => 'Bearer KeapAK-6348cc09f8ed9b4800c6cb2ed4e0f9473ba5d9c249bb465acf',
-            'Content-Type'     => 'application/json',
-        ])->patch($url, (object) []);
-
-        $response_data = $response->json();
-
-        $data = [];
-        $data['first_name']        = $response_data['given_name'] ?? '';
-        $data['last_name']         = $response_data['family_name'] ?? '';
-        $email_address             = $response_data['email_addresses'][0]['email'] ?? '';
-        $data['telephone_number']  = $response_data['phone_numbers'][0]['number'] ?? '';
-        $data['full_address']      = $response_data['addresses'][0]['line1'] ?? '';
-        $data['postcode']          = $response_data['addresses'][0]['postal_code'] ?? '';
-        $data['contact_id']        = $id ?? '';
-
-        // Make sure custom_fields exists and is iterable
-        $customFields = $response_data['custom_fields'] ?? [];
-
-        foreach ($customFields as $value) {
-            $fieldId  = $value['id'] ?? null;
-            $content  = $value['content'] ?? null;
-
-            if ($fieldId == 191) {
-                $data['full_address'] = (string) $content;
-            }
-
-            if ($fieldId == 203) {
-                $data['listed_building'] = (string) $content;
-            }
-
-            if ($fieldId == 197) {
-                $data['number_of_bedrooms'] = (string) $content;
-            }
-
-            if ($fieldId == 195) {
-                $data['house_or_flat'] = (string) $content;
-            }
-
-            if ($fieldId == 193) {
-                // market value can also come formatted
-                $data['market_value'] = $toNumber($content);
-            }
-
-            if ($fieldId == 603) {
-                $data['sqft_area'] = $toNumber($content);
-
-                // if sqft_area is null, treat as not over
-                $data['over1650'] = ($data['sqft_area'] !== null && $data['sqft_area'] > 1650) ? 'yes' : 'no';
-            }
-
-            if ($fieldId == 220) {
-                $data['level1_price'] = $toNumber($content);
-            }
-
-            if ($fieldId == 224) {
-                $data['level2_price'] = $toNumber($content);
-            }
-
-            if ($fieldId == 228) {
-                $data['level3_price'] = $toNumber($content);
-            }
-
-            if ($fieldId == 238) {
-                // This is the one that was failing (e.g. "1,400.00")
-                $data['level4_price'] = $toNumber($content);
-            }
-        }
-
-        $survey = Survey::updateOrCreate(
-            ['email_address' => $email_address],
-            $data
-        );
+        return view('user.survey.listing', [
+            'survey' => $survey,
+            'price' => $price,
+        ]);
     }
-
-    $price = Price::first();
-
-    return view('user.survey.listing', [
-        'survey' => $survey,
-        'price'  => $price,
-    ]);
-}
-
 
     public function submitListingPage(Request $request)
     {
@@ -322,7 +322,6 @@ public function flettonsListingPage()
 
     public function submitRicsSurveyPage(Request $request)
     {
-
         $survey = Survey::findOrFail($request->id);
         $data = $request->all();
 
@@ -542,7 +541,6 @@ public function flettonsListingPage()
             return false;
         }
     }
-
 
     public function encrypt_sodium(string $plaintext, string $b64key): string
     {

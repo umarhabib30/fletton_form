@@ -66,7 +66,39 @@ class SurveyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $survey = Survey::find($id);
+        if (!$survey) {
+            return redirect()->route('admin.survey.index')->with('error', 'Survey not found.');
+        }
+
+        $fillable = $survey->getFillable();
+        $rules = [];
+        foreach ($fillable as $key) {
+            $rules[$key] = ['nullable'];
+            if (in_array($key, ['email_address', 'inf_field_Email', 'inf_custom_SolicitorsEmail', 'inf_custom_AgentsEmail'])) {
+                $rules[$key][] = 'email';
+            }
+            if (str_contains($key, 'price') || $key === 'market_value' || $key === 'level_total' || $key === 'sqft_area' || $key === 'number_of_bedrooms') {
+                $rules[$key] = ['nullable', 'numeric', 'min:0'];
+            }
+            if ($key === 'current_step') {
+                $rules[$key] = ['nullable', 'integer', 'min:0', 'max:3'];
+            }
+        }
+        $validated = $request->validate($rules);
+
+        foreach (['breakdown', 'aerial', 'insurance', 'addons'] as $boolKey) {
+            if (array_key_exists($boolKey, $validated)) {
+                $validated[$boolKey] = filter_var($validated[$boolKey], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+        if (array_key_exists('is_submitted', $validated)) {
+            $validated['is_submitted'] = filter_var($validated['is_submitted'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+        }
+
+        $survey->update(array_intersect_key($validated, array_flip($fillable)));
+
+        return redirect()->route('admin.survey.show', $id)->with('success', 'Survey updated successfully.');
     }
 
     /**
