@@ -91,19 +91,19 @@ class WebHookController extends Controller
             'Content-Type' => 'application/json',
         ])->patch("https://api.infusionsoft.com/crm/rest/v1/contacts/{$contact_id}", $updatePayload);
 
-        // Start with base details
+        // Start with Keap contact fields (model maps to first_name, last_name, etc.)
         $data = [];
-        $data['first_name'] = $contact['given_name'] ?? '';
-        $data['last_name'] = $contact['family_name'] ?? '';
-        $data['email_address'] = $contact['email_addresses'][0]['email'] ?? '';
-        $data['telephone_number'] = $contact['phone_numbers'][0]['number'] ?? '';
-        $data['full_address'] = $contact['addresses'][0]['line1'] ?? '';
+        $data['given_name'] = $contact['given_name'] ?? '';
+        $data['family_name'] = $contact['family_name'] ?? '';
+        $data['primary_email'] = $contact['email_addresses'][0]['email'] ?? '';
+        $data['primary_phone'] = $contact['phone_numbers'][0]['number'] ?? '';
+        $data['address_line1'] = $contact['addresses'][0]['line1'] ?? '';
 
         // If empty, fallback to custom field 191
-        if (empty($data['full_address'])) {
-            $data['full_address'] = $this->getFieldValue($contact['custom_fields'], 191);
+        if (empty($data['address_line1'])) {
+            $data['address_line1'] = $this->getFieldValue($contact['custom_fields'], 191);
         }
-        $data['postcode'] = $contact['addresses'][0]['postal_code'] ?? '';
+        $data['postal_code'] = $contact['addresses'][0]['postal_code'] ?? '';
         $data['contact_id'] = $contact['id'] ?? '';
 
         // --- NOW USE GENERATED VALUES INSTEAD OF OLD API FIELDS ---
@@ -128,7 +128,7 @@ class WebHookController extends Controller
         $data['over1650'] = $sqft > 1650 ? 'yes' : 'no';
 
         $survey = Survey::updateOrCreate(
-            ['email_address' => $data['email_address']],
+            ['email_address' => $data['primary_email']],
             $data
         );
 

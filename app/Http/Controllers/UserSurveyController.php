@@ -208,12 +208,14 @@ class UserSurveyController extends Controller
             $response_data = $response->json();
 
             $data = [];
-            $data['first_name'] = $response_data['given_name'] ?? '';
-            $data['last_name'] = $response_data['family_name'] ?? '';
+            // Keap contact fields (model maps to first_name, last_name, etc.)
+            $data['given_name'] = $response_data['given_name'] ?? '';
+            $data['family_name'] = $response_data['family_name'] ?? '';
             $email_address = $response_data['email_addresses'][0]['email'] ?? '';
-            $data['telephone_number'] = $response_data['phone_numbers'][0]['number'] ?? '';
-            $data['full_address'] = $response_data['addresses'][0]['line1'] ?? '';
-            $data['postcode'] = $response_data['addresses'][0]['postal_code'] ?? '';
+            $data['primary_email'] = $email_address;
+            $data['primary_phone'] = $response_data['phone_numbers'][0]['number'] ?? '';
+            $data['address_line1'] = $response_data['addresses'][0]['line1'] ?? '';
+            $data['postal_code'] = $response_data['addresses'][0]['postal_code'] ?? '';
             $data['contact_id'] = $id ?? '';
 
             // Make sure custom_fields exists and is iterable
@@ -224,7 +226,7 @@ class UserSurveyController extends Controller
                 $content = $value['content'] ?? null;
 
                 if ($fieldId == 191) {
-                    $data['full_address'] = (string) $content;
+                    $data['address_line1'] = (string) $content;
                 }
 
                 if ($fieldId == 203) {
@@ -346,10 +348,10 @@ class UserSurveyController extends Controller
         // ✅ Build CRM payload
 
         $keapAddressLine = $request->inf_field_StreetAddress1;
-        $keapAddressLine2 = $request->full_address . ', ' . $survey->postcode;
+        $keapAddressLine2 = ($request->full_address ?? $survey->full_address) . ', ' . $survey->postcode;
         $payload = [
-            'given_name' => $survey->first_name,
-            'family_name' => $survey->last_name,
+            'given_name' => $survey->given_name,
+            'family_name' => $survey->family_name,
             'duplicate_option' => 'Email',
             // Billing address
             'addresses' => [
@@ -365,14 +367,14 @@ class UserSurveyController extends Controller
             // Phone numbers
             'phone_numbers' => [
                 [
-                    'number' => str_replace(' ', '', $survey->telephone_number),
+                    'number' => str_replace(' ', '', $survey->primary_phone ?? $survey->telephone_number),
                     'field' => 'PHONE1'
                 ]
             ],
             // Email addresses
             'email_addresses' => [
                 [
-                    'email' => $survey->email_address,
+                    'email' => $survey->primary_email ?? $survey->email_address,
                     'field' => 'EMAIL1'
                 ]
             ],
