@@ -16,6 +16,10 @@ class UserSurveyController extends Controller
         return view('maintenance.index');
     }
 
+    public function test(){
+        return view('user.survey.quote-form');
+    }
+
     public function submitSurvey(Request $request)
     {
         // dd($request);
