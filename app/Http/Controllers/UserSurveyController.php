@@ -12,8 +12,8 @@ class UserSurveyController extends Controller
 {
     public function signup()
     {
-        return view('user.survey.quote-form');
-        // return view('maintenance.index');
+        // return view('user.survey.quote-form');
+        return view('maintenance.index');
     }
 
     public function test(){
